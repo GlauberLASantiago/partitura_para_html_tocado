@@ -10,7 +10,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16px; }
-.card { max-width: 980px; margin: 0 auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 32px rgba(0,0,0,.10); overflow: hidden; }
+.card { max-width: 1080px; margin: 0 auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 32px rgba(0,0,0,.10); overflow: hidden; }
 .hd { background: linear-gradient(120deg, #0f0c29, #302b63, #24243e); padding: 22px 28px; display: flex; align-items: center; gap: 16px; }
 .hd-icon { width: 46px; height: 46px; background: rgba(255,255,255,.12); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
 .hd-title { color: #fff; font-size: 17px; font-weight: 600; }
@@ -40,7 +40,8 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
 .btn-export:not(:disabled):hover { background: #4f46e5; }
 
 .bpm-wrap,
-.inst-wrap {
+.inst-wrap,
+.rev-wrap {
   display: flex;
   align-items: center;
   gap: 7px;
@@ -50,15 +51,17 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
   height: 38px;
 }
 .bpm-wrap label,
-.inst-wrap label {
+.inst-wrap label,
+.rev-wrap label {
   font-size: 11px;
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: .6px;
 }
-.bpm-wrap input {
-  width: 56px;
+.bpm-wrap input,
+.rev-wrap input {
+  width: 64px;
   border: none;
   background: transparent;
   font-size: 15px;
@@ -77,6 +80,7 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
   font-family: inherit;
 }
 .bpm-wrap input:focus,
+.rev-wrap input:focus,
 .inst-wrap select:focus { outline: none; }
 
 #score { overflow-x: auto; }
@@ -130,6 +134,11 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
         </select>
       </div>
 
+      <div class="rev-wrap">
+        <label for="reverbAmt">Reverber</label>
+        <input type="number" id="reverbAmt" value="25" min="0" max="100">
+      </div>
+
       <button class="btn btn-export" id="bx" disabled>&#128203; Copiar HTML</button>
     </div>
 
@@ -168,6 +177,12 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
   var run = false;
   var rawXml = '';
 
+  var inputGain = null;
+  var masterGain = null;
+  var dryGain = null;
+  var wetGain = null;
+  var convolver = null;
+
   function setStatus(msg, cls) {
     var e = document.getElementById('st');
     e.textContent = msg;
@@ -178,13 +193,61 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
     return document.getElementById('instSel').value || 'acoustic_grand_piano';
   }
 
-  async function loadInstrument(programName) {
-    if (!ac) {
-      ac = new (window.AudioContext || window.webkitAudioContext)();
-    }
+  function getReverbAmount() {
+    var v = +document.getElementById('reverbAmt').value;
+    if (isNaN(v)) v = 25;
+    return Math.max(0, Math.min(100, v));
+  }
 
-    if (ac.state === 'closed') {
+  function createImpulseResponse(audioContext, seconds, decay) {
+    var rate = audioContext.sampleRate;
+    var length = rate * seconds;
+    var impulse = audioContext.createBuffer(2, length, rate);
+
+    for (var c = 0; c < 2; c++) {
+      var ch = impulse.getChannelData(c);
+      for (var i = 0; i < length; i++) {
+        ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+      }
+    }
+    return impulse;
+  }
+
+  function setupFx() {
+    if (!ac) return;
+
+    inputGain = ac.createGain();
+    masterGain = ac.createGain();
+    dryGain = ac.createGain();
+    wetGain = ac.createGain();
+    convolver = ac.createConvolver();
+
+    convolver.buffer = createImpulseResponse(ac, 2.8, 3.2);
+
+    inputGain.connect(dryGain);
+    inputGain.connect(convolver);
+
+    convolver.connect(wetGain);
+
+    dryGain.connect(masterGain);
+    wetGain.connect(masterGain);
+    masterGain.connect(ac.destination);
+
+    masterGain.gain.value = 1.0;
+    updateReverb();
+  }
+
+  function updateReverb() {
+    if (!dryGain || !wetGain) return;
+    var amt = getReverbAmount() / 100;
+    dryGain.gain.value = 1 - (amt * 0.45);
+    wetGain.gain.value = amt * 1.35;
+  }
+
+  async function loadInstrument(programName) {
+    if (!ac || ac.state === 'closed') {
       ac = new (window.AudioContext || window.webkitAudioContext)();
+      setupFx();
     }
 
     stopScheduled();
@@ -193,11 +256,13 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
 
     inst = await Soundfont.instrument(ac, programName, {
       soundfont: 'FluidR3_GM',
+      destination: inputGain,
       nameToUrl: function (n, sf) {
         return 'https://gleitz.github.io/midi-js-soundfonts/' + sf + '/' + n + '-mp3.js';
       }
     });
 
+    updateReverb();
     setStatus('Pronto! Clique em Play.', 'ok');
   }
 
@@ -286,6 +351,8 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
       await ac.resume();
     }
 
+    updateReverb();
+
     var now = ac.currentTime + 0.1;
     sat = now - offset;
 
@@ -308,17 +375,38 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
     return btoa(unescape(encodeURIComponent(str)));
   }
 
-  function buildExportHtml(xml, bpm, instrumentName) {
+  function extractTitleFromXml(xml) {
+    var m =
+      xml.match(/<work-title>([\s\S]*?)<\/work-title>/i) ||
+      xml.match(/<movement-title>([\s\S]*?)<\/movement-title>/i) ||
+      xml.match(/<credit-words[^>]*>([\s\S]*?)<\/credit-words>/i);
+
+    if (!m) return '';
+
+    return m[1]
+      .replace(/<[^>]+>/g, '')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .trim();
+  }
+
+  function buildExportHtml(xml, bpm, instrumentName, reverbAmount) {
     var xmlBase64 = encodeBase64Unicode(xml);
     var safeBpm = String(bpm).replace(/"/g, '&quot;');
     var safeInstrument = String(instrumentName || 'acoustic_grand_piano').replace(/"/g, '&quot;');
+    var safeReverb = String(reverbAmount || 25).replace(/"/g, '&quot;');
+    var title = extractTitleFromXml(xml).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    var titleHtml = title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
     return `<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Partitura</title>
+<title>${titleHtml || 'Partitura'}</title>
 <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"><\/script>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"><\/script>
 <style>
@@ -337,16 +425,24 @@ body {
   margin: 0;
   padding: 0;
 }
+.score-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 6px 0;
+  padding: 0;
+}
 .controls {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin: 0;
   padding: 0;
 }
 .andamento-wrap,
-.inst-wrap {
+.inst-wrap,
+.rev-wrap {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -356,15 +452,18 @@ body {
   height: 38px;
 }
 .andamento-wrap label,
-.inst-wrap label {
+.inst-wrap label,
+.rev-wrap label {
   font-size: 11px;
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: .6px;
+  white-space: nowrap;
 }
-.andamento-wrap input {
-  width: 56px;
+.andamento-wrap input,
+.rev-wrap input {
+  width: 64px;
   border: none;
   background: transparent;
   font-size: 15px;
@@ -374,7 +473,7 @@ body {
   font-family: inherit;
 }
 .inst-wrap select {
-  min-width: 180px;
+  min-width: 170px;
   border: none;
   background: transparent;
   font-size: 14px;
@@ -383,6 +482,7 @@ body {
   font-family: inherit;
 }
 .andamento-wrap input:focus,
+.rev-wrap input:focus,
 .inst-wrap select:focus { outline: none; }
 
 #score {
@@ -402,6 +502,7 @@ body {
 </head>
 <body>
 <div class="wrap">
+  ${titleHtml ? `<div class="score-title">${titleHtml}</div>` : ''}
   <div class="controls">
     <div class="andamento-wrap">
       <label for="bpm">Andamento</label>
@@ -424,6 +525,11 @@ body {
         <option value="string_ensemble_1">Cordas</option>
       </select>
     </div>
+
+    <div class="rev-wrap">
+      <label for="reverbAmt">Reverber</label>
+      <input type="number" id="reverbAmt" value="${safeReverb}" min="0" max="100">
+    </div>
   </div>
 
   <div id="score" title="Clique: play/pause | Duplo clique: stop"></div>
@@ -431,25 +537,11 @@ body {
 
 <script>
 (function () {
-  var INSTRUMENTS = {
-    acoustic_grand_piano: 'Piano normal',
-    electric_piano_1: 'Piano elétrico Rhodes',
-    drawbar_organ: 'Órgão',
-    acoustic_guitar_nylon: 'Violão nylon',
-    electric_bass_finger: 'Contrabaixo elétrico',
-    xylophone: 'Xilofone',
-    flute: 'Flauta',
-    oboe: 'Oboé',
-    clarinet: 'Clarineta',
-    french_horn: 'Trompa',
-    string_ensemble_1: 'Cordas'
-  };
-
   var RAW = decodeURIComponent(escape(atob("${xmlBase64}")));
   var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay('score', {
     backend: 'svg',
     autoResize: true,
-    drawTitle: true
+    drawTitle: false
   });
 
   var inst = null;
@@ -460,6 +552,67 @@ body {
   var pat = 0;
   var run = false;
 
+  var inputGain = null;
+  var masterGain = null;
+  var dryGain = null;
+  var wetGain = null;
+  var convolver = null;
+
+  function getSelectedInstrument() {
+    return document.getElementById('instSel').value || 'acoustic_grand_piano';
+  }
+
+  function getReverbAmount() {
+    var v = +document.getElementById('reverbAmt').value;
+    if (isNaN(v)) v = 25;
+    return Math.max(0, Math.min(100, v));
+  }
+
+  function createImpulseResponse(audioContext, seconds, decay) {
+    var rate = audioContext.sampleRate;
+    var length = rate * seconds;
+    var impulse = audioContext.createBuffer(2, length, rate);
+
+    for (var c = 0; c < 2; c++) {
+      var ch = impulse.getChannelData(c);
+      for (var i = 0; i < length; i++) {
+        ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+      }
+    }
+    return impulse;
+  }
+
+  function setupFx() {
+    if (!ac) return;
+
+    inputGain = ac.createGain();
+    masterGain = ac.createGain();
+    dryGain = ac.createGain();
+    wetGain = ac.createGain();
+    convolver = ac.createConvolver();
+
+    convolver.buffer = createImpulseResponse(ac, 2.8, 3.2);
+
+    inputGain.connect(dryGain);
+    inputGain.connect(convolver);
+
+    convolver.connect(wetGain);
+
+    dryGain.connect(masterGain);
+    wetGain.connect(masterGain);
+    masterGain.connect(ac.destination);
+
+    masterGain.gain.value = 1.0;
+    updateReverb();
+  }
+
+  function updateReverb() {
+    if (!dryGain || !wetGain) return;
+    var amt = getReverbAmount() / 100;
+    dryGain.gain.value = 1 - (amt * 0.45);
+    wetGain.gain.value = amt * 1.35;
+  }
+
   function stopScheduled() {
     sc.forEach(function (n) {
       try { n.stop(); } catch (_) {}
@@ -467,27 +620,23 @@ body {
     sc = [];
   }
 
-  function getSelectedInstrument() {
-    return document.getElementById('instSel').value || 'acoustic_grand_piano';
-  }
-
   async function loadInstrument(programName) {
-    if (!ac) {
+    if (!ac || ac.state === 'closed') {
       ac = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    if (ac.state === 'closed') {
-      ac = new (window.AudioContext || window.webkitAudioContext)();
+      setupFx();
     }
 
     stopScheduled();
 
     inst = await Soundfont.instrument(ac, programName, {
       soundfont: 'FluidR3_GM',
+      destination: inputGain,
       nameToUrl: function (n, sf) {
         return 'https://gleitz.github.io/midi-js-soundfonts/' + sf + '/' + n + '-mp3.js';
       }
     });
+
+    updateReverb();
   }
 
   function extractEvents() {
@@ -564,6 +713,8 @@ body {
       await ac.resume();
     }
 
+    updateReverb();
+
     var now = ac.currentTime + 0.1;
     sat = now - offset;
 
@@ -610,17 +761,12 @@ body {
 
     document.getElementById('instSel').value = "${safeInstrument}";
     await loadInstrument(getSelectedInstrument());
+    updateReverb();
   }
 
   document.getElementById('instSel').addEventListener('change', async function () {
     var wasRunning = run;
-    var currentPos = 0;
-
-    if (ac && run) {
-      currentPos = ac.currentTime - sat;
-    } else {
-      currentPos = pat;
-    }
+    var currentPos = ac && run ? (ac.currentTime - sat) : pat;
 
     run = false;
     pat = Math.max(0, currentPos);
@@ -633,6 +779,10 @@ body {
       await scheduleFrom(pat);
       pat = 0;
     }
+  });
+
+  document.getElementById('reverbAmt').addEventListener('input', function () {
+    updateReverb();
   });
 
   var scoreEl = document.getElementById('score');
@@ -674,7 +824,9 @@ body {
       }
 
       ac = new (window.AudioContext || window.webkitAudioContext)();
+      setupFx();
       await loadInstrument(getSelectedInstrument());
+      updateReverb();
 
       sat = 0;
       pat = 0;
@@ -683,7 +835,7 @@ body {
       sc = [];
 
       setStatus('Pronto! Clique em Play.', 'ok');
-      ['bp', 'bpa', 'bs', 'bx', 'instSel'].forEach(function (id) {
+      ['bp', 'bpa', 'bs', 'bx', 'instSel', 'reverbAmt'].forEach(function (id) {
         document.getElementById(id).disabled = false;
       });
     } catch (err) {
@@ -723,6 +875,10 @@ body {
     }
   });
 
+  document.getElementById('reverbAmt').addEventListener('input', function () {
+    updateReverb();
+  });
+
   document.getElementById('bp').onclick = async function () {
     if (run || !inst || !ac) return;
     run = true;
@@ -756,7 +912,8 @@ body {
 
       var bpm = document.getElementById('bpm').value || 100;
       var instrumentName = getSelectedInstrument();
-      var html = buildExportHtml(rawXml, bpm, instrumentName);
+      var reverbAmount = getReverbAmount();
+      var html = buildExportHtml(rawXml, bpm, instrumentName, reverbAmount);
 
       await navigator.clipboard.writeText(html);
 
