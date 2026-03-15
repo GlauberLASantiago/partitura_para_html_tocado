@@ -118,7 +118,6 @@ document.getElementById('fi').addEventListener('change', async function(e) {
     }
 
     ac = new (window.AudioContext || window.webkitAudioContext)();
-
     inst = await Soundfont.instrument(ac, 'acoustic_grand_piano', {
       soundfont: 'FluidR3_GM',
       nameToUrl: function(n, sf) {
@@ -136,7 +135,7 @@ document.getElementById('fi').addEventListener('change', async function(e) {
     ['bp','bpa','bs','bx'].forEach(function(id) {
       document.getElementById(id).disabled = false;
     });
-  } catch(err) {
+  } catch (err) {
     st('Erro: ' + err.message, 'err');
     console.error(err);
   }
@@ -145,37 +144,48 @@ document.getElementById('fi').addEventListener('change', async function(e) {
 function xev() {
   evs = [];
 
-  var bpmInput = +document.getElementById('bpm').value || 100;
+  var bpm = +document.getElementById('bpm').value || 100;
 
   osmd.cursor.reset();
-  var it = osmd.cursor.Iterator;
+  var iterator = osmd.cursor.Iterator;
 
-  while (!it.EndReached) {
-    var currentMeasure = it.CurrentMeasure;
-    var bpm = bpmInput;
+  while (!iterator.EndReached) {
+    var voices = iterator.CurrentVoiceEntries || [];
+    var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
+    var real = 0;
 
-    if (currentMeasure && currentMeasure.TempoInBPM) {
-      bpm = currentMeasure.TempoInBPM;
+    if (timeObj) {
+      real = (typeof timeObj.realValue !== 'undefined') ? timeObj.realValue : (timeObj.RealValue || 0);
     }
 
-    var tSec = it.CurrentTimeStamp.RealValue * 4 * (60 / bpm);
-    var voices = it.CurrentVoiceEntries || [];
+    var tSec = real * 4 * (60 / bpm);
 
-    for (var vi = 0; vi < voices.length; vi++) {
-      var ve = voices[vi];
+    for (var i = 0; i < voices.length; i++) {
+      var ve = voices[i];
       if (!ve || !ve.Notes) continue;
 
-      for (var ni = 0; ni < ve.Notes.length; ni++) {
-        var note = ve.Notes[ni];
+      for (var j = 0; j < ve.Notes.length; j++) {
+        var note = ve.Notes[j];
         if (!note || note.isRest()) continue;
 
-        var p = note.Pitch || note.TransposedPitch;
-        if (!p) continue;
+        var midi = null;
 
-        var midi = p.getHalfTone();
-        if (midi < 12) midi += 12;
+        if (typeof note.halfTone !== 'undefined' && note.halfTone !== null) {
+          midi = note.halfTone + 12;
+        } else if (note.Pitch && typeof note.Pitch.getHalfTone === 'function') {
+          midi = note.Pitch.getHalfTone();
+        } else if (note.TransposedPitch && typeof note.TransposedPitch.getHalfTone === 'function') {
+          midi = note.TransposedPitch.getHalfTone();
+        }
 
-        var dur = Math.max(0.08, note.Length.RealValue * 4 * (60 / bpm) * 0.95);
+        if (midi === null) continue;
+
+        var len = 0;
+        if (note.Length) {
+          len = (typeof note.Length.realValue !== 'undefined') ? note.Length.realValue : (note.Length.RealValue || 0);
+        }
+
+        var dur = Math.max(0.08, len * 4 * (60 / bpm) * 0.95);
 
         evs.push({
           t: tSec,
@@ -185,13 +195,15 @@ function xev() {
       }
     }
 
-    it.moveToNext();
+    iterator.moveToNext();
   }
 
   evs.sort(function(a, b) {
     if (a.t !== b.t) return a.t - b.t;
     return a.midi - b.midi;
   });
+
+  console.log('Eventos extraídos:', evs.length, evs.slice(0, 20));
 }
 
 function ksc() {
@@ -205,7 +217,7 @@ async function sch(off) {
   xev();
 
   if (!evs.length) {
-    st('Nenhuma nota encontrada.', 'err');
+    st('Nenhuma nota encontrada para tocar.', 'err');
     return;
   }
 
@@ -232,7 +244,7 @@ async function sch(off) {
 }
 
 document.getElementById('bp').onclick = async function() {
-  if (run) return;
+  if (run || !inst || !ac) return;
   run = true;
   ksc();
   await sch(pat);
@@ -241,7 +253,7 @@ document.getElementById('bp').onclick = async function() {
 };
 
 document.getElementById('bpa').onclick = function() {
-  if (!run) return;
+  if (!run || !ac) return;
   run = false;
   pat = ac.currentTime - sat;
   ksc();
@@ -334,37 +346,40 @@ function makeExport(xml, bpm) {
   lines.push('function st(m,c){ var e=document.getElementById("st"); e.textContent=m; e.className="status"+(c?" "+c:""); }');
   lines.push('function xev(){');
   lines.push('  evs = [];');
-  lines.push('  var bpmInput = +document.getElementById("bpm").value || 100;');
+  lines.push('  var bpm = +document.getElementById("bpm").value || 100;');
   lines.push('  osmd.cursor.reset();');
-  lines.push('  var it = osmd.cursor.Iterator;');
-  lines.push('  while (!it.EndReached) {');
-  lines.push('    var currentMeasure = it.CurrentMeasure;');
-  lines.push('    var bpm = bpmInput;');
-  lines.push('    if (currentMeasure && currentMeasure.TempoInBPM) bpm = currentMeasure.TempoInBPM;');
-  lines.push('    var tSec = it.CurrentTimeStamp.RealValue * 4 * (60 / bpm);');
-  lines.push('    var voices = it.CurrentVoiceEntries || [];');
-  lines.push('    for (var vi = 0; vi < voices.length; vi++) {');
-  lines.push('      var ve = voices[vi];');
+  lines.push('  var iterator = osmd.cursor.Iterator;');
+  lines.push('  while (!iterator.EndReached) {');
+  lines.push('    var voices = iterator.CurrentVoiceEntries || [];');
+  lines.push('    var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;');
+  lines.push('    var real = 0;');
+  lines.push('    if (timeObj) real = (typeof timeObj.realValue !== "undefined") ? timeObj.realValue : (timeObj.RealValue || 0);');
+  lines.push('    var tSec = real * 4 * (60 / bpm);');
+  lines.push('    for (var i = 0; i < voices.length; i++) {');
+  lines.push('      var ve = voices[i];');
   lines.push('      if (!ve || !ve.Notes) continue;');
-  lines.push('      for (var ni = 0; ni < ve.Notes.length; ni++) {');
-  lines.push('        var note = ve.Notes[ni];');
+  lines.push('      for (var j = 0; j < ve.Notes.length; j++) {');
+  lines.push('        var note = ve.Notes[j];');
   lines.push('        if (!note || note.isRest()) continue;');
-  lines.push('        var p = note.Pitch || note.TransposedPitch;');
-  lines.push('        if (!p) continue;');
-  lines.push('        var midi = p.getHalfTone();');
-  lines.push('        if (midi < 12) midi += 12;');
-  lines.push('        var dur = Math.max(0.08, note.Length.RealValue * 4 * (60 / bpm) * 0.95);');
+  lines.push('        var midi = null;');
+  lines.push('        if (typeof note.halfTone !== "undefined" && note.halfTone !== null) midi = note.halfTone + 12;');
+  lines.push('        else if (note.Pitch && typeof note.Pitch.getHalfTone === "function") midi = note.Pitch.getHalfTone();');
+  lines.push('        else if (note.TransposedPitch && typeof note.TransposedPitch.getHalfTone === "function") midi = note.TransposedPitch.getHalfTone();');
+  lines.push('        if (midi === null) continue;');
+  lines.push('        var len = 0;');
+  lines.push('        if (note.Length) len = (typeof note.Length.realValue !== "undefined") ? note.Length.realValue : (note.Length.RealValue || 0);');
+  lines.push('        var dur = Math.max(0.08, len * 4 * (60 / bpm) * 0.95);');
   lines.push('        evs.push({ t: tSec, midi: midi, dur: dur });');
   lines.push('      }');
   lines.push('    }');
-  lines.push('    it.moveToNext();');
+  lines.push('    iterator.moveToNext();');
   lines.push('  }');
   lines.push('  evs.sort(function(a,b){ if(a.t !== b.t) return a.t - b.t; return a.midi - b.midi; });');
   lines.push('}');
   lines.push('function ksc(){ sc.forEach(function(n){ try{ n.stop(); } catch(_){} }); sc=[]; }');
   lines.push('async function sch(off){');
   lines.push('  xev();');
-  lines.push('  if(!evs.length){ st("Nenhuma nota encontrada.","err"); return; }');
+  lines.push('  if(!evs.length){ st("Nenhuma nota encontrada para tocar.","err"); return; }');
   lines.push('  if(ac.state==="suspended"){ await ac.resume(); }');
   lines.push('  var now = ac.currentTime + 0.1;');
   lines.push('  sat = now - off;');
@@ -392,15 +407,14 @@ function makeExport(xml, bpm) {
   lines.push('    st("Erro: " + e.message, "err");');
   lines.push('  }');
   lines.push('}');
-  lines.push('document.getElementById("bp").onclick = async function(){ if(run) return; run = true; ksc(); await sch(pat); pat = 0; st("Tocando...","ok"); };');
-  lines.push('document.getElementById("bpa").onclick = function(){ if(!run) return; run = false; pat = ac.currentTime - sat; ksc(); st("Pausado."); };');
+  lines.push('document.getElementById("bp").onclick = async function(){ if(run || !inst || !ac) return; run = true; ksc(); await sch(pat); pat = 0; st("Tocando...","ok"); };');
+  lines.push('document.getElementById("bpa").onclick = function(){ if(!run || !ac) return; run = false; pat = ac.currentTime - sat; ksc(); st("Pausado."); };');
   lines.push('document.getElementById("bs").onclick = function(){ run = false; pat = 0; ksc(); st("Parado."); };');
   lines.push('init();');
   lines.push('<' + '/script>');
   lines.push('<\/body>');
   lines.push('<\/html>');
-
-  return lines.join('\n');
+  return lines.join("\\n");
 }
 </script>
 </body>
