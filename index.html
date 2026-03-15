@@ -41,7 +41,7 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
 
 .bpm-wrap { display: flex; align-items: center; gap: 7px; background: #f1f5f9; border-radius: 9px; padding: 0 14px; height: 38px; }
 .bpm-wrap label { font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .6px; }
-.bpm-wrap input { width: 48px; border: none; background: transparent; font-size: 15px; font-weight: 600; color: #1e293b; text-align: center; font-family: inherit; }
+.bpm-wrap input { width: 56px; border: none; background: transparent; font-size: 15px; font-weight: 600; color: #1e293b; text-align: center; font-family: inherit; }
 .bpm-wrap input:focus { outline: none; }
 
 #score { overflow-x: auto; }
@@ -64,18 +64,20 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
       <span>&#128193; Carregar partitura</span>
       <input type="file" id="fi" accept=".xml,.musicxml">
     </label>
-    <div class="fname" id="fname">Nenhum arquivo selecionado</div>
 
+    <div class="fname" id="fname">Nenhum arquivo selecionado</div>
     <div class="status" id="st">Selecione um arquivo .xml ou .musicxml para começar.</div>
 
     <div class="controls">
       <button class="btn btn-play" id="bp" disabled>&#9654; Play</button>
       <button class="btn btn-pause" id="bpa" disabled>&#9646;&#9646; Pause</button>
       <button class="btn btn-stop" id="bs" disabled>&#9632; Stop</button>
+
       <div class="bpm-wrap">
         <label for="bpm">BPM</label>
         <input type="number" id="bpm" value="100" min="20" max="400">
       </div>
+
       <button class="btn btn-export" id="bx" disabled>&#128190; Exportar HTML</button>
     </div>
 
@@ -84,228 +86,147 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
 </div>
 
 <script>
-var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay('score', {
-  backend: 'svg',
-  autoResize: true,
-  drawTitle: true
-});
+(function () {
+  var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay('score', {
+    backend: 'svg',
+    autoResize: true,
+    drawTitle: true
+  });
 
-var inst = null, evs = [], ac = null, sc = [];
-var sat = 0, pat = 0, run = false, rawXml = '';
+  var inst = null;
+  var evs = [];
+  var ac = null;
+  var sc = [];
+  var sat = 0;
+  var pat = 0;
+  var run = false;
+  var rawXml = '';
 
-function st(m, c) {
-  var e = document.getElementById('st');
-  e.textContent = m;
-  e.className = 'status' + (c ? ' ' + c : '');
-}
+  function setStatus(msg, cls) {
+    var e = document.getElementById('st');
+    e.textContent = msg;
+    e.className = 'status' + (cls ? ' ' + cls : '');
+  }
 
-document.getElementById('fi').addEventListener('change', async function(e) {
-  var f = e.target.files[0];
-  if (!f) return;
-
-  document.getElementById('fname').textContent = f.name;
-  st('Carregando partitura...', 'info');
-
-  try {
-    rawXml = await f.text();
-
-    await osmd.load(rawXml);
-    osmd.render();
-
-    st('Carregando piano General MIDI...', 'info');
-
-    if (ac && ac.state !== 'closed') {
-      try { await ac.close(); } catch (_) {}
-    }
-
-    ac = new (window.AudioContext || window.webkitAudioContext)();
-
-    inst = await Soundfont.instrument(ac, 'acoustic_grand_piano', {
-      soundfont: 'FluidR3_GM',
-      nameToUrl: function(n, sf) {
-        return 'https://gleitz.github.io/midi-js-soundfonts/' + sf + '/' + n + '-mp3.js';
-      }
+  function stopScheduled() {
+    sc.forEach(function (n) {
+      try { n.stop(); } catch (_) {}
     });
-
-    sat = 0;
-    pat = 0;
-    run = false;
-    evs = [];
     sc = [];
-
-    st('Pronto! Clique em Play.', 'ok');
-    ['bp','bpa','bs','bx'].forEach(function(id) {
-      document.getElementById(id).disabled = false;
-    });
-  } catch (err) {
-    st('Erro: ' + err.message, 'err');
-    console.error(err);
   }
-});
 
-function xev() {
-  evs = [];
+  function extractEvents() {
+    evs = [];
+    var bpm = +document.getElementById('bpm').value || 100;
 
-  var bpm = +document.getElementById('bpm').value || 100;
+    osmd.cursor.reset();
+    var iterator = osmd.cursor.Iterator;
 
-  osmd.cursor.reset();
-  var iterator = osmd.cursor.Iterator;
+    while (!iterator.EndReached) {
+      var voices = iterator.CurrentVoiceEntries || [];
+      var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
+      var real = 0;
 
-  while (!iterator.EndReached) {
-    var voices = iterator.CurrentVoiceEntries || [];
-    var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
-    var real = 0;
-
-    if (timeObj) {
-      real = (typeof timeObj.realValue !== 'undefined') ? timeObj.realValue : (timeObj.RealValue || 0);
-    }
-
-    var tSec = real * 4 * (60 / bpm);
-
-    for (var i = 0; i < voices.length; i++) {
-      var ve = voices[i];
-      if (!ve || !ve.Notes) continue;
-
-      for (var j = 0; j < ve.Notes.length; j++) {
-        var note = ve.Notes[j];
-        if (!note || note.isRest()) continue;
-
-        var midi = null;
-
-        if (typeof note.halfTone !== 'undefined' && note.halfTone !== null) {
-          midi = note.halfTone + 12;
-        } else if (note.Pitch && typeof note.Pitch.getHalfTone === 'function') {
-          midi = note.Pitch.getHalfTone();
-        } else if (note.TransposedPitch && typeof note.TransposedPitch.getHalfTone === 'function') {
-          midi = note.TransposedPitch.getHalfTone();
-        }
-
-        if (midi === null) continue;
-
-        var len = 0;
-        if (note.Length) {
-          len = (typeof note.Length.realValue !== 'undefined') ? note.Length.realValue : (note.Length.RealValue || 0);
-        }
-
-        var dur = Math.max(0.08, len * 4 * (60 / bpm) * 0.95);
-
-        evs.push({
-          t: tSec,
-          midi: midi,
-          dur: dur
-        });
+      if (timeObj) {
+        real = typeof timeObj.realValue !== 'undefined'
+          ? timeObj.realValue
+          : (timeObj.RealValue || 0);
       }
+
+      var tSec = real * 4 * (60 / bpm);
+
+      for (var i = 0; i < voices.length; i++) {
+        var ve = voices[i];
+        if (!ve || !ve.Notes) continue;
+
+        for (var j = 0; j < ve.Notes.length; j++) {
+          var note = ve.Notes[j];
+          if (!note || note.isRest()) continue;
+
+          var midi = null;
+
+          if (typeof note.halfTone !== 'undefined' && note.halfTone !== null) {
+            midi = note.halfTone + 12;
+          } else if (note.Pitch && typeof note.Pitch.getHalfTone === 'function') {
+            midi = note.Pitch.getHalfTone();
+          } else if (note.TransposedPitch && typeof note.TransposedPitch.getHalfTone === 'function') {
+            midi = note.TransposedPitch.getHalfTone();
+          }
+
+          if (midi === null) continue;
+
+          var len = 0;
+          if (note.Length) {
+            len = typeof note.Length.realValue !== 'undefined'
+              ? note.Length.realValue
+              : (note.Length.RealValue || 0);
+          }
+
+          var dur = Math.max(0.08, len * 4 * (60 / bpm) * 0.95);
+
+          evs.push({
+            t: tSec,
+            midi: midi,
+            dur: dur
+          });
+        }
+      }
+
+      iterator.moveToNext();
     }
 
-    iterator.moveToNext();
-  }
-
-  evs.sort(function(a, b) {
-    if (a.t !== b.t) return a.t - b.t;
-    return a.midi - b.midi;
-  });
-
-  console.log('Eventos extraídos:', evs.length, evs.slice(0, 20));
-}
-
-function ksc() {
-  sc.forEach(function(n) {
-    try { n.stop(); } catch(_) {}
-  });
-  sc = [];
-}
-
-async function sch(off) {
-  xev();
-
-  if (!evs.length) {
-    st('Nenhuma nota encontrada para tocar.', 'err');
-    return;
-  }
-
-  if (ac.state === 'suspended') {
-    await ac.resume();
-  }
-
-  var now = ac.currentTime + 0.1;
-  sat = now - off;
-
-  evs.forEach(function(ev) {
-    if (ev.t < off - 0.02) return;
-
-    var abs = sat + ev.t;
-    if (abs < ac.currentTime) return;
-
-    var n = inst.play(ev.midi, abs, {
-      duration: ev.dur,
-      gain: 1.0
+    evs.sort(function (a, b) {
+      if (a.t !== b.t) return a.t - b.t;
+      return a.midi - b.midi;
     });
-
-    if (n) sc.push(n);
-  });
-}
-
-document.getElementById('bp').onclick = async function() {
-  if (run || !inst || !ac) return;
-  run = true;
-  ksc();
-  await sch(pat);
-  pat = 0;
-  st('Tocando...', 'ok');
-};
-
-document.getElementById('bpa').onclick = function() {
-  if (!run || !ac) return;
-  run = false;
-  pat = ac.currentTime - sat;
-  ksc();
-  st('Pausado.');
-};
-
-document.getElementById('bs').onclick = function() {
-  run = false;
-  pat = 0;
-  ksc();
-  st('Parado.');
-};
-
-document.getElementById('bx').onclick = function() {
-  try {
-    var bpm = document.getElementById('bpm').value || 100;
-    var out = makeExport(rawXml, bpm);
-
-    var blob = new Blob([out], { type: 'text/html;charset=utf-8' });
-    var url = URL.createObjectURL(blob);
-
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'partitura_player.html';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-
-    setTimeout(function() {
-      URL.revokeObjectURL(url);
-    }, 1000);
-
-    st('HTML exportado com sucesso!', 'ok');
-  } catch (err) {
-    console.error(err);
-    st('Erro ao exportar HTML: ' + err.message, 'err');
   }
-};
 
-function makeExport(xml, bpm) {
-  var xmlBase64 = btoa(unescape(encodeURIComponent(xml)));
+  async function scheduleFrom(offset) {
+    extractEvents();
 
-  return `<!DOCTYPE html>
+    if (!evs.length) {
+      setStatus('Nenhuma nota encontrada para tocar.', 'err');
+      return;
+    }
+
+    if (ac.state === 'suspended') {
+      await ac.resume();
+    }
+
+    var now = ac.currentTime + 0.1;
+    sat = now - offset;
+
+    evs.forEach(function (ev) {
+      if (ev.t < offset - 0.02) return;
+
+      var abs = sat + ev.t;
+      if (abs < ac.currentTime) return;
+
+      var n = inst.play(ev.midi, abs, {
+        duration: ev.dur,
+        gain: 1.0
+      });
+
+      if (n) sc.push(n);
+    });
+  }
+
+  function encodeBase64Unicode(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  function buildExportHtml(xml, bpm) {
+    var xmlBase64 = encodeBase64Unicode(xml);
+    var safeBpm = String(bpm).replace(/"/g, '&quot;');
+
+    return `<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Partitura</title>
-<script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"><\/script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -316,12 +237,10 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
 .hd-title { color: #fff; font-size: 17px; font-weight: 600; }
 .hd-sub { color: rgba(255,255,255,.45); font-size: 12px; margin-top: 3px; }
 .body { padding: 24px 28px; }
-
 .status { font-size: 12px; font-family: monospace; padding: 7px 12px; border-radius: 7px; margin-bottom: 14px; background: #f8fafc; border-left: 3px solid #e2e8f0; color: #94a3b8; min-height: 34px; line-height: 1.5; }
 .status.info { background: #eef2ff; border-color: #6366f1; color: #4338ca; }
 .status.ok { background: #f0fdf4; border-color: #22c55e; color: #15803d; }
 .status.err { background: #fef2f2; border-color: #ef4444; color: #b91c1c; }
-
 .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
 .btn { height: 38px; padding: 0 18px; border: none; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; }
 .btn:disabled { opacity: .3; cursor: default; }
@@ -331,18 +250,15 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
 .btn-pause:not(:disabled):hover { background: #d97706; }
 .btn-stop { background: #ef4444; color: #fff; }
 .btn-stop:not(:disabled):hover { background: #dc2626; }
-
 .bpm-wrap { display: flex; align-items: center; gap: 7px; background: #f1f5f9; border-radius: 9px; padding: 0 14px; height: 38px; }
 .bpm-wrap label { font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .6px; }
-.bpm-wrap input { width: 48px; border: none; background: transparent; font-size: 15px; font-weight: 600; color: #1e293b; text-align: center; font-family: inherit; }
+.bpm-wrap input { width: 56px; border: none; background: transparent; font-size: 15px; font-weight: 600; color: #1e293b; text-align: center; font-family: inherit; }
 .bpm-wrap input:focus { outline: none; }
-
 #score { overflow-x: auto; }
 #score svg { max-width: 100%; height: auto; }
 </style>
 </head>
 <body>
-
 <div class="card">
   <div class="hd">
     <div class="hd-icon">&#127925;</div>
@@ -361,7 +277,7 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
       <button class="btn btn-stop" id="bs" disabled>&#9632; Stop</button>
       <div class="bpm-wrap">
         <label for="bpm">BPM</label>
-        <input type="number" id="bpm" value="${String(bpm).replace(/"/g, '&quot;')}" min="20" max="400">
+        <input type="number" id="bpm" value="${safeBpm}" min="20" max="400">
       </div>
     </div>
 
@@ -370,177 +286,285 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
 </div>
 
 <script>
-var RAW = decodeURIComponent(escape(atob("${xmlBase64}")));
+(function () {
+  var RAW = decodeURIComponent(escape(atob("${xmlBase64}")));
+  var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay('score', {
+    backend: 'svg',
+    autoResize: true,
+    drawTitle: true
+  });
 
-var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay('score', {
-  backend: 'svg',
-  autoResize: true,
-  drawTitle: true
-});
+  var inst = null;
+  var evs = [];
+  var ac = null;
+  var sc = [];
+  var sat = 0;
+  var pat = 0;
+  var run = false;
 
-var inst = null, evs = [], ac = null, sc = [];
-var sat = 0, pat = 0, run = false;
+  function setStatus(msg, cls) {
+    var e = document.getElementById('st');
+    e.textContent = msg;
+    e.className = 'status' + (cls ? ' ' + cls : '');
+  }
 
-function st(m, c) {
-  var e = document.getElementById('st');
-  e.textContent = m;
-  e.className = 'status' + (c ? ' ' + c : '');
-}
+  function stopScheduled() {
+    sc.forEach(function (n) {
+      try { n.stop(); } catch (_) {}
+    });
+    sc = [];
+  }
 
-function xev() {
-  evs = [];
+  function extractEvents() {
+    evs = [];
+    var bpm = +document.getElementById('bpm').value || 100;
 
-  var bpm = +document.getElementById('bpm').value || 100;
+    osmd.cursor.reset();
+    var iterator = osmd.cursor.Iterator;
 
-  osmd.cursor.reset();
-  var iterator = osmd.cursor.Iterator;
+    while (!iterator.EndReached) {
+      var voices = iterator.CurrentVoiceEntries || [];
+      var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
+      var real = 0;
 
-  while (!iterator.EndReached) {
-    var voices = iterator.CurrentVoiceEntries || [];
-    var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
-    var real = 0;
+      if (timeObj) {
+        real = typeof timeObj.realValue !== 'undefined'
+          ? timeObj.realValue
+          : (timeObj.RealValue || 0);
+      }
 
-    if (timeObj) {
-      real = (typeof timeObj.realValue !== 'undefined') ? timeObj.realValue : (timeObj.RealValue || 0);
+      var tSec = real * 4 * (60 / bpm);
+
+      for (var i = 0; i < voices.length; i++) {
+        var ve = voices[i];
+        if (!ve || !ve.Notes) continue;
+
+        for (var j = 0; j < ve.Notes.length; j++) {
+          var note = ve.Notes[j];
+          if (!note || note.isRest()) continue;
+
+          var midi = null;
+
+          if (typeof note.halfTone !== 'undefined' && note.halfTone !== null) {
+            midi = note.halfTone + 12;
+          } else if (note.Pitch && typeof note.Pitch.getHalfTone === 'function') {
+            midi = note.Pitch.getHalfTone();
+          } else if (note.TransposedPitch && typeof note.TransposedPitch.getHalfTone === 'function') {
+            midi = note.TransposedPitch.getHalfTone();
+          }
+
+          if (midi === null) continue;
+
+          var len = 0;
+          if (note.Length) {
+            len = typeof note.Length.realValue !== 'undefined'
+              ? note.Length.realValue
+              : (note.Length.RealValue || 0);
+          }
+
+          var dur = Math.max(0.08, len * 4 * (60 / bpm) * 0.95);
+
+          evs.push({
+            t: tSec,
+            midi: midi,
+            dur: dur
+          });
+        }
+      }
+
+      iterator.moveToNext();
     }
 
-    var tSec = real * 4 * (60 / bpm);
+    evs.sort(function (a, b) {
+      if (a.t !== b.t) return a.t - b.t;
+      return a.midi - b.midi;
+    });
+  }
 
-    for (var i = 0; i < voices.length; i++) {
-      var ve = voices[i];
-      if (!ve || !ve.Notes) continue;
+  async function scheduleFrom(offset) {
+    extractEvents();
 
-      for (var j = 0; j < ve.Notes.length; j++) {
-        var note = ve.Notes[j];
-        if (!note || note.isRest()) continue;
-
-        var midi = null;
-
-        if (typeof note.halfTone !== 'undefined' && note.halfTone !== null) {
-          midi = note.halfTone + 12;
-        } else if (note.Pitch && typeof note.Pitch.getHalfTone === 'function') {
-          midi = note.Pitch.getHalfTone();
-        } else if (note.TransposedPitch && typeof note.TransposedPitch.getHalfTone === 'function') {
-          midi = note.TransposedPitch.getHalfTone();
-        }
-
-        if (midi === null) continue;
-
-        var len = 0;
-        if (note.Length) {
-          len = (typeof note.Length.realValue !== 'undefined') ? note.Length.realValue : (note.Length.RealValue || 0);
-        }
-
-        var dur = Math.max(0.08, len * 4 * (60 / bpm) * 0.95);
-
-        evs.push({
-          t: tSec,
-          midi: midi,
-          dur: dur
-        });
-      }
+    if (!evs.length) {
+      setStatus('Nenhuma nota encontrada para tocar.', 'err');
+      return;
     }
 
-    iterator.moveToNext();
-  }
+    if (ac.state === 'suspended') {
+      await ac.resume();
+    }
 
-  evs.sort(function(a, b) {
-    if (a.t !== b.t) return a.t - b.t;
-    return a.midi - b.midi;
-  });
-}
+    var now = ac.currentTime + 0.1;
+    sat = now - offset;
 
-function ksc() {
-  sc.forEach(function(n) {
-    try { n.stop(); } catch(_) {}
-  });
-  sc = [];
-}
+    evs.forEach(function (ev) {
+      if (ev.t < offset - 0.02) return;
 
-async function sch(off) {
-  xev();
+      var abs = sat + ev.t;
+      if (abs < ac.currentTime) return;
 
-  if (!evs.length) {
-    st('Nenhuma nota encontrada para tocar.', 'err');
-    return;
-  }
+      var n = inst.play(ev.midi, abs, {
+        duration: ev.dur,
+        gain: 1.0
+      });
 
-  if (ac.state === 'suspended') {
-    await ac.resume();
-  }
-
-  var now = ac.currentTime + 0.1;
-  sat = now - off;
-
-  evs.forEach(function(ev) {
-    if (ev.t < off - 0.02) return;
-
-    var abs = sat + ev.t;
-    if (abs < ac.currentTime) return;
-
-    var n = inst.play(ev.midi, abs, {
-      duration: ev.dur,
-      gain: 1.0
+      if (n) sc.push(n);
     });
-
-    if (n) sc.push(n);
-  });
-}
-
-document.getElementById('bp').onclick = async function() {
-  if (run || !inst || !ac) return;
-  run = true;
-  ksc();
-  await sch(pat);
-  pat = 0;
-  st('Tocando...', 'ok');
-};
-
-document.getElementById('bpa').onclick = function() {
-  if (!run || !ac) return;
-  run = false;
-  pat = ac.currentTime - sat;
-  ksc();
-  st('Pausado.');
-};
-
-document.getElementById('bs').onclick = function() {
-  run = false;
-  pat = 0;
-  ksc();
-  st('Parado.');
-};
-
-async function init() {
-  try {
-    await osmd.load(RAW);
-    osmd.render();
-
-    st('Carregando piano General MIDI...', 'info');
-
-    ac = new (window.AudioContext || window.webkitAudioContext)();
-    inst = await Soundfont.instrument(ac, 'acoustic_grand_piano', {
-      soundfont: 'FluidR3_GM',
-      nameToUrl: function(n, sf) {
-        return 'https://gleitz.github.io/midi-js-soundfonts/' + sf + '/' + n + '-mp3.js';
-      }
-    });
-
-    st('Pronto! Clique em Play.', 'ok');
-    ['bp','bpa','bs'].forEach(function(id) {
-      document.getElementById(id).disabled = false;
-    });
-  } catch (e) {
-    console.error(e);
-    st('Erro: ' + e.message, 'err');
   }
-}
 
-init();
+  document.getElementById('bp').onclick = async function () {
+    if (run || !inst || !ac) return;
+    run = true;
+    stopScheduled();
+    await scheduleFrom(pat);
+    pat = 0;
+    setStatus('Tocando...', 'ok');
+  };
+
+  document.getElementById('bpa').onclick = function () {
+    if (!run || !ac) return;
+    run = false;
+    pat = ac.currentTime - sat;
+    stopScheduled();
+    setStatus('Pausado.');
+  };
+
+  document.getElementById('bs').onclick = function () {
+    run = false;
+    pat = 0;
+    stopScheduled();
+    setStatus('Parado.');
+  };
+
+  async function init() {
+    try {
+      await osmd.load(RAW);
+      osmd.render();
+
+      setStatus('Carregando piano General MIDI...', 'info');
+
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      inst = await Soundfont.instrument(ac, 'acoustic_grand_piano', {
+        soundfont: 'FluidR3_GM',
+        nameToUrl: function (n, sf) {
+          return 'https://gleitz.github.io/midi-js-soundfonts/' + sf + '/' + n + '-mp3.js';
+        }
+      });
+
+      setStatus('Pronto! Clique em Play.', 'ok');
+      ['bp', 'bpa', 'bs'].forEach(function (id) {
+        document.getElementById(id).disabled = false;
+      });
+    } catch (e) {
+      console.error(e);
+      setStatus('Erro: ' + e.message, 'err');
+    }
+  }
+
+  init();
+})();
 <\/script>
 </body>
 </html>`;
-}
+  }
+
+  document.getElementById('fi').addEventListener('change', async function (e) {
+    var f = e.target.files[0];
+    if (!f) return;
+
+    document.getElementById('fname').textContent = f.name;
+    setStatus('Carregando partitura...', 'info');
+
+    try {
+      rawXml = await f.text();
+
+      await osmd.load(rawXml);
+      osmd.render();
+
+      setStatus('Carregando piano General MIDI...', 'info');
+
+      if (ac && ac.state !== 'closed') {
+        try { await ac.close(); } catch (_) {}
+      }
+
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      inst = await Soundfont.instrument(ac, 'acoustic_grand_piano', {
+        soundfont: 'FluidR3_GM',
+        nameToUrl: function (n, sf) {
+          return 'https://gleitz.github.io/midi-js-soundfonts/' + sf + '/' + n + '-mp3.js';
+        }
+      });
+
+      sat = 0;
+      pat = 0;
+      run = false;
+      evs = [];
+      sc = [];
+
+      setStatus('Pronto! Clique em Play.', 'ok');
+      ['bp', 'bpa', 'bs', 'bx'].forEach(function (id) {
+        document.getElementById(id).disabled = false;
+      });
+    } catch (err) {
+      console.error(err);
+      setStatus('Erro: ' + err.message, 'err');
+    }
+  });
+
+  document.getElementById('bp').onclick = async function () {
+    if (run || !inst || !ac) return;
+    run = true;
+    stopScheduled();
+    await scheduleFrom(pat);
+    pat = 0;
+    setStatus('Tocando...', 'ok');
+  };
+
+  document.getElementById('bpa').onclick = function () {
+    if (!run || !ac) return;
+    run = false;
+    pat = ac.currentTime - sat;
+    stopScheduled();
+    setStatus('Pausado.');
+  };
+
+  document.getElementById('bs').onclick = function () {
+    run = false;
+    pat = 0;
+    stopScheduled();
+    setStatus('Parado.');
+  };
+
+  document.getElementById('bx').onclick = function () {
+    try {
+      if (!rawXml) {
+        setStatus('Nenhuma partitura carregada para exportar.', 'err');
+        return;
+      }
+
+      var bpm = document.getElementById('bpm').value || 100;
+      var html = buildExportHtml(rawXml, bpm);
+
+      var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'partitura_player.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      setTimeout(function () {
+        URL.revokeObjectURL(url);
+      }, 1000);
+
+      setStatus('HTML exportado com sucesso!', 'ok');
+    } catch (err) {
+      console.error(err);
+      setStatus('Erro ao exportar HTML: ' + err.message, 'err');
+    }
+  };
+})();
 </script>
 </body>
 </html>
