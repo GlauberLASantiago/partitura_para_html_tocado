@@ -393,7 +393,7 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
       .trim();
   }
 
- <script>
+
 function buildExportHtml(xml, bpm, instrumentName, reverbAmount) {
   var xmlBase64 = encodeBase64Unicode(xml);
   var safeBpm = String(bpm).replace(/"/g, '&quot;');
@@ -796,7 +796,7 @@ html, body {
 </body>
 </html>`;
 }
-</script>
+
 
   document.getElementById('fi').addEventListener('change', async function (e) {
     var f = e.target.files[0];
