@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Partitura</title>
+<script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:sans-serif;background:#fff;padding:16px}
+#controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+button{padding:7px 18px;border:1px solid #ccc;border-radius:5px;cursor:pointer;font-size:13px;font-weight:600;background:#f5f5f5}
+button:hover:not(:disabled){background:#e8e8e8}
+button:disabled{opacity:.4;cursor:default}
+#btn-play{background:#d4edda;border-color:#28a745;color:#155724}
+#btn-pause{background:#fff3cd;border-color:#ffc107;color:#856404}
+#btn-stop{background:#f8d7da;border-color:#dc3545;color:#721c24}
+#btn-export{background:#cce5ff;border-color:#004085;color:#004085}
+.cg{display:flex;align-items:center;gap:5px;font-size:13px;color:#444}
+input[type=number]{width:55px;padding:5px;border:1px solid #ccc;border-radius:4px;font-size:13px}
+input[type=file]{font-size:13px;cursor:pointer;display:block;margin-bottom:10px}
+#score{overflow-x:auto}
+#status{font-size:12px;color:#666;margin-bottom:8px;font-family:monospace;min-height:16px}
+</style>
+</head>
+<body>
+
+<input type="file" id="file-input" accept=".xml,.musicxml">
+<div id="status">Selecione um arquivo .xml ou .musicxml</div>
+
+<div id="controls">
+  <button id="btn-play" disabled>&#9654; Play</button>
+  <button id="btn-pause" disabled>&#9646;&#9646; Pause</button>
+  <button id="btn-stop" disabled>&#9632; Stop</button>
+  <div class="cg"><label>BPM</label><input type="number" id="bpm" value="100" min="20" max="400"></div>
+  <button id="btn-export" disabled>Exportar HTML</button>
+</div>
+
+<div id="score"></div>
+
+<script>
+var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("score",{backend:"svg",autoResize:true,drawTitle:true});
+var instrument = null;
+var events = [];
+var actx = null;
+var scheduled = [];
+var startedAt = 0;
+var pausedAt = 0;
+var running = false;
+var rawXml = "";
+
+function st(m){document.getElementById("status").textContent=m;}
+
+document.getElementById("file-input").addEventListener("change",async function(ev){
+  var f=ev.target.files[0]; if(!f)return;
+  rawXml=await f.text();
+  st("Carregando partitura...");
+  try{
+    await osmd.load(rawXml);
+    osmd.render();
+    st("Carregando piano General MIDI...");
+    actx=new(window.AudioContext||window.webkitAudioContext)();
+    instrument=await Soundfont.instrument(actx,"acoustic_grand_piano",{
+      soundfont:"FluidR3_GM",
+      nameToUrl:function(n,sf){
+        return "https://gleitz.github.io/midi-js-soundfonts/"+sf+"/"+n+"-mp3.js";
+      }
+    });
+    st("Pronto!");
+    ["btn-play","btn-pause","btn-stop","btn-export"].forEach(function(id){
+      document.getElementById(id).disabled=false;
+    });
+  }catch(e){st("Erro: "+e.message);console.error(e);}
+});
+
+function extractEvents(){
+  events=[];
+  var bpm=+document.getElementById("bpm").value||100;
+  var spb=60/bpm;
+  var sm=osmd.Sheet.SourceMeasures;
+  for(var mi=0;mi<sm.length;mi++){
+    var m=sm[mi];
+    var mT=m.AbsoluteTimestamp?m.AbsoluteTimestamp.RealValue:0;
+    for(var vi=0;vi<m.VerticalSourceStaffEntryContainers.length;vi++){
+      var vsec=m.VerticalSourceStaffEntryContainers[vi];
+      var eT=vsec.Timestamp?vsec.Timestamp.RealValue:0;
+      var tSec=(mT+eT)*4*spb;
+      for(var si=0;si<vsec.StaffEntries.length;si++){
+        var se=vsec.StaffEntries[si];
+        if(!se)continue;
+        for(var ei=0;ei<se.VoiceEntries.length;ei++){
+          var ve=se.VoiceEntries[ei];
+          for(var ni=0;ni<ve.Notes.length;ni++){
+            var note=ve.Notes[ni];
+            if(note.isRest())continue;
+            var p=note.Pitch;if(!p)continue;
+            var semis=[0,2,4,5,7,9,11];
+            var midi=(p.Octave+2)*12+semis[p.FundamentalNote%7]+(p.Accidental||0);
+            var dur=Math.max(0.08,note.Length.RealValue*4*spb*0.9);
+            events.push({t:tSec,midi:midi,dur:dur});
+          }
+        }
+      }
+    }
+  }
+}
+
+function stopScheduled(){
+  scheduled.forEach(function(n){try{n.stop();}catch(_){}});
+  scheduled=[];
+}
+
+function scheduleFrom(offset){
+  extractEvents();
+  if(!events.length){st("Nenhuma nota encontrada.");return;}
+  if(actx.state==="suspended")actx.resume();
+  var now=actx.currentTime+0.1;
+  startedAt=now-offset;
+  events.forEach(function(ev){
+    if(ev.t<offset-0.02)return;
+    var abs=startedAt+ev.t;
+    if(abs<actx.currentTime)return;
+    var n=instrument.play(ev.midi,abs,{duration:ev.dur,gain:1.2});
+    if(n)scheduled.push(n);
+  });
+}
+
+document.getElementById("btn-play").onclick=function(){
+  if(running)return;
+  running=true;
+  stopScheduled();
+  scheduleFrom(pausedAt);
+  pausedAt=0;
+  st("Tocando...");
+};
+document.getElementById("btn-pause").onclick=function(){
+  if(!running)return;
+  running=false;
+  pausedAt=actx.currentTime-startedAt;
+  stopScheduled();
+  st("Pausado.");
+};
+document.getElementById("btn-stop").onclick=function(){
+  running=false;pausedAt=0;stopScheduled();
+  st("Parado.");
+};
+
+document.getElementById("btn-export").onclick=function(){
+  var bpm=document.getElementById("bpm").value;
+  var html=buildExportHTML(rawXml,bpm);
+  navigator.clipboard.writeText(html)
+    .then(function(){st("HTML copiado para a area de transferencia!");
+      document.getElementById("btn-export").textContent="Copiado!";
+      setTimeout(function(){document.getElementById("btn-export").textContent="Exportar HTML";},2000);
+    })
+    .catch(function(){st("Erro ao copiar.");});
+};
+
+function buildExportHTML(xml,bpm){
+  var lines=[
+    "<!DOCTYPE html>",
+    "<html lang=\"pt-br\">",
+    "<head>",
+    "<meta charset=\"UTF-8\">",
+    "<title>Partitura</title>",
+    "<script src=\"https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js\"><\/script>",
+    "<script src=\"https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js\"><\/script>",
+    "<style>",
+    "*{box-sizing:border-box;margin:0;padding:0}",
+    "body{font-family:sans-serif;background:#fff;padding:16px}",
+    "#controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}",
+    "button{padding:7px 18px;border:1px solid #ccc;border-radius:5px;cursor:pointer;font-size:13px;font-weight:600;background:#f5f5f5}",
+    "button:hover:not(:disabled){background:#e8e8e8}",
+    "button:disabled{opacity:.4;cursor:default}",
+    "#btn-play{background:#d4edda;border-color:#28a745;color:#155724}",
+    "#btn-pause{background:#fff3cd;border-color:#ffc107;color:#856404}",
+    "#btn-stop{background:#f8d7da;border-color:#dc3545;color:#721c24}",
+    ".cg{display:flex;align-items:center;gap:5px;font-size:13px;color:#444}",
+    "input[type=number]{width:55px;padding:5px;border:1px solid #ccc;border-radius:4px;font-size:13px}",
+    "#score{overflow-x:auto}",
+    "#status{font-size:12px;color:#666;margin-bottom:8px;font-family:monospace}",
+    "</style>",
+    "</head>",
+    "<body>",
+    "<div id=\"status\">Carregando...</div>",
+    "<div id=\"controls\">",
+    "  <button id=\"btn-play\" disabled>&#9654; Play</button>",
+    "  <button id=\"btn-pause\" disabled>&#9646;&#9646; Pause</button>",
+    "  <button id=\"btn-stop\" disabled>&#9632; Stop</button>",
+    "  <div class=\"cg\"><label>BPM</label><input type=\"number\" id=\"bpm\" value=\""+bpm+"\" min=\"20\" max=\"400\"></div>",
+    "</div>",
+    "<div id=\"score\"></div>"
+  ];
+  var scriptLines=[
+    "var RAW_XML="+JSON.stringify(xml)+";",
+    "var osmd=new opensheetmusicdisplay.OpenSheetMusicDisplay(\"score\",{backend:\"svg\",autoResize:true,drawTitle:true});",
+    "var instrument=null,events=[],actx=null,scheduled=[],startedAt=0,pausedAt=0,running=false;",
+    "function st(m){document.getElementById(\"status\").textContent=m;}",
+    "async function init(){",
+    "  try{",
+    "    await osmd.load(RAW_XML); osmd.render();",
+    "    st(\"Carregando piano GM...\");",
+    "    actx=new(window.AudioContext||window.webkitAudioContext)();",
+    "    instrument=await Soundfont.instrument(actx,\"acoustic_grand_piano\",{soundfont:\"FluidR3_GM\",nameToUrl:function(n,sf){return \"https://gleitz.github.io/midi-js-soundfonts/\"+sf+\"/\"+n+\"-mp3.js\";}});",
+    "    st(\"Pronto!\");",
+    "    [\"btn-play\",\"btn-pause\",\"btn-stop\"].forEach(function(id){document.getElementById(id).disabled=false;});",
+    "  }catch(e){st(\"Erro: \"+e.message);}",
+    "}",
+    "function extractEvents(){",
+    "  events=[];var bpm=+document.getElementById(\"bpm\").value||100;var spb=60/bpm;",
+    "  var sm=osmd.Sheet.SourceMeasures;",
+    "  for(var mi=0;mi<sm.length;mi++){var m=sm[mi];var mT=m.AbsoluteTimestamp?m.AbsoluteTimestamp.RealValue:0;",
+    "    for(var vi=0;vi<m.VerticalSourceStaffEntryContainers.length;vi++){var vsec=m.VerticalSourceStaffEntryContainers[vi];",
+    "      var eT=vsec.Timestamp?vsec.Timestamp.RealValue:0;var tSec=(mT+eT)*4*spb;",
+    "      for(var si=0;si<vsec.StaffEntries.length;si++){var se=vsec.StaffEntries[si];if(!se)continue;",
+    "        for(var ei=0;ei<se.VoiceEntries.length;ei++){var ve=se.VoiceEntries[ei];",
+    "          for(var ni=0;ni<ve.Notes.length;ni++){var note=ve.Notes[ni];if(note.isRest())continue;",
+    "            var p=note.Pitch;if(!p)continue;",
+    "            var semis=[0,2,4,5,7,9,11];",
+    "            var midi=(p.Octave+2)*12+semis[p.FundamentalNote%7]+(p.Accidental||0);",
+    "            var dur=Math.max(0.08,note.Length.RealValue*4*spb*0.9);",
+    "            events.push({t:tSec,midi:midi,dur:dur});",
+    "  }}}}}",
+    "}",
+    "function stopScheduled(){scheduled.forEach(function(n){try{n.stop();}catch(_){}});scheduled=[];}",
+    "function scheduleFrom(offset){",
+    "  extractEvents();if(!events.length)return;",
+    "  if(actx.state===\"suspended\")actx.resume();",
+    "  var now=actx.currentTime+0.1;startedAt=now-offset;",
+    "  events.forEach(function(ev){if(ev.t<offset-0.02)return;var abs=startedAt+ev.t;if(abs<actx.currentTime)return;var n=instrument.play(ev.midi,abs,{duration:ev.dur,gain:1.2});if(n)scheduled.push(n);});",
+    "}",
+    "document.getElementById(\"btn-play\").onclick=function(){if(running)return;running=true;stopScheduled();scheduleFrom(pausedAt);pausedAt=0;st(\"Tocando...\");};",
+    "document.getElementById(\"btn-pause\").onclick=function(){if(!running)return;running=false;pausedAt=actx.currentTime-startedAt;stopScheduled();st(\"Pausado.\");};",
+    "document.getElementById(\"btn-stop\").onclick=function(){running=false;pausedAt=0;stopScheduled();st(\"Parado.\");};",
+    "init();"
+  ];
+  return lines.join("\n")+"\n<script>\n"+scriptLines.join("\n")+"\n<\/script>\n</body>\n</html>";
+}
+</script>
+</body>
+</html>
