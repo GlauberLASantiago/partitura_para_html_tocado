@@ -777,6 +777,7 @@ body{font-family:sans-serif;margin:10px;}
   var cursorTimer = null, cursorSteps = [], cursorIndex = 0;
   var playbackEndTimer = null, pieceEnd = 0;
   var clickTimer = null;
+  var inputGain = null, dryGain = null, wetGain = null, masterGain = null, convolver = null;
 
   function clearCursorTimer(){
     if(cursorTimer){
@@ -934,6 +935,40 @@ body{font-family:sans-serif;margin:10px;}
     }, Math.ceil((remaining + 0.12) * 1000));
   }
 
+  function createImpulse(seconds, decay){
+    var rate = ac.sampleRate, len = rate * seconds;
+    var buf = ac.createBuffer(2, len, rate);
+    for(var c = 0; c < 2; c++){
+      var ch = buf.getChannelData(c);
+      for(var i = 0; i < len; i++) ch[i] = (Math.random()*2-1) * Math.pow(1 - i/len, decay);
+    }
+    return buf;
+  }
+
+  function setupFx(){
+    inputGain  = ac.createGain();
+    masterGain = ac.createGain();
+    dryGain    = ac.createGain();
+    wetGain    = ac.createGain();
+    convolver  = ac.createConvolver();
+    convolver.buffer = createImpulse(2.8, 3.2);
+    inputGain.connect(dryGain);
+    inputGain.connect(convolver);
+    convolver.connect(wetGain);
+    dryGain.connect(masterGain);
+    wetGain.connect(masterGain);
+    masterGain.connect(ac.destination);
+    masterGain.gain.value = 1.0;
+    updateReverb();
+  }
+
+  function updateReverb(){
+    if(!dryGain || !wetGain) return;
+    var amt = (+document.getElementById('rev').value || 0) / 100;
+    dryGain.gain.value = 1 - (amt * 0.45);
+    wetGain.gain.value = amt * 1.35;
+  }
+
   function extract(){
     evs = [];
     pieceEnd = 0;
@@ -974,11 +1009,14 @@ body{font-family:sans-serif;margin:10px;}
   async function ensureInst(){
     var sel = document.getElementById('inst').value;
 
-    if(!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    if(!ac){
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      setupFx();
+    }
     if(ac.state === 'suspended') await ac.resume();
 
     if(!inst || curInst !== sel){
-      inst = await Soundfont.instrument(ac, sel);
+      inst = await Soundfont.instrument(ac, sel, { destination: inputGain });
       curInst = sel;
     }
   }
@@ -986,6 +1024,7 @@ body{font-family:sans-serif;margin:10px;}
   async function play(off){
     await ensureInst();
     extract();
+    updateReverb();
 
     stopAll();
     clearPlaybackEndTimer();
@@ -1015,7 +1054,7 @@ body{font-family:sans-serif;margin:10px;}
         g.gain.linearRampToValueAtTime(0.1, abs + 0.005);
         g.gain.linearRampToValueAtTime(0, abs + 0.05);
         o.connect(g);
-        g.connect(ac.destination);
+        g.connect(masterGain);
         o.start(abs);
         o.stop(abs + 0.1);
         sc.push(o);
@@ -1045,6 +1084,10 @@ body{font-family:sans-serif;margin:10px;}
       pat = resumeOffset;
       moveCursorToTime(pat);
     }
+  });
+
+  document.getElementById('rev').addEventListener('input', function(){
+    updateReverb();
   });
 
   document.getElementById('bpm').addEventListener('change', function(){
