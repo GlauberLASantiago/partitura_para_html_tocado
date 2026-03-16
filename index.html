@@ -212,7 +212,7 @@ body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16
     var beats = +beatsMatch[1];
     var beatType = +beatTypeMatch[1];
     if ((beatType === 8 || beatType === 16) && beats % 3 === 0) {
-      return base * 3;
+      return base * 1.5;
     }
     return base;
   }
@@ -991,7 +991,7 @@ body{font-family:sans-serif;margin:10px;}
     var beats = +beatsMatch[1];
     var beatType = +beatTypeMatch[1];
     if ((beatType === 8 || beatType === 16) && beats % 3 === 0) {
-      return base * 3;
+      return base * 1.5;
     }
     return base;
   }
