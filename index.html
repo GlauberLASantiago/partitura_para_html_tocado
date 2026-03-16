@@ -758,12 +758,10 @@ body{font-family:sans-serif;margin:10px;}
 </head>
 <body>
 <div class="ctrls">
-  <label>BPM: <input type="number" id="bpm" value="${safeBpm}" style="width:50px"></label>
-  <label>Metrônomo: <input type="checkbox" id="met" ${metAttr}></label>
-  <label>Reverb: <input type="number" id="rev" value="${safeRev}" style="width:50px"></label>
-  <label>Timbre: <select id="inst">${instOptions}<\/select></label>
-</div>
-<div id="hint">Clique simples = play/pause • duplo clique = stop • triplo clique = voltar ao início tocando</div>
+  <label>&nbsp;Andamento: <input type="number" id="bpm" value="${safeBpm}" style="width:50px"></label>
+  <label>&nbsp;Metrônomo: <input type="checkbox" id="met" ${metAttr}></label>
+  <label>&nbsp;Reverb: <input type="number" id="rev" value="${safeRev}" style="width:50px"></label>
+  <label>&nbsp;Timbre: <select id="inst">${instOptions}<\/select><span style="font-size: 0.9375rem;">&nbsp; &nbsp; 💡Clique simples = ▶️/⏸️ • duplo clique = ⏹️ • triplo clique = ⏮️</span></label></div>
 <div id="score"></div>
 
 <script>
