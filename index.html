@@ -1,762 +1,932 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Player de Partitura</title>
-<script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: #f0f2f5; padding: 28px 16px; }
-.card { max-width: 1080px; margin: 0 auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 32px rgba(0,0,0,.10); overflow: hidden; }
-.hd { background: linear-gradient(120deg, #0f0c29, #302b63, #24243e); padding: 22px 28px; display: flex; align-items: center; gap: 16px; }
-.hd-icon { width: 46px; height: 46px; background: rgba(255,255,255,.12); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
-.hd-title { color: #fff; font-size: 17px; font-weight: 600; }
-.hd-sub { color: rgba(255,255,255,.45); font-size: 12px; margin-top: 3px; }
-.body { padding: 24px 28px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Player de Partitura</title>
+    <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
 
-.load-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: #302b63; color: #fff; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .15s; margin-bottom: 6px; }
-.load-btn:hover { background: #1a1740; }
-.load-btn input { display: none; }
-.fname { font-size: 12px; color: #94a3b8; margin-bottom: 12px; min-height: 16px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-.status { font-size: 12px; font-family: monospace; padding: 7px 12px; border-radius: 7px; margin-bottom: 14px; background: #f8fafc; border-left: 3px solid #e2e8f0; color: #94a3b8; min-height: 34px; line-height: 1.5; }
-.status.info { background: #eef2ff; border-color: #6366f1; color: #4338ca; }
-.status.ok { background: #f0fdf4; border-color: #22c55e; color: #15803d; }
-.status.err { background: #fef2f2; border-color: #ef4444; color: #b91c1c; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f0f2f5;
+            padding: 28px 16px;
+        }
 
-.controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-.btn { height: 38px; padding: 0 18px; border: none; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; }
-.btn:disabled { opacity: .3; cursor: default; }
-.btn-play { background: #22c55e; color: #fff; }
-.btn-play:not(:disabled):hover { background: #16a34a; }
-.btn-pause { background: #f59e0b; color: #fff; }
-.btn-pause:not(:disabled):hover { background: #d97706; }
-.btn-stop { background: #ef4444; color: #fff; }
-.btn-stop:not(:disabled):hover { background: #dc2626; }
-.btn-export { background: #6366f1; color: #fff; margin-left: auto; }
-.btn-export:not(:disabled):hover { background: #4f46e5; }
+        .card {
+            max-width: 1080px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, .10);
+            overflow: hidden;
+        }
 
-.bpm-wrap,
-.inst-wrap,
-.rev-wrap,
-.met-wrap {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: #f1f5f9;
-  border-radius: 9px;
-  padding: 0 14px;
-  height: 38px;
-}
-.bpm-wrap label,
-.inst-wrap label,
-.rev-wrap label,
-.met-wrap label {
-  font-size: 11px;
-  font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: .6px;
-}
-.bpm-wrap input,
-.rev-wrap input {
-  width: 64px;
-  border: none;
-  background: transparent;
-  font-size: 15px;
-  font-weight: 600;
-  color: #1e293b;
-  text-align: center;
-  font-family: inherit;
-}
-.inst-wrap select {
-  min-width: 180px;
-  border: none;
-  background: transparent;
-  font-size: 14px;
-  font-weight: 600;
-  color: #1e293b;
-  font-family: inherit;
-}
-.met-wrap input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-.bpm-wrap input:focus,
-.rev-wrap input:focus,
-.inst-wrap select:focus { outline: none; }
+        .hd {
+            background: linear-gradient(120deg, #0f0c29, #302b63, #24243e);
+            padding: 22px 28px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
 
-#score { overflow-x: auto; }
-#score svg { max-width: 100%; height: auto; }
-</style>
+        .hd-icon {
+            width: 46px;
+            height: 46px;
+            background: rgba(255, 255, 255, .12);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .hd-title {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .hd-sub {
+            color: rgba(255, 255, 255, .45);
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .body {
+            padding: 24px 28px;
+        }
+
+        .load-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #302b63;
+            color: #fff;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background .15s;
+            margin-bottom: 6px;
+        }
+
+        .load-btn:hover {
+            background: #1a1740;
+        }
+
+        .load-btn input {
+            display: none;
+        }
+
+        .fname {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            min-height: 16px;
+        }
+
+        .status {
+            font-size: 12px;
+            font-family: monospace;
+            padding: 7px 12px;
+            border-radius: 7px;
+            margin-bottom: 14px;
+            background: #f8fafc;
+            border-left: 3px solid #e2e8f0;
+            color: #94a3b8;
+            min-height: 34px;
+            line-height: 1.5;
+        }
+
+        .status.info {
+            background: #eef2ff;
+            border-color: #6366f1;
+            color: #4338ca;
+        }
+
+        .status.ok {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            color: #15803d;
+        }
+
+        .status.err {
+            background: #fef2f2;
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            height: 38px;
+            padding: 0 18px;
+            border: none;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all .15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:disabled {
+            opacity: .3;
+            cursor: default;
+        }
+
+        .btn-play {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .btn-play:not(:disabled):hover {
+            background: #16a34a;
+        }
+
+        .btn-pause {
+            background: #f59e0b;
+            color: #fff;
+        }
+
+        .btn-pause:not(:disabled):hover {
+            background: #d97706;
+        }
+
+        .btn-stop {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-stop:not(:disabled):hover {
+            background: #dc2626;
+        }
+
+        .btn-export {
+            background: #6366f1;
+            color: #fff;
+            margin-left: auto;
+        }
+
+        .btn-export:not(:disabled):hover {
+            background: #4f46e5;
+        }
+
+        .bpm-wrap,
+        .inst-wrap,
+        .rev-wrap,
+        .met-wrap {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: #f1f5f9;
+            border-radius: 9px;
+            padding: 0 14px;
+            height: 38px;
+        }
+
+        .bpm-wrap label,
+        .inst-wrap label,
+        .rev-wrap label,
+        .met-wrap label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+        }
+
+        .bpm-wrap input,
+        .rev-wrap input {
+            width: 64px;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e293b;
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .inst-wrap select {
+            min-width: 180px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            font-family: inherit;
+        }
+
+        .met-wrap input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .bpm-wrap input:focus,
+        .rev-wrap input:focus,
+        .inst-wrap select:focus {
+            outline: none;
+        }
+
+        #score {
+            overflow-x: auto;
+        }
+
+        #score svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="card">
-  <div class="hd">
-    <div class="hd-icon">&#127925;</div>
-    <div>
-      <div class="hd-title">Player de Partitura</div>
-      <div class="hd-sub">MusicXML &mdash; General MIDI</div>
+    <div class="card">
+        <div class="hd">
+            <div class="hd-icon">&#127925;</div>
+            <div>
+                <div class="hd-title">Player de Partitura</div>
+                <div class="hd-sub">MusicXML &mdash; General MIDI</div>
+            </div>
+        </div>
+
+        <div class="body">
+            <label class="load-btn">
+                <span>&#128193; Carregar partitura</span>
+                <input type="file" id="fi" accept=".xml,.musicxml">
+            </label>
+
+            <div class="fname" id="fname">Nenhum arquivo selecionado</div>
+            <div class="status" id="st">Selecione um arquivo .xml ou .musicxml para começar.</div>
+
+            <div class="controls">
+                <button class="btn btn-play" id="bp" disabled>&#9654; Play</button>
+                <button class="btn btn-pause" id="bpa" disabled>&#9646;&#9646; Pause</button>
+                <button class="btn btn-stop" id="bs" disabled>&#9632; Stop</button>
+
+                <div class="bpm-wrap">
+                    <label for="bpm">BPM</label>
+                    <input type="number" id="bpm" value="100" min="20" max="400">
+                </div>
+
+                <div class="met-wrap">
+                    <label for="metCheck">Metrônomo</label>
+                    <input type="checkbox" id="metCheck">
+                </div>
+
+                <div class="inst-wrap">
+                    <label for="instSel">Timbre</label>
+                    <select id="instSel">
+                        <option value="acoustic_grand_piano">Piano normal</option>
+                        <option value="electric_piano_1">Piano elétrico Rhodes</option>
+                        <option value="drawbar_organ">Órgão</option>
+                        <option value="acoustic_guitar_nylon">Violão nylon</option>
+                        <option value="electric_bass_finger">Contrabaixo elétrico</option>
+                        <option value="marimba">Marimba</option>
+                        <option value="flute">Flauta</option>
+                        <option value="oboe">Oboé</option>
+                        <option value="clarinet">Clarineta</option>
+                        <option value="french_horn">Trompa</option>
+                        <option value="string_ensemble_1">Cordas</option>
+                    </select>
+                </div>
+
+                <div class="rev-wrap">
+                    <label for="reverbAmt">Reverber</label>
+                    <input type="number" id="reverbAmt" value="25" min="0" max="100">
+                </div>
+
+                <button class="btn btn-export" id="bx" disabled>&#128203; Copiar HTML</button>
+            </div>
+
+            <div id="score"></div>
+        </div>
     </div>
-  </div>
-
-  <div class="body">
-    <label class="load-btn">
-      <span>&#128193; Carregar partitura</span>
-      <input type="file" id="fi" accept=".xml,.musicxml">
-    </label>
-
-    <div class="fname" id="fname">Nenhum arquivo selecionado</div>
-    <div class="status" id="st">Selecione um arquivo .xml ou .musicxml para começar.</div>
-
-    <div class="controls">
-      <button class="btn btn-play" id="bp" disabled>&#9654; Play</button>
-      <button class="btn btn-pause" id="bpa" disabled>&#9646;&#9646; Pause</button>
-      <button class="btn btn-stop" id="bs" disabled>&#9632; Stop</button>
-
-      <div class="bpm-wrap">
-        <label for="bpm">BPM</label>
-        <input type="number" id="bpm" value="100" min="20" max="400">
-      </div>
-
-      <div class="met-wrap">
-        <label for="metCheck">Metrônomo</label>
-        <input type="checkbox" id="metCheck">
-      </div>
-
-      <div class="inst-wrap">
-        <label for="instSel">Timbre</label>
-        <select id="instSel">
-          <option value="acoustic_grand_piano">Piano normal</option>
-          <option value="electric_piano_1">Piano elétrico Rhodes</option>
-          <option value="drawbar_organ">Órgão</option>
-          <option value="acoustic_guitar_nylon">Violão nylon</option>
-          <option value="electric_bass_finger">Contrabaixo elétrico</option>
-          <option value="marimba">Marimba</option>
-          <option value="flute">Flauta</option>
-          <option value="oboe">Oboé</option>
-          <option value="clarinet">Clarineta</option>
-          <option value="french_horn">Trompa</option>
-          <option value="string_ensemble_1">Cordas</option>
-        </select>
-      </div>
-
-      <div class="rev-wrap">
-        <label for="reverbAmt">Reverber</label>
-        <input type="number" id="reverbAmt" value="25" min="0" max="100">
-      </div>
-
-      <button class="btn btn-export" id="bx" disabled>&#128203; Copiar HTML</button>
-    </div>
-
-    <div id="score"></div>
-  </div>
-</div>
-
-<script>
-(function () {
-  var INSTRUMENTS = {
-    acoustic_grand_piano: 'Piano normal',
-    electric_piano_1: 'Piano elétrico Rhodes',
-    drawbar_organ: 'Órgão',
-    acoustic_guitar_nylon: 'Violão nylon',
-    electric_bass_finger: 'Contrabaixo elétrico',
-    marimba: 'Marimba',
-    flute: 'Flauta',
-    oboe: 'Oboé',
-    clarinet: 'Clarineta',
-    french_horn: 'Trompa',
-    string_ensemble_1: 'Cordas'
-  };
-
-  var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay('score', {
-    backend: 'svg',
-    autoResize: true,
-    drawTitle: true,
-    followCursor: false
-  });
-
-  var inst = null, evs = [], ac = null, sc = [], sat = 0, pat = 0, run = false, rawXml = '';
-  var cursorTimer = null, cursorSteps = [], cursorIndex = 0;
-  var inputGain = null, masterGain = null, dryGain = null, wetGain = null, convolver = null;
-  var playbackEndTimer = null, pieceEnd = 0;
-  var scoreClickTimer = null;
-
-  function setStatus(msg, cls) {
-    var e = document.getElementById('st');
-    e.textContent = msg;
-    e.className = 'status' + (cls ? ' ' + cls : '');
-  }
-
-  function getSelectedInstrument() {
-    return document.getElementById('instSel').value || 'acoustic_grand_piano';
-  }
-
-  function getReverbAmount() {
-    var v = +document.getElementById('reverbAmt').value;
-    return isNaN(v) ? 25 : Math.max(0, Math.min(100, v));
-  }
-
-  function getMetronomeBeatLen() {
-    var bpm = +document.getElementById('bpm').value || 100;
-    var base = 60 / bpm;
-    if (!rawXml) return base;
-    var beatsMatch = rawXml.match(/<beats>(\d+)<\/beats>/);
-    var beatTypeMatch = rawXml.match(/<beat-type>(\d+)<\/beat-type>/);
-    if (!beatsMatch || !beatTypeMatch) return base;
-    var beats = +beatsMatch[1];
-    var beatType = +beatTypeMatch[1];
-    if ((beatType === 8 || beatType === 16) && beats % 3 === 0) {
-      return base * 1.5;
-    }
-    return base;
-  }
-
-  function createImpulseResponse(audioContext, seconds, decay) {
-    var rate = audioContext.sampleRate;
-    var length = rate * seconds;
-    var impulse = audioContext.createBuffer(2, length, rate);
-    for (var c = 0; c < 2; c++) {
-      var ch = impulse.getChannelData(c);
-      for (var i = 0; i < length; i++) {
-        ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
-      }
-    }
-    return impulse;
-  }
-
-  function setupFx() {
-    if (!ac) return;
-    inputGain = ac.createGain();
-    masterGain = ac.createGain();
-    dryGain = ac.createGain();
-    wetGain = ac.createGain();
-    convolver = ac.createConvolver();
-
-    convolver.buffer = createImpulseResponse(ac, 2.8, 3.2);
-
-    inputGain.connect(dryGain);
-    inputGain.connect(convolver);
-    convolver.connect(wetGain);
-
-    dryGain.connect(masterGain);
-    wetGain.connect(masterGain);
-    masterGain.connect(ac.destination);
-
-    masterGain.gain.value = 1.0;
-    updateReverb();
-  }
-
-  function updateReverb() {
-    if (!dryGain || !wetGain) return;
-    var amt = getReverbAmount() / 100;
-    dryGain.gain.value = 1 - (amt * 0.45);
-    wetGain.gain.value = amt * 1.35;
-  }
-
-  async function loadInstrument(programName) {
-    if (!ac || ac.state === 'closed') {
-      ac = new (window.AudioContext || window.webkitAudioContext)();
-      setupFx();
-    }
-    stopScheduled();
-    clearPlaybackEndTimer();
-
-    setStatus('A carregar timbre: ' + (INSTRUMENTS[programName] || programName) + '...', 'info');
-
-    inst = await Soundfont.instrument(ac, programName, {
-      soundfont: 'FluidR3_GM',
-      destination: inputGain,
-      nameToUrl: function (n, sf) {
-        return 'https://gleitz.github.io/midi-js-soundfonts/' + sf + '/' + n + '-mp3.js';
-      }
-    });
-
-    updateReverb();
-    setStatus('Pronto! Clique em Play.', 'ok');
-  }
-
-  function stopScheduled() {
-    sc.forEach(function (n) {
-      try { n.stop(); } catch (_) {}
-    });
-    sc = [];
-  }
-
-  function clearCursorTimer() {
-    if (cursorTimer) {
-      clearTimeout(cursorTimer);
-      cursorTimer = null;
-    }
-  }
-
-  function clearPlaybackEndTimer() {
-    if (playbackEndTimer) {
-      clearTimeout(playbackEndTimer);
-      playbackEndTimer = null;
-    }
-  }
-
-  function resetCursorToStart() {
-    clearCursorTimer();
-    if (!osmd || !osmd.cursor) return;
-    try {
-      osmd.cursor.hide();
-      osmd.cursor.reset();
-      osmd.cursor.show();
-      cursorIndex = 0;
-    } catch (_) {}
-  }
-
-  function extractCursorSteps() {
-    cursorSteps = [];
-    var bpm = +document.getElementById('bpm').value || 100;
-    if (!osmd || !osmd.cursor) return;
-    try {
-      osmd.cursor.reset();
-      var iterator = osmd.cursor.Iterator;
-      while (!iterator.EndReached) {
-        var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
-        var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
-        cursorSteps.push({ t: real * 4 * (60 / bpm) });
-        iterator.moveToNext();
-      }
-      osmd.cursor.reset();
-    } catch (_) {}
-  }
-
-  function moveCursorToTime(offset) {
-    if (!osmd || !osmd.cursor) return;
-    extractCursorSteps();
-    try {
-      osmd.cursor.hide();
-      osmd.cursor.reset();
-      osmd.cursor.show();
-      cursorIndex = 0;
-      while (cursorIndex + 1 < cursorSteps.length && offset >= cursorSteps[cursorIndex + 1].t - 0.01) {
-        osmd.cursor.next();
-        cursorIndex++;
-      }
-    } catch (_) {}
-  }
-
-  function startCursorFollow(offset) {
-    clearCursorTimer();
-    moveCursorToTime(offset);
-
-    function step() {
-      if (!run || !ac || !osmd || !osmd.cursor || !cursorSteps.length) return;
-
-      var current = ac.currentTime - sat;
-      while (cursorIndex + 1 < cursorSteps.length && current >= cursorSteps[cursorIndex + 1].t - 0.01) {
-        try {
-          osmd.cursor.next();
-          cursorIndex++;
-        } catch (_) {
-          break;
-        }
-      }
-
-      cursorTimer = setTimeout(step, 25);
-    }
-
-    step();
-  }
-
-  function finishPlayback() {
-    run = false;
-    pat = 0;
-    stopScheduled();
-    clearCursorTimer();
-    clearPlaybackEndTimer();
-    resetCursorToStart();
-    setStatus('Fim da música. Voltou ao início.', 'ok');
-  }
-
-  function pausePlayback() {
-    if (!run || !ac) return;
-    run = false;
-    pat = Math.max(0, ac.currentTime - sat);
-    stopScheduled();
-    clearCursorTimer();
-    clearPlaybackEndTimer();
-    setStatus('Pausado.');
-  }
-
-  function stopPlayback(showStatus) {
-    run = false;
-    pat = 0;
-    stopScheduled();
-    clearCursorTimer();
-    clearPlaybackEndTimer();
-    resetCursorToStart();
-    if (showStatus !== false) setStatus('Parado.');
-  }
-
-  async function restartFromBeginningAndPlay() {
-    stopPlayback(false);
-    if (!inst || !ac) return;
-    run = true;
-    await scheduleFrom(0);
-    startCursorFollow(0);
-    pat = 0;
-    setStatus('A tocar...', 'ok');
-  }
-
-  function armPlaybackEnd(offset) {
-    clearPlaybackEndTimer();
-    var remaining = Math.max(0, pieceEnd - offset);
-    playbackEndTimer = setTimeout(function () {
-      finishPlayback();
-    }, Math.ceil((remaining + 0.12) * 1000));
-  }
-
-  /* ─── HELPERS DE LIGADURA ───────────────────────────────────────────── */
-
-  function isTieContinuation(note) {
-    var tie = note.NoteTie || note.Tie;
-    if (!tie) return false;
-
-    var startNote = tie.StartNote;
-    if (startNote && startNote !== note) return true;
-    if (tie.Notes && tie.Notes.length > 0 && tie.Notes[0] !== note) return true;
-
-    return false;
-  }
-
-  function getTiedDuration(note, beatLen) {
-    var tie = note.NoteTie || note.Tie;
-    var totalReal = 0;
-
-    if (tie && tie.Notes && tie.Notes.length > 0) {
-      for (var i = 0; i < tie.Notes.length; i++) {
-        totalReal += getRealLength(tie.Notes[i]);
-      }
-    } else {
-      totalReal = getRealLength(note);
-    }
-
-    return totalReal * 4 * beatLen * 0.98;
-  }
-
-  function getRealLength(note) {
-    if (!note || !note.Length) return 0;
-    if (typeof note.Length.realValue !== 'undefined') return note.Length.realValue;
-    if (typeof note.Length.RealValue !== 'undefined') return note.Length.RealValue;
-    return 0;
-  }
-
-  function getMidiPitch(note) {
-    if (typeof note.halfTone !== 'undefined' && note.halfTone !== null) return note.halfTone + 12;
-    if (note.Pitch && typeof note.Pitch.getHalfTone === 'function') return note.Pitch.getHalfTone() + 12;
-    return null;
-  }
-
-  /* ───────────────────────────────────────────────────────────────────── */
-
-  function extractEvents() {
-    evs = [];
-    pieceEnd = 0;
-
-    var bpm = +document.getElementById('bpm').value || 100;
-    var beatLen = 60 / bpm;
-
-    osmd.cursor.reset();
-    var iterator = osmd.cursor.Iterator;
-
-    while (!iterator.EndReached) {
-      var voices = iterator.CurrentVoiceEntries || [];
-      var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
-      var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
-      var tSec = real * 4 * beatLen;
-
-      for (var i = 0; i < voices.length; i++) {
-        var ve = voices[i];
-        if (!ve || !ve.Notes) continue;
-
-        for (var j = 0; j < ve.Notes.length; j++) {
-          var note = ve.Notes[j];
-          if (!note || note.isRest()) continue;
-          if (isTieContinuation(note)) continue;
-
-          var midi = getMidiPitch(note);
-          if (midi === null) continue;
-
-          var dur = getTiedDuration(note, beatLen);
-          evs.push({ t: tSec, midi: midi, dur: dur });
-
-          if (tSec + dur > pieceEnd) pieceEnd = tSec + dur;
-        }
-      }
-
-      iterator.moveToNext();
-    }
-
-    evs.sort(function (a, b) { return a.t - b.t; });
-  }
-
-  function scheduleMetronome(offset) {
-    if (!document.getElementById('metCheck').checked) return;
-
-    var beatLen = getMetronomeBeatLen();
-    var lastBeat = pieceEnd + beatLen;
-    var firstBeat = Math.ceil(offset / beatLen) * beatLen;
-
-    for (var t = firstBeat; t < lastBeat; t += beatLen) {
-      var abs = sat + t;
-      if (abs < ac.currentTime) continue;
-
-      var osc = ac.createOscillator();
-      var g = ac.createGain();
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(1000, abs);
-
-      g.gain.setValueAtTime(0, abs);
-      g.gain.linearRampToValueAtTime(0.1, abs + 0.005);
-      g.gain.linearRampToValueAtTime(0, abs + 0.05);
-
-      osc.connect(g);
-      g.connect(masterGain);
-
-      osc.start(abs);
-      osc.stop(abs + 0.1);
-      sc.push(osc);
-    }
-  }
-
-  async function scheduleFrom(offset) {
-    extractEvents();
-
-    if (!evs.length) {
-      setStatus('Nenhuma nota encontrada.', 'err');
-      return;
-    }
-
-    if (ac.state === 'suspended') await ac.resume();
-
-    updateReverb();
-    stopScheduled();
-    clearPlaybackEndTimer();
-
-    sat = ac.currentTime + 0.1 - offset;
-
-    evs.forEach(function (ev) {
-      if (ev.t < offset - 0.02) return;
-      var abs = sat + ev.t;
-      if (abs < ac.currentTime) return;
-      var n = inst.play(ev.midi, abs, { duration: ev.dur });
-      if (n) sc.push(n);
-    });
-
-    scheduleMetronome(offset);
-    armPlaybackEnd(offset);
-  }
-
-  document.getElementById('fi').onchange = async function (e) {
-    var f = e.target.files[0];
-    if (!f) return;
-
-    document.getElementById('fname').textContent = f.name;
-    setStatus('A carregar partitura...', 'info');
-
-    try {
-      rawXml = await f.text();
-      await osmd.load(rawXml);
-      osmd.render();
-
-      resetCursorToStart();
-      extractCursorSteps();
-
-      if (ac && ac.state !== 'closed') {
-        try { await ac.close(); } catch (_) {}
-      }
-
-      ac = new (window.AudioContext || window.webkitAudioContext)();
-      setupFx();
-      await loadInstrument(getSelectedInstrument());
-
-      sat = 0;
-      pat = 0;
-      run = false;
-      evs = [];
-      sc = [];
-      pieceEnd = 0;
-      clearPlaybackEndTimer();
-
-      setStatus('Pronto!', 'ok');
-
-      ['bp', 'bpa', 'bs', 'bx', 'instSel', 'reverbAmt'].forEach(function (id) {
-        document.getElementById(id).disabled = false;
-      });
-    } catch (err) {
-      setStatus('Erro: ' + err.message, 'err');
-    }
-  };
-
-  document.getElementById('bp').onclick = async function () {
-    if (run || !inst || !ac) return;
-    run = true;
-    await scheduleFrom(pat);
-    startCursorFollow(pat);
-    pat = 0;
-    setStatus('A tocar...', 'ok');
-  };
-
-  document.getElementById('bpa').onclick = function () {
-    pausePlayback();
-  };
-
-  document.getElementById('bs').onclick = function () {
-    stopPlayback(true);
-  };
-
-  document.getElementById('instSel').onchange = async function () {
-    if (!rawXml) return;
-
-    var wasRunning = run;
-    var resumeOffset = 0;
-
-    if (wasRunning && ac) {
-      resumeOffset = Math.max(0, ac.currentTime - sat);
-    } else {
-      resumeOffset = pat || 0;
-    }
-
-    run = false;
-    stopScheduled();
-    clearCursorTimer();
-    clearPlaybackEndTimer();
-
-    try {
-      await loadInstrument(getSelectedInstrument());
-
-      if (wasRunning) {
-        run = true;
-        await scheduleFrom(resumeOffset);
-        startCursorFollow(resumeOffset);
-        pat = 0;
-        setStatus('A tocar...', 'ok');
-      } else {
-        pat = resumeOffset;
-        moveCursorToTime(pat);
-        setStatus('Timbre alterado.', 'ok');
-      }
-    } catch (err) {
-      setStatus('Erro ao trocar timbre: ' + err.message, 'err');
-    }
-  };
-
-  document.getElementById('reverbAmt').oninput = function () {
-    updateReverb();
-  };
-
-  document.getElementById('bpm').onchange = function () {
-    if (!rawXml) return;
-
-    if (run && ac) {
-      var currentOffset = Math.max(0, ac.currentTime - sat);
-      stopScheduled();
-      clearCursorTimer();
-      clearPlaybackEndTimer();
-      scheduleFrom(currentOffset).then(function () {
-        startCursorFollow(currentOffset);
-      });
-    } else {
-      moveCursorToTime(pat || 0);
-    }
-  };
-
-  document.getElementById('score').addEventListener('click', function (ev) {
-    if (!rawXml) return;
-
-    if (scoreClickTimer) clearTimeout(scoreClickTimer);
-
-    var detail = ev.detail;
-
-    scoreClickTimer = setTimeout(async function () {
-      scoreClickTimer = null;
-
-      if (detail >= 3) {
-        await restartFromBeginningAndPlay();
-        return;
-      }
-
-      if (detail === 2) {
-        stopPlayback(true);
-        return;
-      }
-
-      if (run) {
-        pausePlayback();
-      } else if (inst && ac) {
-        run = true;
-        await scheduleFrom(pat);
-        startCursorFollow(pat);
-        pat = 0;
-        setStatus('A tocar...', 'ok');
-      }
-    }, 250);
-  });
-
-  document.getElementById('bx').onclick = async function () {
-    if (!rawXml) return;
-
-    var bpm = document.getElementById('bpm').value || 100;
-    var instNm = getSelectedInstrument();
-    var revAmt = getReverbAmount();
-    var metOn = document.getElementById('metCheck').checked;
-
-    var html = buildExportHtml(rawXml, bpm, instNm, revAmt, metOn);
-    await navigator.clipboard.writeText(html);
-
-    setStatus('HTML copiado!', 'ok');
-
-    var btn = document.getElementById('bx');
-    var old = btn.innerHTML;
-    btn.innerHTML = '✓ Copiado!';
-    setTimeout(function () { btn.innerHTML = old; }, 2000);
-  };
-
-  function encodeBase64Unicode(str) {
-    return btoa(unescape(encodeURIComponent(str)));
-  }
-
-  function extractTitleFromXml(xml) {
-    var m = xml.match(/<(work|movement)-title>([\s\S]*?)<\/\1-title>/i) ||
-            xml.match(/<credit-words[^>]*>([\s\S]*?)<\/credit-words>/i);
-    return m ? m[2].replace(/<[^>]+>/g, '').trim() : '';
-  }
-
-  function buildExportHtml(xml, bpm, instrumentName, reverbAmount, metronomeChecked) {
-    var xmlB64 = encodeBase64Unicode(xml);
-    var safeBpm = String(bpm);
-    var safeInst = instrumentName;
-    var safeRev = String(reverbAmount);
-    var metAttr = metronomeChecked ? 'checked' : '';
-
-    var instOptions = [
-      ['acoustic_grand_piano','Piano normal'],
-      ['electric_piano_1','Piano elétrico Rhodes'],
-      ['drawbar_organ','Órgão'],
-      ['acoustic_guitar_nylon','Violão nylon'],
-      ['electric_bass_finger','Contrabaixo elétrico'],
-      ['marimba','Marimba'],
-      ['flute','Flauta'],
-      ['oboe','Oboé'],
-      ['clarinet','Clarineta'],
-      ['french_horn','Trompa'],
-      ['string_ensemble_1','Cordas']
-    ].map(function (o) {
-      return '<option value="' + o[0] + '"' + (o[0] === instrumentName ? ' selected' : '') + '>' + o[1] + '</option>';
-    }).join('');
-
-    return `<!DOCTYPE html>
+
+    <script>
+        (function () {
+            var INSTRUMENTS = {
+                acoustic_grand_piano: 'Piano normal',
+                electric_piano_1: 'Piano elétrico Rhodes',
+                drawbar_organ: 'Órgão',
+                acoustic_guitar_nylon: 'Violão nylon',
+                electric_bass_finger: 'Contrabaixo elétrico',
+                marimba: 'Marimba',
+                flute: 'Flauta',
+                oboe: 'Oboé',
+                clarinet: 'Clarineta',
+                french_horn: 'Trompa',
+                string_ensemble_1: 'Cordas'
+            };
+
+            var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay('score', {
+                backend: 'svg',
+                autoResize: true,
+                drawTitle: true,
+                followCursor: false
+            });
+
+            var inst = null, evs = [], ac = null, sc = [], sat = 0, pat = 0, run = false, rawXml = '';
+            var cursorTimer = null, cursorSteps = [], cursorIndex = 0;
+            var inputGain = null, masterGain = null, dryGain = null, wetGain = null, convolver = null;
+            var playbackEndTimer = null, pieceEnd = 0;
+            var scoreClickTimer = null;
+
+            function setStatus(msg, cls) {
+                var e = document.getElementById('st');
+                e.textContent = msg;
+                e.className = 'status' + (cls ? ' ' + cls : '');
+            }
+
+            function getSelectedInstrument() {
+                return document.getElementById('instSel').value || 'acoustic_grand_piano';
+            }
+
+            function getReverbAmount() {
+                var v = +document.getElementById('reverbAmt').value;
+                return isNaN(v) ? 25 : Math.max(0, Math.min(100, v));
+            }
+
+            function getMetronomeBeatLen() {
+                var bpm = +document.getElementById('bpm').value || 100;
+                var base = 60 / bpm;
+                if (!rawXml) return base;
+                var beatsMatch = rawXml.match(/<beats>(\d+)<\/beats>/);
+                var beatTypeMatch = rawXml.match(/<beat-type>(\d+)<\/beat-type>/);
+                if (!beatsMatch || !beatTypeMatch) return base;
+                var beats = +beatsMatch[1];
+                var beatType = +beatTypeMatch[1];
+                if ((beatType === 8 || beatType === 16) && beats % 3 === 0) {
+                    return base * 1.5;
+                }
+                return base;
+            }
+
+            function createImpulseResponse(audioContext, seconds, decay) {
+                var rate = audioContext.sampleRate;
+                var length = rate * seconds;
+                var impulse = audioContext.createBuffer(2, length, rate);
+                for (var c = 0; c < 2; c++) {
+                    var ch = impulse.getChannelData(c);
+                    for (var i = 0; i < length; i++) {
+                        ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+                    }
+                }
+                return impulse;
+            }
+
+            function setupFx() {
+                if (!ac) return;
+                inputGain = ac.createGain();
+                masterGain = ac.createGain();
+                dryGain = ac.createGain();
+                wetGain = ac.createGain();
+                convolver = ac.createConvolver();
+
+                convolver.buffer = createImpulseResponse(ac, 2.8, 3.2);
+
+                inputGain.connect(dryGain);
+                inputGain.connect(convolver);
+                convolver.connect(wetGain);
+
+                dryGain.connect(masterGain);
+                wetGain.connect(masterGain);
+                masterGain.connect(ac.destination);
+
+                masterGain.gain.value = 1.0;
+                updateReverb();
+            }
+
+            function updateReverb() {
+                if (!dryGain || !wetGain) return;
+                var amt = getReverbAmount() / 100;
+                dryGain.gain.value = 1 - (amt * 0.45);
+                wetGain.gain.value = amt * 1.35;
+            }
+
+            async function loadInstrument(programName) {
+                if (!ac || ac.state === 'closed') {
+                    ac = new (window.AudioContext || window.webkitAudioContext)();
+                    setupFx();
+                }
+                stopScheduled();
+                clearPlaybackEndTimer();
+
+                setStatus('A carregar timbre: ' + (INSTRUMENTS[programName] || programName) + '...', 'info');
+
+                inst = await Soundfont.instrument(ac, programName, {
+                    soundfont: 'FluidR3_GM',
+                    destination: inputGain,
+                    nameToUrl: function (n, sf) {
+                        return 'https://gleitz.github.io/midi-js-soundfonts/' + sf + '/' + n + '-mp3.js';
+                    }
+                });
+
+                updateReverb();
+                setStatus('Pronto! Clique em Play.', 'ok');
+            }
+
+            function stopScheduled() {
+                sc.forEach(function (n) {
+                    try { n.stop(); } catch (_) { }
+                });
+                sc = [];
+            }
+
+            function clearCursorTimer() {
+                if (cursorTimer) {
+                    clearTimeout(cursorTimer);
+                    cursorTimer = null;
+                }
+            }
+
+            function clearPlaybackEndTimer() {
+                if (playbackEndTimer) {
+                    clearTimeout(playbackEndTimer);
+                    playbackEndTimer = null;
+                }
+            }
+
+            function resetCursorToStart() {
+                clearCursorTimer();
+                if (!osmd || !osmd.cursor) return;
+                try {
+                    osmd.cursor.hide();
+                    osmd.cursor.reset();
+                    osmd.cursor.show();
+                    cursorIndex = 0;
+                } catch (_) { }
+            }
+
+            function extractCursorSteps() {
+                cursorSteps = [];
+                var bpm = +document.getElementById('bpm').value || 100;
+                if (!osmd || !osmd.cursor) return;
+                try {
+                    osmd.cursor.reset();
+                    var iterator = osmd.cursor.Iterator;
+                    while (!iterator.EndReached) {
+                        var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
+                        var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
+                        cursorSteps.push({ t: real * 4 * (60 / bpm) });
+                        iterator.moveToNext();
+                    }
+                    osmd.cursor.reset();
+                } catch (_) { }
+            }
+
+            function moveCursorToTime(offset) {
+                if (!osmd || !osmd.cursor) return;
+                extractCursorSteps();
+                try {
+                    osmd.cursor.hide();
+                    osmd.cursor.reset();
+                    osmd.cursor.show();
+                    cursorIndex = 0;
+                    while (cursorIndex + 1 < cursorSteps.length && offset >= cursorSteps[cursorIndex + 1].t - 0.01) {
+                        osmd.cursor.next();
+                        cursorIndex++;
+                    }
+                } catch (_) { }
+            }
+
+            function startCursorFollow(offset) {
+                clearCursorTimer();
+                moveCursorToTime(offset);
+
+                function step() {
+                    if (!run || !ac || !osmd || !osmd.cursor || !cursorSteps.length) return;
+
+                    var current = ac.currentTime - sat;
+                    while (cursorIndex + 1 < cursorSteps.length && current >= cursorSteps[cursorIndex + 1].t - 0.01) {
+                        try {
+                            osmd.cursor.next();
+                            cursorIndex++;
+                        } catch (_) {
+                            break;
+                        }
+                    }
+
+                    cursorTimer = setTimeout(step, 25);
+                }
+
+                step();
+            }
+
+            function finishPlayback() {
+                run = false;
+                pat = 0;
+                stopScheduled();
+                clearCursorTimer();
+                clearPlaybackEndTimer();
+                resetCursorToStart();
+                setStatus('Fim da música. Voltou ao início.', 'ok');
+            }
+
+            function pausePlayback() {
+                if (!run || !ac) return;
+                run = false;
+                pat = Math.max(0, ac.currentTime - sat);
+                stopScheduled();
+                clearCursorTimer();
+                clearPlaybackEndTimer();
+                setStatus('Pausado.');
+            }
+
+            function stopPlayback(showStatus) {
+                run = false;
+                pat = 0;
+                stopScheduled();
+                clearCursorTimer();
+                clearPlaybackEndTimer();
+                resetCursorToStart();
+                if (showStatus !== false) setStatus('Parado.');
+            }
+
+            async function restartFromBeginningAndPlay() {
+                stopPlayback(false);
+                if (!inst || !ac) return;
+                run = true;
+                await scheduleFrom(0);
+                startCursorFollow(0);
+                pat = 0;
+                setStatus('A tocar...', 'ok');
+            }
+
+            function armPlaybackEnd(offset) {
+                clearPlaybackEndTimer();
+                var remaining = Math.max(0, pieceEnd - offset);
+                playbackEndTimer = setTimeout(function () {
+                    finishPlayback();
+                }, Math.ceil((remaining + 0.12) * 1000));
+            }
+
+            /* ─── HELPERS DE LIGADURA ───────────────────────────────────────────── */
+
+            function isTieContinuation(note) {
+                var tie = note.NoteTie || note.Tie;
+                if (!tie) return false;
+
+                var startNote = tie.StartNote;
+                if (startNote && startNote !== note) return true;
+                if (tie.Notes && tie.Notes.length > 0 && tie.Notes[0] !== note) return true;
+
+                return false;
+            }
+
+            function getTiedDuration(note, beatLen) {
+                var tie = note.NoteTie || note.Tie;
+                var totalReal = 0;
+
+                if (tie && tie.Notes && tie.Notes.length > 0) {
+                    for (var i = 0; i < tie.Notes.length; i++) {
+                        totalReal += getRealLength(tie.Notes[i]);
+                    }
+                } else {
+                    totalReal = getRealLength(note);
+                }
+
+                return totalReal * 4 * beatLen * 0.98;
+            }
+
+            function getRealLength(note) {
+                if (!note || !note.Length) return 0;
+                if (typeof note.Length.realValue !== 'undefined') return note.Length.realValue;
+                if (typeof note.Length.RealValue !== 'undefined') return note.Length.RealValue;
+                return 0;
+            }
+
+            function getMidiPitch(note) {
+                if (typeof note.halfTone !== 'undefined' && note.halfTone !== null) return note.halfTone + 12;
+                if (note.Pitch && typeof note.Pitch.getHalfTone === 'function') return note.Pitch.getHalfTone() + 12;
+                return null;
+            }
+
+            /* ───────────────────────────────────────────────────────────────────── */
+
+            function extractEvents() {
+                evs = [];
+                pieceEnd = 0;
+
+                var bpm = +document.getElementById('bpm').value || 100;
+                var beatLen = 60 / bpm;
+
+                osmd.cursor.reset();
+                var iterator = osmd.cursor.Iterator;
+
+                while (!iterator.EndReached) {
+                    var voices = iterator.CurrentVoiceEntries || [];
+                    var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
+                    var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
+                    var tSec = real * 4 * beatLen;
+
+                    for (var i = 0; i < voices.length; i++) {
+                        var ve = voices[i];
+                        if (!ve || !ve.Notes) continue;
+
+                        for (var j = 0; j < ve.Notes.length; j++) {
+                            var note = ve.Notes[j];
+                            if (!note || note.isRest()) continue;
+                            if (isTieContinuation(note)) continue;
+
+                            var midi = getMidiPitch(note);
+                            if (midi === null) continue;
+
+                            var dur = getTiedDuration(note, beatLen);
+                            evs.push({ t: tSec, midi: midi, dur: dur });
+
+                            if (tSec + dur > pieceEnd) pieceEnd = tSec + dur;
+                        }
+                    }
+
+                    iterator.moveToNext();
+                }
+
+                evs.sort(function (a, b) { return a.t - b.t; });
+            }
+
+            function scheduleMetronome(offset) {
+                if (!document.getElementById('metCheck').checked) return;
+
+                var beatLen = getMetronomeBeatLen();
+                var lastBeat = pieceEnd + beatLen;
+                var firstBeat = Math.ceil(offset / beatLen) * beatLen;
+
+                for (var t = firstBeat; t < lastBeat; t += beatLen) {
+                    var abs = sat + t;
+                    if (abs < ac.currentTime) continue;
+
+                    var osc = ac.createOscillator();
+                    var g = ac.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(1000, abs);
+
+                    g.gain.setValueAtTime(0, abs);
+                    g.gain.linearRampToValueAtTime(0.1, abs + 0.005);
+                    g.gain.linearRampToValueAtTime(0, abs + 0.05);
+
+                    osc.connect(g);
+                    g.connect(masterGain);
+
+                    osc.start(abs);
+                    osc.stop(abs + 0.1);
+                    sc.push(osc);
+                }
+            }
+
+            async function scheduleFrom(offset) {
+                extractEvents();
+
+                if (!evs.length) {
+                    setStatus('Nenhuma nota encontrada.', 'err');
+                    return;
+                }
+
+                if (ac.state === 'suspended') await ac.resume();
+
+                updateReverb();
+                stopScheduled();
+                clearPlaybackEndTimer();
+
+                sat = ac.currentTime + 0.1 - offset;
+
+                evs.forEach(function (ev) {
+                    if (ev.t < offset - 0.02) return;
+                    var abs = sat + ev.t;
+                    if (abs < ac.currentTime) return;
+                    var n = inst.play(ev.midi, abs, { duration: ev.dur });
+                    if (n) sc.push(n);
+                });
+
+                scheduleMetronome(offset);
+                armPlaybackEnd(offset);
+            }
+
+            document.getElementById('fi').onchange = async function (e) {
+                var f = e.target.files[0];
+                if (!f) return;
+
+                document.getElementById('fname').textContent = f.name;
+                setStatus('A carregar partitura...', 'info');
+
+                try {
+                    rawXml = await f.text();
+                    await osmd.load(rawXml);
+                    osmd.render();
+
+                    resetCursorToStart();
+                    extractCursorSteps();
+
+                    if (ac && ac.state !== 'closed') {
+                        try { await ac.close(); } catch (_) { }
+                    }
+
+                    ac = new (window.AudioContext || window.webkitAudioContext)();
+                    setupFx();
+                    await loadInstrument(getSelectedInstrument());
+
+                    sat = 0;
+                    pat = 0;
+                    run = false;
+                    evs = [];
+                    sc = [];
+                    pieceEnd = 0;
+                    clearPlaybackEndTimer();
+
+                    setStatus('Pronto!', 'ok');
+
+                    ['bp', 'bpa', 'bs', 'bx', 'instSel', 'reverbAmt'].forEach(function (id) {
+                        document.getElementById(id).disabled = false;
+                    });
+                } catch (err) {
+                    setStatus('Erro: ' + err.message, 'err');
+                }
+            };
+
+            document.getElementById('bp').onclick = async function () {
+                if (run || !inst || !ac) return;
+                run = true;
+                await scheduleFrom(pat);
+                startCursorFollow(pat);
+                pat = 0;
+                setStatus('A tocar...', 'ok');
+            };
+
+            document.getElementById('bpa').onclick = function () {
+                pausePlayback();
+            };
+
+            document.getElementById('bs').onclick = function () {
+                stopPlayback(true);
+            };
+
+            document.getElementById('instSel').onchange = async function () {
+                if (!rawXml) return;
+
+                var wasRunning = run;
+                var resumeOffset = 0;
+
+                if (wasRunning && ac) {
+                    resumeOffset = Math.max(0, ac.currentTime - sat);
+                } else {
+                    resumeOffset = pat || 0;
+                }
+
+                run = false;
+                stopScheduled();
+                clearCursorTimer();
+                clearPlaybackEndTimer();
+
+                try {
+                    await loadInstrument(getSelectedInstrument());
+
+                    if (wasRunning) {
+                        run = true;
+                        await scheduleFrom(resumeOffset);
+                        startCursorFollow(resumeOffset);
+                        pat = 0;
+                        setStatus('A tocar...', 'ok');
+                    } else {
+                        pat = resumeOffset;
+                        moveCursorToTime(pat);
+                        setStatus('Timbre alterado.', 'ok');
+                    }
+                } catch (err) {
+                    setStatus('Erro ao trocar timbre: ' + err.message, 'err');
+                }
+            };
+
+            document.getElementById('reverbAmt').oninput = function () {
+                updateReverb();
+            };
+
+            document.getElementById('bpm').onchange = function () {
+                if (!rawXml) return;
+
+                if (run && ac) {
+                    var currentOffset = Math.max(0, ac.currentTime - sat);
+                    stopScheduled();
+                    clearCursorTimer();
+                    clearPlaybackEndTimer();
+                    scheduleFrom(currentOffset).then(function () {
+                        startCursorFollow(currentOffset);
+                    });
+                } else {
+                    moveCursorToTime(pat || 0);
+                }
+            };
+
+            document.getElementById('score').addEventListener('click', function (ev) {
+                if (!rawXml) return;
+
+                if (scoreClickTimer) clearTimeout(scoreClickTimer);
+
+                var detail = ev.detail;
+
+                scoreClickTimer = setTimeout(async function () {
+                    scoreClickTimer = null;
+
+                    if (detail >= 3) {
+                        await restartFromBeginningAndPlay();
+                        return;
+                    }
+
+                    if (detail === 2) {
+                        stopPlayback(true);
+                        return;
+                    }
+
+                    if (run) {
+                        pausePlayback();
+                    } else if (inst && ac) {
+                        run = true;
+                        await scheduleFrom(pat);
+                        startCursorFollow(pat);
+                        pat = 0;
+                        setStatus('A tocar...', 'ok');
+                    }
+                }, 250);
+            });
+
+            document.getElementById('bx').onclick = async function () {
+                if (!rawXml) return;
+
+                var bpm = document.getElementById('bpm').value || 100;
+                var instNm = getSelectedInstrument();
+                var revAmt = getReverbAmount();
+                var metOn = document.getElementById('metCheck').checked;
+
+                var html = buildExportHtml(rawXml, bpm, instNm, revAmt, metOn);
+                html = "<!-- USUÁRIO!!! ESTE É O INÍCIO DO CÓDIGO DA PARTITURA -->\n" + html + "\n<!-- USUÁRIO!!! ESTE É O FIM DO CÓDIGO DA PARTITURA -->";
+                await navigator.clipboard.writeText(html);
+
+                setStatus('HTML copiado!', 'ok');
+
+                var btn = document.getElementById('bx');
+                var old = btn.innerHTML;
+                btn.innerHTML = '✓ Copiado!';
+                setTimeout(function () { btn.innerHTML = old; }, 2000);
+            };
+
+            function encodeBase64Unicode(str) {
+                return btoa(unescape(encodeURIComponent(str)));
+            }
+
+            function extractTitleFromXml(xml) {
+                var m = xml.match(/<(work|movement)-title>([\s\S]*?)<\/\1-title>/i) ||
+                    xml.match(/<credit-words[^>]*>([\s\S]*?)<\/credit-words>/i);
+                return m ? m[2].replace(/<[^>]+>/g, '').trim() : '';
+            }
+
+            function buildExportHtml(xml, bpm, instrumentName, reverbAmount, metronomeChecked) {
+                var xmlB64 = encodeBase64Unicode(xml);
+                var safeBpm = String(bpm);
+                var safeInst = instrumentName;
+                var safeRev = String(reverbAmount);
+                var metAttr = metronomeChecked ? 'checked' : '';
+
+                var instOptions = [
+                    ['acoustic_grand_piano', 'Piano normal'],
+                    ['electric_piano_1', 'Piano elétrico Rhodes'],
+                    ['drawbar_organ', 'Órgão'],
+                    ['acoustic_guitar_nylon', 'Violão nylon'],
+                    ['electric_bass_finger', 'Contrabaixo elétrico'],
+                    ['marimba', 'Marimba'],
+                    ['flute', 'Flauta'],
+                    ['oboe', 'Oboé'],
+                    ['clarinet', 'Clarineta'],
+                    ['french_horn', 'Trompa'],
+                    ['string_ensemble_1', 'Cordas']
+                ].map(function (o) {
+                    return '<option value="' + o[0] + '"' + (o[0] === instrumentName ? ' selected' : '') + '>' + o[1] + '</option>';
+                }).join('');
+
+                return `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -1169,8 +1339,9 @@ body{font-family:sans-serif;margin:10px;}
 <\/script>
 </body>
 </html>`;
-  }
-})();
-</script>
+            }
+        })();
+    </script>
 </body>
+
 </html>
