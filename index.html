@@ -194,6 +194,15 @@
             background: #4f46e5;
         }
 
+        .btn-download {
+            background: #0ea5e9;
+            color: #fff;
+        }
+
+        .btn-download:not(:disabled):hover {
+            background: #0284c7;
+        }
+
         .bpm-wrap,
         .inst-wrap,
         .rev-wrap,
@@ -399,8 +408,8 @@
         <div class="hd">
             <div class="hd-icon">&#127925;</div>
             <div>
-                <div class="hd-title">Player de Partitura</div>
-                <div class="hd-sub">MusicXML &mdash; General MIDI</div>
+                <div class="hd-title">Visualizador de Tocador de Partituras</div>
+                <div class="hd-sub">MusicXML &mdash; Moodle/Web</div>
             </div>
         </div>
 
@@ -469,6 +478,7 @@
                 </div>
 
                 <button class="btn btn-export" id="bx" disabled>&#128203; Copiar HTML</button>
+                <button class="btn btn-download" id="bdl" disabled>&#11015; Baixar HTML</button>
             </div>
 
             <div id="score"></div>
@@ -486,12 +496,14 @@
             <div class="step">
                 <span class="step-num">2</span>
                 <b>Carregar & Ajustar</b>
-                Use o botão azul acima para carregar o arquivo. Ajuste o BPM, Timbre e Oitava conforme necessário.
+                Use o botão azul acima para carregar o arquivo. Ajuste Título, Andamento (BPM), Timbre e Oitava conforme
+                desejado.
             </div>
             <div class="step">
                 <span class="step-num">3</span>
                 <b>Copiar HTML</b>
-                Clique em "Copiar HTML". O código do player interativo será salvo na sua área de transferência.
+                Clique em "Copiar HTML". O código do player interativo será salvo na sua área de transferência (a
+                "memória" do seu computador).
             </div>
             <div class="step">
                 <span class="step-num">4</span>
@@ -990,7 +1002,7 @@
 
                     setStatus('Pronto!', 'ok');
 
-                    ['bp', 'bpa', 'bs', 'bx', 'instSel', 'reverbAmt', 'btnApplyMeta'].forEach(function (id) {
+                    ['bp', 'bpa', 'bs', 'bx', 'bdl', 'instSel', 'reverbAmt', 'btnApplyMeta'].forEach(function (id) {
                         document.getElementById(id).disabled = false;
                     });
                 } catch (err) {
@@ -1147,6 +1159,39 @@
                 var old = btn.innerHTML;
                 btn.innerHTML = '✓ Copiado!';
                 setTimeout(function () { btn.innerHTML = old; }, 2000);
+            };
+
+            document.getElementById('bdl').onclick = async function () {
+                if (!rawXml) return;
+
+                var bpm = document.getElementById('bpm').value || 100;
+                var instNm = getSelectedInstrument();
+                var revAmt = getReverbAmount();
+                var metOn = document.getElementById('metCheck').checked;
+                var octShift = document.getElementById('octSel').value;
+
+                var html = buildExportHtml(rawXml, bpm, instNm, revAmt, metOn, octShift);
+
+                /* sanitização do título para nome de arquivo */
+                var rawTitle = (document.getElementById('metaTitle').value ||
+                    extractTitleFromXml(rawXml) || 'partitura').trim();
+                var fileName = rawTitle
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')  /* remove acentos */
+                    .replace(/[^a-zA-Z0-9 _\-]/g, '')                  /* remove especiais */
+                    .trim().replace(/\s+/g, '_') || 'partitura';
+                fileName += '.html';
+
+                var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+
+                setStatus('Arquivo salvo: ' + fileName, 'ok');
             };
 
             function encodeBase64Unicode(str) {
