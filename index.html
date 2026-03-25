@@ -477,6 +477,25 @@
                     </select>
                 </div>
 
+                <div class="inst-wrap">
+                    <label for="transSel">Transp.</label>
+                    <select id="transSel">
+                        <option value="6">+6 st</option>
+                        <option value="5">+5 st</option>
+                        <option value="4">+4 st</option>
+                        <option value="3">+3 st</option>
+                        <option value="2">+2 st</option>
+                        <option value="1">+1 st</option>
+                        <option value="0" selected>Original</option>
+                        <option value="-1">&minus;1 st</option>
+                        <option value="-2">&minus;2 st</option>
+                        <option value="-3">&minus;3 st</option>
+                        <option value="-4">&minus;4 st</option>
+                        <option value="-5">&minus;5 st</option>
+                        <option value="-6">&minus;6 st</option>
+                    </select>
+                </div>
+
                 <button class="btn btn-export" id="bx" disabled>&#128203; Copiar HTML</button>
                 <button class="btn btn-download" id="bdl" disabled>&#11015; Baixar HTML</button>
             </div>
@@ -567,6 +586,10 @@
 
             function getOctaveShift() {
                 return parseInt(document.getElementById('octSel').value, 10) || 0;
+            }
+
+            function getTransposeShift() {
+                return parseInt(document.getElementById('transSel').value, 10) || 0;
             }
 
             function extractTempoFromXml(xml) {
@@ -947,7 +970,7 @@
 
                 sat = ac.currentTime + 0.1 - offset;
 
-                var octShift = getOctaveShift();
+                var octShift = getOctaveShift() + getTransposeShift();
                 evs.forEach(function (ev) {
                     if (ev.t < offset - 0.02) return;
                     var abs = sat + ev.t;
@@ -1148,8 +1171,9 @@
                 var revAmt = getReverbAmount();
                 var metOn = document.getElementById('metCheck').checked;
                 var octShift = document.getElementById('octSel').value;
+                var transpShift = document.getElementById('transSel').value;
 
-                var html = buildExportHtml(rawXml, bpm, instNm, revAmt, metOn, octShift);
+                var html = buildExportHtml(rawXml, bpm, instNm, revAmt, metOn, octShift, transpShift);
                 html = "<!-- ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO USUÁRIO!!! ESTE É O INÍCIO DO CÓDIGO DA PARTITURA. SE DESEJAR EXCLUIR A PARTITURA, APAGUE TUDO ATÉ A INDICAÇÃO DE FIM DO CÓDIGO DA PARTITURA -->\n" + html + "\n<!-- ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO USUÁRIO!!! ESTE É O FIM DO CÓDIGO DA PARTITURA -->";
                 await navigator.clipboard.writeText(html);
 
@@ -1169,8 +1193,9 @@
                 var revAmt = getReverbAmount();
                 var metOn = document.getElementById('metCheck').checked;
                 var octShift = document.getElementById('octSel').value;
+                var transpShift = document.getElementById('transSel').value;
 
-                var html = buildExportHtml(rawXml, bpm, instNm, revAmt, metOn, octShift);
+                var html = buildExportHtml(rawXml, bpm, instNm, revAmt, metOn, octShift, transpShift);
 
                 /* sanitização do título para nome de arquivo */
                 var rawTitle = (document.getElementById('metaTitle').value ||
@@ -1204,13 +1229,14 @@
                 return m ? m[2].replace(/<[^>]+>/g, '').trim() : '';
             }
 
-            function buildExportHtml(xml, bpm, instrumentName, reverbAmount, metronomeChecked, octaveShift) {
+            function buildExportHtml(xml, bpm, instrumentName, reverbAmount, metronomeChecked, octaveShift, transposeShift) {
                 var xmlB64 = encodeBase64Unicode(xml);
                 var safeBpm = String(bpm);
                 var safeInst = instrumentName;
                 var safeRev = String(reverbAmount);
                 var metAttr = metronomeChecked ? 'checked' : '';
                 var safeOct = String(parseInt(octaveShift, 10) || 0);
+                var safeTransp = String(parseInt(transposeShift, 10) || 0);
 
                 var instOptions = [
                     ['acoustic_grand_piano', 'Piano normal'],
@@ -1249,6 +1275,7 @@ body{font-family:sans-serif;margin:10px;}
   <label>&nbsp;Reverb: <input type="number" id="rev" value="${safeRev}" style="width:50px"></label>
   <label>&nbsp;Timbre: <select id="inst">${instOptions}<\/select></label>
   <label>&nbsp;Oitava: <select id="oct"><option value="0"${safeOct === '0' ? ' selected' : ''}>In loco<\/option><option value="12"${safeOct === '12' ? ' selected' : ''}>8va &#9651;<\/option><option value="-12"${safeOct === '-12' ? ' selected' : ''}>8vb &#9661;<\/option><\/select></label>
+  <label>&nbsp;Transp.: <select id="trans"><option value="6"${safeTransp==='6'?' selected':''}>+6 st<\/option><option value="5"${safeTransp==='5'?' selected':''}>+5 st<\/option><option value="4"${safeTransp==='4'?' selected':''}>+4 st<\/option><option value="3"${safeTransp==='3'?' selected':''}>+3 st<\/option><option value="2"${safeTransp==='2'?' selected':''}>+2 st<\/option><option value="1"${safeTransp==='1'?' selected':''}>+1 st<\/option><option value="0"${safeTransp==='0'?' selected':''}>Original<\/option><option value="-1"${safeTransp==='-1'?' selected':''}>&#8722;1 st<\/option><option value="-2"${safeTransp==='-2'?' selected':''}>&#8722;2 st<\/option><option value="-3"${safeTransp==='-3'?' selected':''}>&#8722;3 st<\/option><option value="-4"${safeTransp==='-4'?' selected':''}>&#8722;4 st<\/option><option value="-5"${safeTransp==='-5'?' selected':''}>&#8722;5 st<\/option><option value="-6"${safeTransp==='-6'?' selected':''}>&#8722;6 st<\/option><\/select></label>
   <span style="font-size:0.9375rem;">&nbsp; 💡Clique simples = ▶️/⏸️ • duplo clique = ⏹️ • triplo clique = ⏮️</span></div>
 <div id="score"></div>
 
@@ -1520,6 +1547,10 @@ body{font-family:sans-serif;margin:10px;}
     return parseInt(document.getElementById('oct').value, 10) || 0;
   }
 
+  function getTransShift(){
+    return parseInt(document.getElementById('trans').value, 10) || 0;
+  }
+
   async function ensureInst(){
     var sel = document.getElementById('inst').value;
 
@@ -1551,7 +1582,7 @@ body{font-family:sans-serif;margin:10px;}
 
     sat = ac.currentTime + 0.1 - off;
 
-    var octShift = getOctShift();
+    var octShift = getOctShift() + getTransShift();
     evs.forEach(function(e){
       if(e.t < off - 0.02) return;
       var when = sat + e.t;
