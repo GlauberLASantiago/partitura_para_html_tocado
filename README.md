@@ -1,150 +1,40 @@
-# Player de Partitura
+# ViToPaMoS - Visualizador e Tocador de Partituras para Moodle e Sites
 
-Aplicação web para carregar arquivos **MusicXML**, exibir a partitura na tela e reproduzir as notas com diferentes timbres usando **General MIDI**. O projeto também permite exportar um HTML incorporável com a partitura já embutida, pronto para compartilhamento ou publicação.
+**ViToPaMoS** é uma ferramenta pedagógica e profissional desenvolvida para transformar arquivos **MusicXML** em players de partitura interativos e responsivos, ideais para serem embutidos no **Moodle** ou em sites institucionais.
 
-## Visão geral
+## 🎵 O que o ViToPaMoS faz?
 
-O **Player de Partitura** foi desenvolvido para facilitar a visualização e a reprodução de partituras em formato **.xml** e **.musicxml** diretamente no navegador.
+- **Visualização de Partituras**: Renderização de alta fidelidade usando a biblioteca **OpenSheetMusicDisplay (OSMD)**.
+- **Reprodução de Áudio MIDI**: Toca a música diretamente no navegador com timbres de piano e outros instrumentos de alta qualidade via **Soundfont-player**.
+- **Controle Total**: Ajuste de **BPM**, **Transposição**, **Oitava**, **Reverb** e **Metrônomo**.
+- **Mixagem de Instrumentos**: Painel para controlar **Mute** e **Solo** de cada parte/instrumento da partitura em tempo real.
+- **Edição de Metadados**: Permite alterar o título, compositor e direitos autorais da peça antes da exportação.
+- **Exportação "Moodle-Safe"**: Gera um código HTML único, autodependente (usando CDNs confiáveis) e com CSS defensivo para garantir que o visual não seja corrompido pelos estilos globais do Moodle.
+- **Tema Híbrido**: Interface principal com modos Diurno e Noturno (ajustado para conforto visual).
 
-A ferramenta permite:
+## 🚀 Como usar
 
-- carregar uma partitura local
-- renderizar a notação musical em SVG
-- reproduzir as notas com diferentes timbres
-- controlar andamento em BPM
-- pausar e retomar a execução
-- copiar um HTML pronto com a partitura incorporada
+1.  **Carregar**: Clique em "Carregar Partitura (MusicXML)" e escolha seu arquivo `.xml`, `.musicxml` ou `.mxl`.
+2.  **Configurar**: Ajuste o andamento (BPM), instrumentos e outros parâmetros no painel superior.
+3.  **Tocar**: Use os botões de controle ou atalhos:
+    - **Clique**: Play / Pause.
+    - **Duplo Clique**: Parar.
+    - **Triplo Clique**: Reiniciar do início.
+4.  **Personalizar**: Abra o painel "Editar Metadados" para ajustar as informações da peça.
+5.  **Exportar**: 
+    - Use **"Copiar HTML para o Moodle"** para obter o código e colar diretamente no editor de páginas do Moodle (visão de código).
+    - Use **"Baixar HTML do Player"** para salvar um arquivo `.html` independente com a partitura embutida.
 
-É uma solução útil para fins didáticos, demonstrações musicais, estudo de arranjos e publicação de exemplos musicais em páginas web.
+## 🛠 Tecnologias utilizadas
 
-## Funcionalidades
+- **OSMD (OpenSheetMusicDisplay)**: Renderização vetorial de partituras.
+- **Soundfont-player**: Motor de som MIDI baseado em samples.
+- **Vanilla JS & CSS**: Performance otimizada sem frameworks pesados.
+- **Lucide Icons (SVG)**: Ícones profissionais integrados.
 
-- Upload de arquivos `.xml` e `.musicxml`
-- Renderização visual da partitura no navegador
-- Reprodução de notas com áudio sintetizado
-- Controle de **Play**, **Pause** e **Stop**
-- Ajuste manual de **BPM**
-- Seleção de diferentes **timbres instrumentais**
-- Exportação de um **HTML completo** com a partitura embutida
-- Cópia automática do HTML para a área de transferência
-- Interface moderna e responsiva
+## 👨‍🏫 Créditos
 
-## Timbres disponíveis
+Desenvolvido pelo professor **Glauber Santiago** (DAC/UFSCar).
 
-- Piano normal
-- Piano elétrico Rhodes
-- Órgão
-- Violão nylon
-- Contrabaixo elétrico
-- Xilofone
-- Flauta
-- Oboé
-- Clarineta
-- Trompa
-- Cordas
-
-## Tecnologias utilizadas
-
-- HTML5
-- CSS3
-- JavaScript puro (Vanilla JS)
-- [OpenSheetMusicDisplay](https://opensheetmusicdisplay.org/)
-- [Soundfont Player](https://github.com/danigb/soundfont-player)
-- General MIDI SoundFonts
-
-## Como funciona
-
-1. O usuário seleciona um arquivo `.xml` ou `.musicxml`.
-2. O conteúdo do arquivo é carregado no navegador.
-3. A biblioteca **OpenSheetMusicDisplay** renderiza a partitura em SVG.
-4. O sistema percorre os eventos musicais da partitura e extrai:
-   - posição temporal
-   - altura MIDI
-   - duração de cada nota
-5. A biblioteca **Soundfont Player** carrega o timbre selecionado.
-6. As notas são agendadas no `AudioContext` para reprodução no tempo correto.
-7. O usuário pode alterar o BPM ou trocar o timbre.
-8. A aplicação também pode gerar um HTML independente contendo:
-   - a partitura embutida em Base64
-   - o player pronto para uso
-   - controles de andamento e timbre
-
-## Estrutura do projeto
-
-O projeto principal está concentrado em um único arquivo:
-
-- `index.html` — interface, estilos e lógica de carregamento, renderização, reprodução e exportação
-
-## Como usar
-
-1. Clone ou baixe o repositório:
-
-```
-git clone <URL_DO_REPOSITORIO>
-```
-
-2. Abra o arquivo `index.html` no navegador.
-
-3. Clique em **Carregar partitura**.
-
-4. Selecione um arquivo `.xml` ou `.musicxml`.
-
-5. Use os controles para:
-   - reproduzir
-   - pausar
-   - parar
-   - ajustar o BPM
-   - trocar o timbre
-
-6. Clique em **Copiar HTML** para gerar uma versão incorporável da partitura.
-
-## Exportação de HTML
-
-Ao usar o botão **Copiar HTML**, a aplicação gera um documento HTML completo com:
-
-- partitura embutida em Base64
-- renderização automática no navegador
-- reprodução por clique
-- duplo clique para parar
-- seletor de andamento
-- seletor de timbre
-
-Esse HTML pode ser colado em outro arquivo, publicado em páginas web ou usado em ambientes educacionais.
-
-## Casos de uso
-
-Este projeto pode ser útil para:
-
-- ensino de leitura musical
-- estudo de partituras
-- demonstrações musicais online
-- materiais didáticos interativos
-- publicação de trechos musicais em sites
-- experimentação com MusicXML no navegador
-
-## Possíveis melhorias
-
-- destaque visual das notas durante a reprodução
-- barra de progresso musical
-- suporte a múltiplas vozes mais detalhado
-- exportação para MIDI
-- suporte offline
-- importação por arrastar e soltar
-- biblioteca ampliada de timbres
-
-## Público-alvo
-
-- professores de música
-- estudantes de música
-- pesquisadores
-- arranjadores
-- músicos
-- desenvolvedores de ferramentas educacionais
-
-## Créditos
-
-Desenvolvido para uso educacional e experimental com foco em visualização e reprodução de partituras musicais no navegador.
-
-## Licença
-
-Este projeto pode ser distribuído sob a licença de sua escolha, como por exemplo a licença MIT.
+---
+*ViToPaMoS — Transformando partituras digitais em ferramentas de ensino acessíveis.*
