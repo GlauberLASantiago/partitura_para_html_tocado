@@ -77,30 +77,32 @@
       <part-name>Oboe</part-name>
       <part-abbreviation>Ob.</part-abbreviation>
       <group>score</group>
-      <score-instrument id="P1-I1">
-        <instrument-name>ARIA Player</instrument-name>
+      <score-instrument id="P1-I3">
+        <instrument-name>SmartMusic SoftSynth 2</instrument-name>
         <instrument-sound>wind.reed.oboe</instrument-sound>
       </score-instrument>
-      <midi-instrument id="P1-I1">
+      <midi-instrument id="P1-I3">
         <midi-channel>1</midi-channel>
+        <midi-bank>15489</midi-bank>
         <midi-program>69</midi-program>
         <volume>80</volume>
-        <pan>-70</pan>
+        <pan>0</pan>
       </midi-instrument>
     </score-part>
     <score-part id="P2">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno.</part-abbreviation>
       <group>score</group>
-      <score-instrument id="P2-I2">
-        <instrument-name>ARIA Player</instrument-name>
+      <score-instrument id="P2-I1">
+        <instrument-name>SmartMusic SoftSynth 2</instrument-name>
         <instrument-sound>keyboard.piano</instrument-sound>
       </score-instrument>
-      <midi-instrument id="P2-I2">
+      <midi-instrument id="P2-I1">
         <midi-channel>2</midi-channel>
+        <midi-bank>15489</midi-bank>
         <midi-program>1</midi-program>
         <volume>80</volume>
-        <pan>-34</pan>
+        <pan>0</pan>
       </midi-instrument>
     </score-part>
   </part-list>
