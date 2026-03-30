@@ -7,6 +7,7 @@
     <title>ViToPaMoS - Visualizador e Tocador de Partituras</title>
     <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
 
@@ -269,6 +270,7 @@
         .inst-wrap,
         .rev-wrap,
         .met-wrap,
+        .zoom-wrap,
         .mps-wrap {
             display: flex;
             align-items: center;
@@ -284,6 +286,7 @@
         .inst-wrap label,
         .rev-wrap label,
         .met-wrap label,
+        .zoom-wrap label,
         .mps-wrap label {
             font-size: 11px;
             font-weight: 600;
@@ -325,8 +328,8 @@
             opacity: .35;
         }
 
-        .bpm-wrap input,
-        .rev-wrap input {
+        .rev-wrap input,
+        .zoom-wrap input {
             width: 64px;
             border: none;
             background: transparent;
@@ -355,6 +358,7 @@
 
         .bpm-wrap input:focus,
         .rev-wrap input:focus,
+        .zoom-wrap input:focus,
         .inst-wrap select:focus {
             outline: none;
         }
@@ -606,11 +610,11 @@
             <label class="load-btn">
                 <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24"><path d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2"></path></svg>
                 <span>Carregar partitura</span>
-                <input type="file" id="fi" accept=".xml,.musicxml">
+                <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
             </label>
 
             <div class="fname" id="fname">Nenhum arquivo selecionado</div>
-            <div class="status" id="st">Selecione um arquivo .xml ou .musicxml para começar.</div>
+            <div class="status" id="st">Selecione um arquivo .xml, .musicxml ou .mxl para começar.</div>
 
             <div class="meta-edit-panel" id="metaPanel">
                 <div class="meta-field">
@@ -652,6 +656,11 @@
                 <div class="rev-wrap">
                     <label for="reverbAmt">Reverber</label>
                     <input type="number" id="reverbAmt" value="25" min="0" max="100">
+                </div>
+
+                <div class="zoom-wrap">
+                    <label for="zoomInp">Zoom %</label>
+                    <input type="number" id="zoomInp" value="100" min="40" max="300" step="5">
                 </div>
 
                 <div class="inst-wrap">
@@ -1408,6 +1417,28 @@
                 armPlaybackEnd(offset);
             }
 
+            async function getXmlFromMxl(file) {
+                try {
+                    var zip = await JSZip.loadAsync(file);
+                    var containerFile = zip.file("META-INF/container.xml");
+                    if (!containerFile) throw new Error("Arquivo container.xml não encontrado no MXL.");
+                    
+                    var containerText = await containerFile.async("text");
+                    var parser = new DOMParser();
+                    var xmlDoc = parser.parseFromString(containerText, "text/xml");
+                    var rootFileTag = xmlDoc.querySelector("rootfile");
+                    if (!rootFileTag) throw new Error("Aponte para o arquivo principal não encontrado no container.xml.");
+                    
+                    var fullPath = rootFileTag.getAttribute("full-path");
+                    var mainXmlFile = zip.file(fullPath);
+                    if (!mainXmlFile) throw new Error("Arquivo principal '" + fullPath + "' não encontrado no pacote MXL.");
+                    
+                    return await mainXmlFile.async("text");
+                } catch (e) {
+                    throw new Error("Erro ao descompactar MXL: " + e.message);
+                }
+            }
+
             document.getElementById('fi').onchange = async function (e) {
                 var f = e.target.files[0];
                 if (!f) return;
@@ -1416,7 +1447,13 @@
                 setStatus('A carregar partitura...', 'info');
 
                 try {
-                    rawXml = await f.text();
+                    var isMxl = f.name.toLowerCase().endsWith('.mxl');
+                    
+                    if (isMxl) {
+                        rawXml = await getXmlFromMxl(f);
+                    } else {
+                        rawXml = await f.text();
+                    }
 
                     var detectedBpm = extractTempoFromXml(rawXml);
                     if (detectedBpm) document.getElementById('bpm').value = detectedBpm;
@@ -1551,6 +1588,13 @@
                 updateReverb();
             };
 
+            document.getElementById('zoomInp').onchange = function () {
+                if (!rawXml) return;
+                var z = +this.value || 100;
+                osmd.Zoom = z / 100;
+                osmd.render();
+            };
+
             document.getElementById('bpm').onchange = function () {
                 if (!rawXml) return;
 
@@ -1609,8 +1653,9 @@
                     var metOn = document.getElementById('metCheck').checked;
                     var octShift = document.getElementById('octSel').value;
                     var transpShift = document.getElementById('transSel').value;
+                    var zoomVal = document.getElementById('zoomInp').value || 100;
 
-                    var html = buildExportHtml(rawXml, bpm, revAmt, metOn, octShift, transpShift);
+                    var html = buildExportHtml(rawXml, bpm, revAmt, metOn, octShift, transpShift, zoomVal);
                     html = "<!-- ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO USUÁRIO!!! ESTE É O INÍCIO DO CÓDIGO DA PARTITURA. SE DESEJAR EXCLUIR A PARTITURA, APAGUE TUDO ATÉ A INDICAÇÃO DE FIM DO CÓDIGO DA PARTITURA -->\n" + html + "\n<!-- ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO ATENÇÃO USUÁRIO!!! ESTE É O FIM DO CÓDIGO DA PARTITURA -->";
 
                     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1661,8 +1706,9 @@
                     var metOn = document.getElementById('metCheck').checked;
                     var octShift = document.getElementById('octSel').value;
                     var transpShift = document.getElementById('transSel').value;
+                    var zoomVal = document.getElementById('zoomInp').value || 100;
 
-                    var html = buildExportHtml(rawXml, bpm, revAmt, metOn, octShift, transpShift);
+                    var html = buildExportHtml(rawXml, bpm, revAmt, metOn, octShift, transpShift, zoomVal);
 
                     /* sanitização do título para nome de arquivo */
                     var rawTitle = (document.getElementById('metaTitle').value ||
@@ -1706,7 +1752,7 @@
                 return { mode: mode, count: count };
             }
 
-            function buildExportHtml(xml, bpm, reverbAmount, metronomeChecked, octaveShift, transposeShift) {
+            function buildExportHtml(xml, bpm, reverbAmount, metronomeChecked, octaveShift, transposeShift, zoomValue) {
                 var xmlB64 = encodeBase64Unicode(xml);
                 var safeBpm = String(bpm);
                 var safePartConfigs = JSON.stringify(partConfigs);
@@ -1714,6 +1760,7 @@
                 var safeRev = String(reverbAmount);
                 var safeOct = String(octaveShift);
                 var safeTransp = String(transposeShift);
+                var safeZoom = String(zoomValue || 100);
                 var mps = getMpsState();
                 var safeMpsCount = String(mps.count);
 
@@ -1743,6 +1790,7 @@ body { background: #f3f4f6; color: #111827; }
   
   <span style="${C}background:#eee;"><span style="${L}">Oitava</span><select id="oct" style="${S}"><option value="0"${safeOct === '0' ? ' selected' : ''}>In loco<\/option><option value="12"${safeOct === '12' ? ' selected' : ''}>8va &#9651;<\/option><option value="-12"${safeOct === '-12' ? ' selected' : ''}>8vb &#9661;<\/option><\/select></span>
   <span style="${C}background:#eee;"><span style="${L}">Transp.</span><select id="trans" style="${S}"><option value="6"${safeTransp === '6' ? ' selected' : ''}>+6 st<\/option><option value="5"${safeTransp === '5' ? ' selected' : ''}>+5 st<\/option><option value="4"${safeTransp === '4' ? ' selected' : ''}>+4 st<\/option><option value="3"${safeTransp === '3' ? ' selected' : ''}>+3 st<\/option><option value="2"${safeTransp === '2' ? ' selected' : ''}>+2 st<\/option><option value="1"${safeTransp === '1' ? ' selected' : ''}>+1 st<\/option><option value="0"${safeTransp === '0' ? ' selected' : ''}>Original<\/option><option value="-1"${safeTransp === '-1' ? ' selected' : ''}>&#8722;1 st<\/option><option value="-2"${safeTransp === '-2' ? ' selected' : ''}>&#8722;2 st<\/option><option value="-3"${safeTransp === '-3' ? ' selected' : ''}>&#8722;3 st<\/option><option value="-4"${safeTransp === '-4' ? ' selected' : ''}>&#8722;4 st<\/option><option value="-5"${safeTransp === '-5' ? ' selected' : ''}>&#8722;5 st<\/option><option value="-6"${safeTransp === '-6' ? ' selected' : ''}>&#8722;6 st<\/option><\/select></span>
+  <span style="${C}background:#eee;"><span style="${L}">Zoom</span><input type="number" id="zoomEx" value="${safeZoom}" style="${I}width:40px;text-align:center;"></span>
   <span style="${C}background:#eee;"><span style="${L}">Layout</span><select id="layoutEx" style="${S}"><option value="auto"${mps.mode === 'auto' ? ' selected' : ''}>Autom&#225;tico<\/option><option value="xml"${mps.mode === 'xml' ? ' selected' : ''}>Do arquivo<\/option><option value="fixed"${mps.mode === 'fixed' ? ' selected' : ''}>Fixar<\/option><\/select><input type="number" id="mpsCountEx" value="${safeMpsCount}" min="1" max="32" style="${I}width:36px;text-align:center;" ${mps.mode !== 'fixed' ? 'disabled' : ''}></span>
   <span style="font-size:12px;color:#6b7280;padding:0 4px;">
     <svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>/<svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>&nbsp;clique &nbsp;&bull;&nbsp; <svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"></rect></svg>&nbsp;duplo &nbsp;&bull;&nbsp; &#9198;&nbsp;triplo &nbsp;&bull;&nbsp; <a href="https://glauberlasantiago.github.io/vitopamos/" target="_blank" style="text-decoration:none;color:#94a3b8;font-size:10px;">Powered by ViToPaMos</a>
@@ -2173,6 +2221,12 @@ body { background: #f3f4f6; color: #111827; }
     osmd.render();
   });
 
+  document.getElementById('zoomEx').addEventListener('change', function(){
+    var z = +this.value || 100;
+    osmd.Zoom = z / 100;
+    osmd.render();
+  });
+
   document.getElementById('mpsCountEx').addEventListener('change', function(){
     if(document.getElementById('layoutEx').value === 'fixed'){
       applyLayout();
@@ -2265,6 +2319,7 @@ body { background: #f3f4f6; color: #111827; }
 
   osmd.load(raw).then(function(){
     applyLayout();
+    osmd.Zoom = (+document.getElementById('zoomEx').value || 100) / 100;
     renderExPartsPanel();
     osmd.render();
     resetCursorToStart();
