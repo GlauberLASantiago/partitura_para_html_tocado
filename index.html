@@ -1013,7 +1013,7 @@
                     if (nl.includes('viol') || nl.includes('strin')) defProg = 'violin';
                     if (nl.includes('bass') || nl.includes('baix')) defProg = 'acoustic_bass';
                     if (nl.includes('gui') || nl.includes('violã')) defProg = 'acoustic_guitar_nylon';
-                    partConfigs.push({ name: name, program: defProg, mute: false, solo: false });
+                    partConfigs.push({ name: name, program: defProg, mute: false, solo: false, vol: 100 });
                 });
                 renderPartsPanel();
                 loadAllInstruments();
@@ -1050,6 +1050,15 @@
                     sel.value = cfg.program;
                     sel.onchange = function () { cfg.program = sel.value; loadAllInstruments(); };
 
+                    var volRange = document.createElement('input');
+                    volRange.type = 'range';
+                    volRange.min = 0;
+                    volRange.max = 100;
+                    volRange.value = cfg.vol || 100;
+                    volRange.style.width = '70px';
+                    volRange.oninput = function () { cfg.vol = +volRange.value; updatePartMix(); };
+
+                    ctrls.appendChild(volRange);
                     ctrls.appendChild(bMute);
                     ctrls.appendChild(bSolo);
                     ctrls.appendChild(sel);
@@ -1101,14 +1110,15 @@
             function updatePartMix() {
                 isAnySolo = partConfigs.some(function (p) { return p.solo; });
                 partConfigs.forEach(function (cfg, idx) {
-                    var gainVal = 1;
+                    var baseGain = 1;
                     if (isAnySolo) {
-                        gainVal = cfg.solo ? 1 : 0;
+                        baseGain = cfg.solo ? 1 : 0;
                     } else if (cfg.mute) {
-                        gainVal = 0;
+                        baseGain = 0;
                     }
+                    var finalGain = baseGain * ((cfg.vol || 100) / 100);
                     if (partGains[idx]) {
-                        partGains[idx].gain.setTargetAtTime(gainVal, ac.currentTime, 0.01);
+                        partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.01);
                     }
                 });
             }
@@ -2116,10 +2126,11 @@ body { background: #f3f4f6; color: #111827; }
   async function updatePartMix(){
       isAnySolo = partConfigs.some(function(p){ return p.solo; });
       partConfigs.forEach(function(cfg, idx) {
-          var gainVal = 1;
-          if (isAnySolo) gainVal = cfg.solo ? 1 : 0;
-          else if (cfg.mute) gainVal = 0;
-          if (partGains[idx]) partGains[idx].gain.setTargetAtTime(gainVal, ac.currentTime, 0.01);
+          var baseGain = 1;
+          if (isAnySolo) baseGain = cfg.solo ? 1 : 0;
+          else if (cfg.mute) baseGain = 0;
+          var finalGain = baseGain * ((cfg.vol || 100) / 100);
+          if (partGains[idx]) partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.01);
       });
   }
 
@@ -2297,6 +2308,14 @@ body { background: #f3f4f6; color: #111827; }
           bSolo.style.cssText = S_BTN + (cfg.solo ? 'background:#eab308;color:#fff;border-color:#eab308;' : '');
           bSolo.onclick = function() { cfg.solo = !cfg.solo; bSolo.style.cssText = S_BTN + (cfg.solo ? 'background:#eab308;color:#fff;border-color:#eab308;' : ''); updatePartMix(); };
           
+          var volRange = document.createElement('input');
+          volRange.type = 'range';
+          volRange.min = 0;
+          volRange.max = 100;
+          volRange.value = cfg.vol || 100;
+          volRange.style.width = '55px';
+          volRange.oninput = function() { cfg.vol = +volRange.value; updatePartMix(); };
+
           var sel = document.createElement('select');
           sel.style.cssText = 'border:1px solid #d1d5db;border-radius:4px;padding:2px;font-size:11px;max-width:140px;background:#fff;color:#111827;';
           sel.innerHTML = GM_OPTS_HTML;
@@ -2308,6 +2327,7 @@ body { background: #f3f4f6; color: #111827; }
           };
           
           row.appendChild(nameSp);
+          row.appendChild(volRange);
           row.appendChild(bMute);
           row.appendChild(bSolo);
           row.appendChild(sel);
