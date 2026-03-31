@@ -8,6 +8,40 @@
     <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12835_17_JCLive_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12836_1_JCLive_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12837_1_JCLive_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12838_1_JCLive_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12839_1_JCLive_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12840_1_JCLive_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12841_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12842_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12843_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12844_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12845_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12846_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12847_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12848_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12849_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12850_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12851_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12852_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12853_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12855_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12856_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12857_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12858_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12859_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12860_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12861_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12863_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12864_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12865_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12866_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12880_0_FluidR3_GM_sf2_file.js"></script>
+    <script src="https://surikov.github.io/webaudiofontdata/sound/12881_0_FluidR3_GM_sf2_file.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
 
@@ -1060,115 +1094,87 @@
                 return { drumFlags: drumFlags, noteMap: noteMap };
             }
 
+            var DRUM_MIDI_MAP = {
+                35: '_drum_35_17_JCLive_sf2_file',
+                36: '_drum_36_1_JCLive_sf2_file',
+                37: '_drum_37_1_JCLive_sf2_file',
+                38: '_drum_38_1_JCLive_sf2_file',
+                39: '_drum_39_1_JCLive_sf2_file',
+                40: '_drum_40_1_JCLive_sf2_file',
+                41: '_drum_41_0_FluidR3_GM_sf2_file',
+                42: '_drum_42_0_FluidR3_GM_sf2_file',
+                43: '_drum_43_0_FluidR3_GM_sf2_file',
+                44: '_drum_44_0_FluidR3_GM_sf2_file',
+                45: '_drum_45_0_FluidR3_GM_sf2_file',
+                46: '_drum_46_0_FluidR3_GM_sf2_file',
+                47: '_drum_47_0_FluidR3_GM_sf2_file',
+                48: '_drum_48_0_FluidR3_GM_sf2_file',
+                49: '_drum_49_0_FluidR3_GM_sf2_file',
+                50: '_drum_50_0_FluidR3_GM_sf2_file',
+                51: '_drum_51_0_FluidR3_GM_sf2_file',
+                52: '_drum_52_0_FluidR3_GM_sf2_file',
+                53: '_drum_53_0_FluidR3_GM_sf2_file',
+                54: '_drum_54_0_FluidR3_GM_sf2_file',
+                55: '_drum_55_0_FluidR3_GM_sf2_file',
+                56: '_drum_56_0_FluidR3_GM_sf2_file',
+                57: '_drum_57_0_FluidR3_GM_sf2_file',
+                58: '_drum_58_0_FluidR3_GM_sf2_file',
+                59: '_drum_59_0_FluidR3_GM_sf2_file',
+                60: '_drum_60_0_FluidR3_GM_sf2_file',
+                61: '_drum_61_0_FluidR3_GM_sf2_file',
+                63: '_drum_63_0_FluidR3_GM_sf2_file',
+                64: '_drum_64_0_FluidR3_GM_sf2_file',
+                65: '_drum_65_0_FluidR3_GM_sf2_file',
+                66: '_drum_66_0_FluidR3_GM_sf2_file',
+                80: '_drum_80_0_FluidR3_GM_sf2_file',
+                81: '_drum_81_0_FluidR3_GM_sf2_file'
+            };
+
+            var DRUM_DURATIONS = {
+                53: 4, 80: 0.12,
+                46: 20, 49: 20, 51: 20, 52: 20, 55: 20, 57: 20, 59: 20, 81: 20
+            };
+
+            var drumPlayer = null;
+            var lastOpenHiHat = null;
+            var lastOpenTriangle = null;
+
+            function initDrumEngine() {
+                if (!drumPlayer) {
+                    drumPlayer = new WebAudioFontPlayer();
+                }
+                Object.keys(DRUM_MIDI_MAP).forEach(function (pitch) {
+                    drumPlayer.loader.decodeAfterLoading(ac, DRUM_MIDI_MAP[pitch]);
+                });
+            }
+
             function playDrumNote(midiNote, when, dest) {
-                if (!ac) return [];
-                var nodes = [];
+                if (!ac || !drumPlayer) return [];
+                var instrumentName = DRUM_MIDI_MAP[midiNote];
+                if (!instrumentName || !window[instrumentName]) return [];
 
-                function mkNoise(dur, decay) {
-                    var len = Math.ceil(ac.sampleRate * dur);
-                    var buf = ac.createBuffer(1, len, ac.sampleRate);
-                    var d = buf.getChannelData(0);
-                    for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
-                    return buf;
+                if ((midiNote === 42 || midiNote === 44) && lastOpenHiHat) {
+                    try { lastOpenHiHat.cancel(); } catch (_) { }
+                    lastOpenHiHat = null;
+                }
+                if (midiNote === 80 && lastOpenTriangle) {
+                    try { lastOpenTriangle.cancel(); } catch (_) { }
+                    lastOpenTriangle = null;
                 }
 
-                function osc(type, freq, freqEnd, dur, vol) {
-                    var o = ac.createOscillator();
-                    var g = ac.createGain();
-                    o.type = type;
-                    o.frequency.setValueAtTime(freq, when);
-                    if (freqEnd) o.frequency.exponentialRampToValueAtTime(Math.max(freqEnd, 0.01), when + dur);
-                    g.gain.setValueAtTime(vol, when);
-                    g.gain.exponentialRampToValueAtTime(0.001, when + dur);
-                    o.connect(g); g.connect(dest);
-                    o.start(when); o.stop(when + dur + 0.01);
-                    nodes.push(o);
-                }
+                var noteGain = ac.createGain();
+                noteGain.gain.value = 0.85;
+                noteGain.connect(dest);
 
-                function noise(dur, decay, vol, fType, fFreq, fQ) {
-                    var buf = mkNoise(dur, decay);
-                    var src = ac.createBufferSource();
-                    src.buffer = buf;
-                    var g = ac.createGain();
-                    g.gain.setValueAtTime(vol, when);
-                    if (fType) {
-                        var f = ac.createBiquadFilter();
-                        f.type = fType;
-                        f.frequency.value = fFreq || 1000;
-                        if (fQ) f.Q.value = fQ;
-                        src.connect(f); f.connect(g);
-                    } else {
-                        src.connect(g);
-                    }
-                    g.connect(dest);
-                    src.start(when);
-                    nodes.push(src);
-                }
+                var dur = DRUM_DURATIONS[midiNote] || 3;
+                var noteHandle = drumPlayer.queueWaveTable(
+                    ac, noteGain, window[instrumentName], when, midiNote, dur
+                );
 
-                switch (midiNote) {
-                    case 35: case 36:
-                        osc('sine', 150, 40, 0.25, 0.8); noise(0.08, 8, 0.3, 'lowpass', 200); break;
-                    case 37:
-                        noise(0.025, 12, 0.5, 'bandpass', 3500, 3); osc('sine', 1800, 800, 0.015, 0.3); break;
-                    case 38: case 40:
-                        osc('triangle', 180, 80, 0.12, 0.4); noise(0.15, 4, 0.45, 'highpass', 2500); break;
-                    case 39:
-                        noise(0.12, 5, 0.4, 'bandpass', 1500, 1.5); break;
-                    case 41: case 43:
-                        osc('sine', midiNote === 41 ? 80 : 100, (midiNote === 41 ? 80 : 100) * 0.5, 0.25, 0.6); break;
-                    case 42: case 44:
-                        noise(0.06, 10, 0.25, 'highpass', 7000); break;
-                    case 45: case 47: case 48: case 50:
-                        var tf = { 45: 120, 47: 140, 48: 170, 50: 200 };
-                        osc('sine', tf[midiNote], tf[midiNote] * 0.5, 0.2, 0.55); break;
-                    case 46:
-                        noise(0.25, 3, 0.25, 'highpass', 7000); break;
-                    case 49: case 57:
-                        noise(0.6, 2, 0.3, 'highpass', 5000); noise(0.3, 4, 0.15, 'bandpass', 3000, 0.5); break;
-                    case 51: case 59:
-                        noise(0.35, 3.5, 0.2, 'highpass', 6000); osc('sine', 5000, 4000, 0.08, 0.1); break;
-                    case 52:
-                        noise(0.5, 2.5, 0.3, 'highpass', 4000); break;
-                    case 53:
-                        osc('sine', 800, 700, 0.3, 0.3); noise(0.15, 6, 0.1, 'highpass', 8000); break;
-                    case 54:
-                        noise(0.12, 5, 0.25, 'highpass', 6000); break;
-                    case 55:
-                        noise(0.3, 3, 0.25, 'highpass', 6000); break;
-                    case 56:
-                        osc('square', 560, 540, 0.1, 0.25); osc('square', 845, 825, 0.08, 0.2); break;
-                    case 58:
-                        noise(0.4, 2, 0.15, 'bandpass', 2000, 3); break;
-                    case 60: case 61:
-                        osc('sine', midiNote === 60 ? 400 : 300, (midiNote === 60 ? 400 : 300) * 0.6, 0.1, 0.5); break;
-                    case 62: case 63: case 64:
-                        var cf = { 62: 280, 63: 260, 64: 200 };
-                        osc('sine', cf[midiNote], cf[midiNote] * 0.6, 0.15, 0.5); break;
-                    case 65: case 66:
-                        osc('triangle', midiNote === 65 ? 320 : 240, (midiNote === 65 ? 320 : 240) * 0.7, 0.12, 0.45);
-                        noise(0.08, 6, 0.2, 'highpass', 3000); break;
-                    case 67: case 68:
-                        osc('sine', midiNote === 67 ? 700 : 520, (midiNote === 67 ? 700 : 520) * 0.9, 0.2, 0.35); break;
-                    case 69:
-                        noise(0.1, 6, 0.2, 'highpass', 5000); break;
-                    case 70:
-                        noise(0.06, 10, 0.2, 'highpass', 6000); break;
-                    case 71: case 72:
-                        osc('sine', 2400, 2350, midiNote === 71 ? 0.15 : 0.3, 0.3); break;
-                    case 73: case 74:
-                        noise(midiNote === 73 ? 0.1 : 0.25, 4, 0.2, 'bandpass', 3500, 2); break;
-                    case 75:
-                        osc('sine', 2500, 2300, 0.04, 0.4); break;
-                    case 76: case 77:
-                        osc('sine', midiNote === 76 ? 1000 : 600, (midiNote === 76 ? 1000 : 600) * 0.6, 0.04, 0.4); break;
-                    case 78: case 79:
-                        osc('sine', 500, 800, midiNote === 78 ? 0.1 : 0.2, 0.3); break;
-                    case 80: case 81:
-                        osc('sine', 6000, 5800, midiNote === 80 ? 0.3 : 0.6, 0.2); break;
-                    default:
-                        noise(0.08, 6, 0.3, 'bandpass', 1500, 1); break;
-                }
-                return nodes;
+                if (midiNote === 46) lastOpenHiHat = noteHandle;
+                if (midiNote === 81) lastOpenTriangle = noteHandle;
+
+                return noteHandle ? [{ stop: function () { try { noteHandle.cancel(); } catch (_) { } } }] : [];
             }
 
             /* ───────────────────────────────────────────────────────────────────── */
@@ -1266,6 +1272,9 @@
 
                 partInsts = [];
                 partGains = [];
+
+                var hasDrumKit = partConfigs.some(function (cfg) { return cfg.program === '_drum_kit_gm'; });
+                if (hasDrumKit) initDrumEngine();
 
                 var promises = partConfigs.map(async function (cfg, idx) {
                     var gain = ac.createGain();
@@ -1562,6 +1571,7 @@
 
             function scheduleMetronome(offset) {
                 if (!document.getElementById('metCheck').checked) return;
+                if (!drumPlayer) initDrumEngine();
 
                 var beatLen = getMetronomeBeatLen();
                 var lastBeat = pieceEnd + beatLen;
@@ -1975,6 +1985,40 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"><\/script>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"><\/script>
+<script src="https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12835_17_JCLive_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12836_1_JCLive_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12837_1_JCLive_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12838_1_JCLive_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12839_1_JCLive_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12840_1_JCLive_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12841_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12842_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12843_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12844_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12845_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12846_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12847_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12848_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12849_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12850_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12851_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12852_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12853_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12855_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12856_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12857_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12858_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12859_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12860_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12861_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12863_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12864_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12865_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12866_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12880_0_FluidR3_GM_sf2_file.js"><\/script>
+<script src="https://surikov.github.io/webaudiofontdata/sound/12881_0_FluidR3_GM_sf2_file.js"><\/script>
 <style>
 body { background: #f3f4f6; color: #111827; }
 .icon-svg { display: inline-block; vertical-align: middle; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
@@ -2037,44 +2081,39 @@ body { background: #f3f4f6; color: #111827; }
   var clickTimer = null;
   var inputGain = null, dryGain = null, wetGain = null, masterGain = null, convolver = null;
 
+  var DRUM_MIDI_MAP = {
+    35:'_drum_35_17_JCLive_sf2_file',36:'_drum_36_1_JCLive_sf2_file',37:'_drum_37_1_JCLive_sf2_file',
+    38:'_drum_38_1_JCLive_sf2_file',39:'_drum_39_1_JCLive_sf2_file',40:'_drum_40_1_JCLive_sf2_file',
+    41:'_drum_41_0_FluidR3_GM_sf2_file',42:'_drum_42_0_FluidR3_GM_sf2_file',43:'_drum_43_0_FluidR3_GM_sf2_file',
+    44:'_drum_44_0_FluidR3_GM_sf2_file',45:'_drum_45_0_FluidR3_GM_sf2_file',46:'_drum_46_0_FluidR3_GM_sf2_file',
+    47:'_drum_47_0_FluidR3_GM_sf2_file',48:'_drum_48_0_FluidR3_GM_sf2_file',49:'_drum_49_0_FluidR3_GM_sf2_file',
+    50:'_drum_50_0_FluidR3_GM_sf2_file',51:'_drum_51_0_FluidR3_GM_sf2_file',52:'_drum_52_0_FluidR3_GM_sf2_file',
+    53:'_drum_53_0_FluidR3_GM_sf2_file',54:'_drum_54_0_FluidR3_GM_sf2_file',55:'_drum_55_0_FluidR3_GM_sf2_file',
+    56:'_drum_56_0_FluidR3_GM_sf2_file',57:'_drum_57_0_FluidR3_GM_sf2_file',58:'_drum_58_0_FluidR3_GM_sf2_file',
+    59:'_drum_59_0_FluidR3_GM_sf2_file',60:'_drum_60_0_FluidR3_GM_sf2_file',61:'_drum_61_0_FluidR3_GM_sf2_file',
+    63:'_drum_63_0_FluidR3_GM_sf2_file',64:'_drum_64_0_FluidR3_GM_sf2_file',65:'_drum_65_0_FluidR3_GM_sf2_file',
+    66:'_drum_66_0_FluidR3_GM_sf2_file',80:'_drum_80_0_FluidR3_GM_sf2_file',81:'_drum_81_0_FluidR3_GM_sf2_file'
+  };
+  var DRUM_DURATIONS = {53:4,80:0.12,46:20,49:20,51:20,52:20,55:20,57:20,59:20,81:20};
+  var drumPlayer = null, lastOpenHiHat = null, lastOpenTriangle = null;
+
+  function initDrumEngine(){
+    if(!drumPlayer) drumPlayer = new WebAudioFontPlayer();
+    Object.keys(DRUM_MIDI_MAP).forEach(function(p){ drumPlayer.loader.decodeAfterLoading(ac, DRUM_MIDI_MAP[p]); });
+  }
+
   function playDrumNote(midiNote, when, dest){
-    if(!ac) return [];
-    var nodes = [];
-    function mkN(dur, decay){ var len=Math.ceil(ac.sampleRate*dur); var buf=ac.createBuffer(1,len,ac.sampleRate); var d=buf.getChannelData(0); for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay); return buf; }
-    function osc(type,freq,freqEnd,dur,vol){ var o=ac.createOscillator(); var g=ac.createGain(); o.type=type; o.frequency.setValueAtTime(freq,when); if(freqEnd) o.frequency.exponentialRampToValueAtTime(Math.max(freqEnd,0.01),when+dur); g.gain.setValueAtTime(vol,when); g.gain.exponentialRampToValueAtTime(0.001,when+dur); o.connect(g); g.connect(dest); o.start(when); o.stop(when+dur+0.01); nodes.push(o); }
-    function noise(dur,decay,vol,fType,fFreq,fQ){ var buf=mkN(dur,decay); var src=ac.createBufferSource(); src.buffer=buf; var g=ac.createGain(); g.gain.setValueAtTime(vol,when); if(fType){ var f=ac.createBiquadFilter(); f.type=fType; f.frequency.value=fFreq||1000; if(fQ) f.Q.value=fQ; src.connect(f); f.connect(g); } else { src.connect(g); } g.connect(dest); src.start(when); nodes.push(src); }
-    switch(midiNote){
-      case 35:case 36: osc('sine',150,40,0.25,0.8); noise(0.08,8,0.3,'lowpass',200); break;
-      case 37: noise(0.025,12,0.5,'bandpass',3500,3); osc('sine',1800,800,0.015,0.3); break;
-      case 38:case 40: osc('triangle',180,80,0.12,0.4); noise(0.15,4,0.45,'highpass',2500); break;
-      case 39: noise(0.12,5,0.4,'bandpass',1500,1.5); break;
-      case 41:case 43: osc('sine',midiNote===41?80:100,(midiNote===41?80:100)*0.5,0.25,0.6); break;
-      case 42:case 44: noise(0.06,10,0.25,'highpass',7000); break;
-      case 45:case 47:case 48:case 50: var tf={45:120,47:140,48:170,50:200}; osc('sine',tf[midiNote],tf[midiNote]*0.5,0.2,0.55); break;
-      case 46: noise(0.25,3,0.25,'highpass',7000); break;
-      case 49:case 57: noise(0.6,2,0.3,'highpass',5000); noise(0.3,4,0.15,'bandpass',3000,0.5); break;
-      case 51:case 59: noise(0.35,3.5,0.2,'highpass',6000); osc('sine',5000,4000,0.08,0.1); break;
-      case 52: noise(0.5,2.5,0.3,'highpass',4000); break;
-      case 53: osc('sine',800,700,0.3,0.3); noise(0.15,6,0.1,'highpass',8000); break;
-      case 54: noise(0.12,5,0.25,'highpass',6000); break;
-      case 55: noise(0.3,3,0.25,'highpass',6000); break;
-      case 56: osc('square',560,540,0.1,0.25); osc('square',845,825,0.08,0.2); break;
-      case 58: noise(0.4,2,0.15,'bandpass',2000,3); break;
-      case 60:case 61: osc('sine',midiNote===60?400:300,(midiNote===60?400:300)*0.6,0.1,0.5); break;
-      case 62:case 63:case 64: var cf={62:280,63:260,64:200}; osc('sine',cf[midiNote],cf[midiNote]*0.6,0.15,0.5); break;
-      case 65:case 66: osc('triangle',midiNote===65?320:240,(midiNote===65?320:240)*0.7,0.12,0.45); noise(0.08,6,0.2,'highpass',3000); break;
-      case 67:case 68: osc('sine',midiNote===67?700:520,(midiNote===67?700:520)*0.9,0.2,0.35); break;
-      case 69: noise(0.1,6,0.2,'highpass',5000); break;
-      case 70: noise(0.06,10,0.2,'highpass',6000); break;
-      case 71:case 72: osc('sine',2400,2350,midiNote===71?0.15:0.3,0.3); break;
-      case 73:case 74: noise(midiNote===73?0.1:0.25,4,0.2,'bandpass',3500,2); break;
-      case 75: osc('sine',2500,2300,0.04,0.4); break;
-      case 76:case 77: osc('sine',midiNote===76?1000:600,(midiNote===76?1000:600)*0.6,0.04,0.4); break;
-      case 78:case 79: osc('sine',500,800,midiNote===78?0.1:0.2,0.3); break;
-      case 80:case 81: osc('sine',6000,5800,midiNote===80?0.3:0.6,0.2); break;
-      default: noise(0.08,6,0.3,'bandpass',1500,1); break;
-    }
-    return nodes;
+    if(!ac || !drumPlayer) return [];
+    var instrumentName = DRUM_MIDI_MAP[midiNote];
+    if(!instrumentName || !window[instrumentName]) return [];
+    if((midiNote===42||midiNote===44)&&lastOpenHiHat){try{lastOpenHiHat.cancel();}catch(_){}lastOpenHiHat=null;}
+    if(midiNote===80&&lastOpenTriangle){try{lastOpenTriangle.cancel();}catch(_){}lastOpenTriangle=null;}
+    var noteGain=ac.createGain(); noteGain.gain.value=0.85; noteGain.connect(dest);
+    var dur=DRUM_DURATIONS[midiNote]||3;
+    var noteHandle=drumPlayer.queueWaveTable(ac,noteGain,window[instrumentName],when,midiNote,dur);
+    if(midiNote===46) lastOpenHiHat=noteHandle;
+    if(midiNote===81) lastOpenTriangle=noteHandle;
+    return noteHandle?[{stop:function(){try{noteHandle.cancel();}catch(_){}}}]:[];
   }
 
   function clearCursorTimer(){
@@ -2372,6 +2411,8 @@ body { background: #f3f4f6; color: #111827; }
       if(partInsts.length === partConfigs.length) return resolve();
       document.getElementById('st').textContent = 'A carregar timbres...';
       document.getElementById('st').style.display = 'block';
+      var hasDrumKit = partConfigs.some(function(c){ return c.program === '_drum_kit_gm'; });
+      if(hasDrumKit) initDrumEngine();
       var promises = partConfigs.map(function(cfg, idx){
           var gain = ac.createGain();
           gain.connect(inputGain);
@@ -2428,6 +2469,7 @@ body { background: #f3f4f6; color: #111827; }
     });
 
     if(document.getElementById('met').checked){
+      if(!drumPlayer) initDrumEngine();
       var bl = getMetronomeBeatLen();
       var firstBeat = Math.ceil(off / bl) * bl;
       var lastBeat = pieceEnd + bl;
