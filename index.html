@@ -886,6 +886,7 @@
             var playbackEndTimer = null, pieceEnd = 0;
             var scoreClickTimer = null;
             var percInfo = null;
+            var cursorStepsCache = { bpm: null, xml: null };
 
             function setStatus(msg, cls) {
                 var e = document.getElementById('st');
@@ -1195,6 +1196,12 @@
                     ac, noteGain, window[instrumentName], when, midiNote, dur
                 );
 
+                /* disconnect gain node after playback to free memory */
+                var disconnectTime = (when - ac.currentTime + dur + 0.5) * 1000;
+                if (disconnectTime > 0) {
+                    setTimeout(function () { try { noteGain.disconnect(); } catch (_) { } }, disconnectTime);
+                }
+
                 if (midiNote === 46) lastOpenHiHat = noteHandle;
                 if (midiNote === 81) lastOpenTriangle = noteHandle;
 
@@ -1244,7 +1251,7 @@
 
                     var nameSp = document.createElement('span');
                     nameSp.className = 'part-name';
-                    nameSp.innerHTML = cfg.name;
+                    nameSp.textContent = cfg.name;
 
                     var ctrls = document.createElement('div');
                     ctrls.className = 'part-ctrls';
@@ -1344,7 +1351,7 @@
                     }
                     var finalGain = baseGain * ((cfg.vol || 100) / 100);
                     if (partGains[idx]) {
-                        partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.01);
+                        partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.05);
                     }
                 });
             }
@@ -1383,8 +1390,9 @@
             }
 
             function extractCursorSteps() {
-                cursorSteps = [];
                 var bpm = +document.getElementById('bpm').value || 100;
+                if (cursorStepsCache.bpm === bpm && cursorStepsCache.xml === rawXml && cursorSteps.length > 0) return;
+                cursorSteps = [];
                 if (!osmd || !osmd.cursor) return;
                 try {
                     osmd.cursor.reset();
@@ -1396,6 +1404,8 @@
                         iterator.moveToNext();
                     }
                     osmd.cursor.reset();
+                    cursorStepsCache.bpm = bpm;
+                    cursorStepsCache.xml = rawXml;
                 } catch (_) { }
             }
 
@@ -1537,6 +1547,15 @@
                 var bpm = +document.getElementById('bpm').value || 100;
                 var beatLen = 60 / bpm;
 
+                /* pre-build instrument ID → index map for O(1) lookups */
+                var instIdMap = {};
+                if (osmd.Sheet && osmd.Sheet.Instruments) {
+                    for (var m = 0; m < osmd.Sheet.Instruments.length; m++) {
+                        var inst = osmd.Sheet.Instruments[m];
+                        if (inst.Id !== undefined) instIdMap[inst.Id] = m;
+                    }
+                }
+
                 osmd.cursor.reset();
                 var iterator = osmd.cursor.Iterator;
 
@@ -1553,19 +1572,13 @@
                         var partIdx = 0;
                         try {
                             if (ve.ParentVoice && ve.ParentVoice.Parent) {
-                                // OSMD: ve.ParentVoice.Parent é geralmente o próprio objeto Instrument
                                 var instObj = ve.ParentVoice.Parent;
-                                if (!instObj.NameLabel && instObj.ParentInstrument) instObj = instObj.ParentInstrument; // fallback caso seja Staff
+                                if (!instObj.NameLabel && instObj.ParentInstrument) instObj = instObj.ParentInstrument;
 
                                 if (instObj && osmd.Sheet.Instruments) {
                                     var idx = osmd.Sheet.Instruments.indexOf(instObj);
-                                    if (idx < 0) {
-                                        // busca alternativa por Id
-                                        for (var k = 0; k < osmd.Sheet.Instruments.length; k++) {
-                                            if (osmd.Sheet.Instruments[k].Id === instObj.Id || osmd.Sheet.Instruments[k] === instObj) {
-                                                idx = k; break;
-                                            }
-                                        }
+                                    if (idx < 0 && instObj.Id !== undefined && instIdMap[instObj.Id] !== undefined) {
+                                        idx = instIdMap[instObj.Id];
                                     }
                                     if (idx >= 0) partIdx = idx;
                                 }
@@ -2434,7 +2447,7 @@ body { background: #f3f4f6; color: #111827; }
           if (isAnySolo) baseGain = cfg.solo ? 1 : 0;
           else if (cfg.mute) baseGain = 0;
           var finalGain = baseGain * ((cfg.vol || 100) / 100);
-          if (partGains[idx]) partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.01);
+          if (partGains[idx]) partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.05);
       });
   }
 
@@ -2604,7 +2617,7 @@ body { background: #f3f4f6; color: #111827; }
           nameSp.style.fontWeight = '600';
           nameSp.style.minWidth = '120px';
           nameSp.style.color = '#111827';
-          nameSp.innerHTML = cfg.name;
+          nameSp.textContent = cfg.name;
           
           var bMute = document.createElement('button');
           bMute.innerHTML = ICONS.mute + ' Mute';
