@@ -2192,6 +2192,7 @@ body { background: #f3f4f6; color: #111827; }
 
   function extractCursorSteps(){
     var bpm = +document.getElementById('bpm').value || 100;
+    /* cache by BPM only – XML is static in the exported page */
     if(cursorStepsCache.bpm === bpm && cursorSteps.length > 0) return;
     cursorSteps = [];
     try{
