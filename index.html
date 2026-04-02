@@ -9,39 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12835_17_JCLive_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12836_1_JCLive_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12837_1_JCLive_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12838_1_JCLive_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12839_1_JCLive_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12840_1_JCLive_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12841_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12842_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12843_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12844_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12845_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12846_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12847_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12848_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12849_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12850_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12851_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12852_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12853_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12855_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12856_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12857_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12858_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12859_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12860_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12861_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12863_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12864_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12865_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12866_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12880_0_FluidR3_GM_sf2_file.js"></script>
-    <script src="https://surikov.github.io/webaudiofontdata/sound/12881_0_FluidR3_GM_sf2_file.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
 
@@ -1138,13 +1105,70 @@
             var drumPlayer = null;
             var lastOpenHiHat = null;
             var lastOpenTriangle = null;
+            var drumSoundsLoaded = false;
+
+            /* URL map for lazy-loading drum soundfont scripts */
+            var DRUM_SCRIPT_URLS = {
+                '_drum_35_17_JCLive_sf2_file':     'https://surikov.github.io/webaudiofontdata/sound/12835_17_JCLive_sf2_file.js',
+                '_drum_36_1_JCLive_sf2_file':      'https://surikov.github.io/webaudiofontdata/sound/12836_1_JCLive_sf2_file.js',
+                '_drum_37_1_JCLive_sf2_file':      'https://surikov.github.io/webaudiofontdata/sound/12837_1_JCLive_sf2_file.js',
+                '_drum_38_1_JCLive_sf2_file':      'https://surikov.github.io/webaudiofontdata/sound/12838_1_JCLive_sf2_file.js',
+                '_drum_39_1_JCLive_sf2_file':      'https://surikov.github.io/webaudiofontdata/sound/12839_1_JCLive_sf2_file.js',
+                '_drum_40_1_JCLive_sf2_file':      'https://surikov.github.io/webaudiofontdata/sound/12840_1_JCLive_sf2_file.js',
+                '_drum_41_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12841_0_FluidR3_GM_sf2_file.js',
+                '_drum_42_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12842_0_FluidR3_GM_sf2_file.js',
+                '_drum_43_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12843_0_FluidR3_GM_sf2_file.js',
+                '_drum_44_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12844_0_FluidR3_GM_sf2_file.js',
+                '_drum_45_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12845_0_FluidR3_GM_sf2_file.js',
+                '_drum_46_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12846_0_FluidR3_GM_sf2_file.js',
+                '_drum_47_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12847_0_FluidR3_GM_sf2_file.js',
+                '_drum_48_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12848_0_FluidR3_GM_sf2_file.js',
+                '_drum_49_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12849_0_FluidR3_GM_sf2_file.js',
+                '_drum_50_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12850_0_FluidR3_GM_sf2_file.js',
+                '_drum_51_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12851_0_FluidR3_GM_sf2_file.js',
+                '_drum_52_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12852_0_FluidR3_GM_sf2_file.js',
+                '_drum_53_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12853_0_FluidR3_GM_sf2_file.js',
+                '_drum_54_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js',
+                '_drum_55_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12855_0_FluidR3_GM_sf2_file.js',
+                '_drum_56_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12856_0_FluidR3_GM_sf2_file.js',
+                '_drum_57_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12857_0_FluidR3_GM_sf2_file.js',
+                '_drum_58_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12858_0_FluidR3_GM_sf2_file.js',
+                '_drum_59_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12859_0_FluidR3_GM_sf2_file.js',
+                '_drum_60_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12860_0_FluidR3_GM_sf2_file.js',
+                '_drum_61_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12861_0_FluidR3_GM_sf2_file.js',
+                '_drum_63_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12863_0_FluidR3_GM_sf2_file.js',
+                '_drum_64_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12864_0_FluidR3_GM_sf2_file.js',
+                '_drum_65_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12865_0_FluidR3_GM_sf2_file.js',
+                '_drum_66_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12866_0_FluidR3_GM_sf2_file.js',
+                '_drum_80_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12880_0_FluidR3_GM_sf2_file.js',
+                '_drum_81_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12881_0_FluidR3_GM_sf2_file.js'
+            };
+
+            function loadDrumSounds() {
+                if (drumSoundsLoaded) return Promise.resolve();
+                var promises = Object.keys(DRUM_SCRIPT_URLS).map(function (varName) {
+                    if (window[varName]) return Promise.resolve();
+                    return new Promise(function (resolve) {
+                        var s = document.createElement('script');
+                        s.src = DRUM_SCRIPT_URLS[varName];
+                        s.onload = resolve;
+                        s.onerror = resolve; /* continue even if one fails */
+                        document.head.appendChild(s);
+                    });
+                });
+                return Promise.all(promises).then(function () {
+                    drumSoundsLoaded = true;
+                });
+            }
 
             function initDrumEngine() {
                 if (!drumPlayer) {
                     drumPlayer = new WebAudioFontPlayer();
                 }
                 Object.keys(DRUM_MIDI_MAP).forEach(function (pitch) {
-                    drumPlayer.loader.decodeAfterLoading(ac, DRUM_MIDI_MAP[pitch]);
+                    if (window[DRUM_MIDI_MAP[pitch]]) {
+                        drumPlayer.loader.decodeAfterLoading(ac, DRUM_MIDI_MAP[pitch]);
+                    }
                 });
             }
 
@@ -1274,7 +1298,10 @@
                 partGains = [];
 
                 var hasDrumKit = partConfigs.some(function (cfg) { return cfg.program === '_drum_kit_gm'; });
-                if (hasDrumKit) initDrumEngine();
+                if (hasDrumKit) {
+                    await loadDrumSounds();
+                    initDrumEngine();
+                }
 
                 var promises = partConfigs.map(async function (cfg, idx) {
                     var gain = ac.createGain();
@@ -1332,7 +1359,7 @@
 
             function clearCursorTimer() {
                 if (cursorTimer) {
-                    clearTimeout(cursorTimer);
+                    cancelAnimationFrame(cursorTimer);
                     cursorTimer = null;
                 }
             }
@@ -1395,16 +1422,18 @@
                     if (!run || !ac || !osmd || !osmd.cursor || !cursorSteps.length) return;
 
                     var current = ac.currentTime - sat;
+                    var moved = false;
                     while (cursorIndex + 1 < cursorSteps.length && current >= cursorSteps[cursorIndex + 1].t - 0.01) {
                         try {
                             osmd.cursor.next();
                             cursorIndex++;
+                            moved = true;
                         } catch (_) {
                             break;
                         }
                     }
 
-                    cursorTimer = setTimeout(step, 25);
+                    cursorTimer = requestAnimationFrame(step);
                 }
 
                 step();
@@ -1569,9 +1598,12 @@
                 evs.sort(function (a, b) { return a.t - b.t; });
             }
 
-            function scheduleMetronome(offset) {
+            async function scheduleMetronome(offset) {
                 if (!document.getElementById('metCheck').checked) return;
-                if (!drumPlayer) initDrumEngine();
+                if (!drumPlayer) {
+                    await loadDrumSounds();
+                    initDrumEngine();
+                }
 
                 var beatLen = getMetronomeBeatLen();
                 var lastBeat = pieceEnd + beatLen;
@@ -1621,7 +1653,7 @@
                     }
                 });
 
-                scheduleMetronome(offset);
+                await scheduleMetronome(offset);
                 armPlaybackEnd(offset);
             }
 
@@ -2118,7 +2150,7 @@ body { background: #f3f4f6; color: #111827; }
 
   function clearCursorTimer(){
     if(cursorTimer){
-      clearTimeout(cursorTimer);
+      cancelAnimationFrame(cursorTimer);
       cursorTimer = null;
     }
   }
@@ -2187,7 +2219,7 @@ body { background: #f3f4f6; color: #111827; }
         }
       }
 
-      cursorTimer = setTimeout(step, 25);
+      cursorTimer = requestAnimationFrame(step);
     }
 
     step();
