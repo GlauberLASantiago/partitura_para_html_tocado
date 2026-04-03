@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
 
@@ -599,34 +598,17 @@
         <div class="hd">
             <div>
                 <div class="hd-title">ViToPaMoS</div>
-                <div class="hd-sub">Visualizador e Tocador de Partituras para Moodle e Sites (MusicXML &mdash;
-                    Moodle/Web)</div>
+                <div class="hd-sub">Visualizador e Tocador de Partituras para Moodle e Sites (MusicXML &mdash; Moodle/Web)</div>
             </div>
             <button class="theme-toggle" id="themeToggle" title="Alternar tema">
-                <svg id="themeIconSun" class="icon-svg" style="display:none;" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <svg id="themeIconMoon" class="icon-svg" viewBox="0 0 24 24">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
+                <svg id="themeIconSun" class="icon-svg" style="display:none;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <svg id="themeIconMoon" class="icon-svg" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             </button>
         </div>
 
         <div class="body">
             <label class="load-btn">
-                <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24">
-                    <path
-                        d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2">
-                    </path>
-                </svg>
+                <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24"><path d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2"></path></svg>
                 <span>Carregar partitura</span>
                 <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
             </label>
@@ -640,31 +622,22 @@
                     <input type="text" id="metaTitle" placeholder="Título da peça">
                 </div>
                 <button class="btn btn-apply" id="btnApplyMeta">
-                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     Aplicar
                 </button>
             </div>
 
             <div class="controls">
                 <button class="btn btn-play" id="bp" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
-                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                     Play
                 </button>
                 <button class="btn btn-pause" id="bpa" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
-                        <rect x="6" y="4" width="4" height="16"></rect>
-                        <rect x="14" y="4" width="4" height="16"></rect>
-                    </svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
                     Pause
                 </button>
                 <button class="btn btn-stop" id="bs" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
-                        <rect x="4" y="4" width="16" height="16"></rect>
-                    </svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"></rect></svg>
                     Stop
                 </button>
 
@@ -682,7 +655,7 @@
 
                 <div class="rev-wrap">
                     <label for="reverbAmt">Reverber</label>
-                    <input type="number" id="reverbAmt" value="15" min="0" max="100">
+                    <input type="number" id="reverbAmt" value="25" min="0" max="100">
                 </div>
 
                 <div class="zoom-wrap">
@@ -729,18 +702,11 @@
                 </div>
 
                 <button class="btn btn-export" id="bx" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                     Copiar HTML
                 </button>
                 <button class="btn btn-download" id="bdl" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                     Baixar HTML
                 </button>
                 <div id="partsPanel" class="parts-panel" style="display:none;"></div>
@@ -752,10 +718,7 @@
 
     <section class="inst-guide">
         <h3>
-            <svg class="icon-svg" style="width:18px;height:18px;color:#302b63;" viewBox="0 0 24 24">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
+            <svg class="icon-svg" style="width:18px;height:18px;color:#302b63;" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             Guia para Professores
         </h3>
         <div class="inst-steps">
@@ -786,8 +749,7 @@
     </section>
 
     <footer class="credits-footer">
-        <strong>ViToPaMoS</strong> &mdash; Desenvolvido pelo professor <strong>Glauber Santiago</strong> &mdash;
-        DAC/UFSCar<br>
+        <strong>ViToPaMoS</strong> &mdash; Desenvolvido pelo professor <strong>Glauber Santiago</strong> &mdash; DAC/UFSCar<br>
         <a href="https://servidores.ufscar.br/glauber/" target="_blank">servidores.ufscar.br/glauber/</a> &bull;
         <a href="https://sites.google.com/view/glauberia" target="_blank">sites.google.com/view/glauberia</a>
     </footer>
@@ -922,8 +884,6 @@
             var inputGain = null, masterGain = null, dryGain = null, wetGain = null, convolver = null;
             var playbackEndTimer = null, pieceEnd = 0;
             var scoreClickTimer = null;
-            var percInfo = null;
-            var cursorStepsCache = { bpm: null, xml: null };
 
             function setStatus(msg, cls) {
                 var e = document.getElementById('st');
@@ -1026,7 +986,7 @@
                 masterGain.connect(compressor);
                 compressor.connect(ac.destination);
 
-                masterGain.gain.value = 2.0;
+                masterGain.gain.value = 3.5;
                 updateReverb();
             }
 
@@ -1037,243 +997,23 @@
                 wetGain.gain.value = amt * 1.35;
             }
 
-            /* ─── PERCUSSÃO GM (CANAL 10) ──────────────────────────────────────── */
 
-            function parsePercussionInfo(xml) {
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(xml, 'text/xml');
-                var partIds = [];
-                var drumPartIds = {};
-                var instIdToUnpitched = {};
-
-                var scoreParts = doc.querySelectorAll('score-part');
-                for (var s = 0; s < scoreParts.length; s++) {
-                    var sp = scoreParts[s];
-                    var pid = sp.getAttribute('id');
-                    partIds.push(pid);
-                    var midiInsts = sp.querySelectorAll('midi-instrument');
-                    for (var m = 0; m < midiInsts.length; m++) {
-                        var mi = midiInsts[m];
-                        var chEl = mi.querySelector('midi-channel');
-                        if (chEl && chEl.textContent.trim() === '10') drumPartIds[pid] = true;
-                        var unpEl = mi.querySelector('midi-unpitched');
-                        if (unpEl) instIdToUnpitched[mi.getAttribute('id')] = parseInt(unpEl.textContent.trim(), 10) - 1;
-                    }
-                    var nameEl = sp.querySelector('part-name');
-                    if (nameEl) {
-                        var nl = (nameEl.textContent || '').toLowerCase();
-                        if (nl.indexOf('drum') >= 0 || nl.indexOf('percus') >= 0 || nl.indexOf('bateria') >= 0 || nl.indexOf('perc.') >= 0) drumPartIds[pid] = true;
-                    }
-                }
-
-                var stepVals = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-                var noteMap = {};
-                var xmlParts = doc.querySelectorAll('part');
-                for (var p = 0; p < xmlParts.length; p++) {
-                    var xp = xmlParts[p];
-                    var xpid = xp.getAttribute('id');
-                    if (!drumPartIds[xpid]) continue;
-                    var pIdx = partIds.indexOf(xpid);
-                    if (pIdx < 0) continue;
-                    noteMap[pIdx] = {};
-                    var notes = xp.querySelectorAll('note');
-                    for (var n = 0; n < notes.length; n++) {
-                        var nt = notes[n];
-                        var instEl = nt.querySelector('instrument');
-                        var unp = nt.querySelector('unpitched');
-                        if (!instEl || !unp) continue;
-                        var midiNote = instIdToUnpitched[instEl.getAttribute('id')];
-                        if (!midiNote) continue;
-                        var ds = unp.querySelector('display-step');
-                        var doct = unp.querySelector('display-octave');
-                        if (!ds || !doct) continue;
-                        var ht = (stepVals[ds.textContent.trim()] || 0) + parseInt(doct.textContent.trim(), 10) * 12;
-                        noteMap[pIdx][ht + 12] = midiNote;
-                    }
-                }
-
-                var drumFlags = {};
-                for (var i = 0; i < partIds.length; i++) {
-                    if (drumPartIds[partIds[i]]) drumFlags[i] = true;
-                }
-                return { drumFlags: drumFlags, noteMap: noteMap };
-            }
-
-            var DRUM_MIDI_MAP = {
-                35: '_drum_35_17_JCLive_sf2_file',
-                36: '_drum_36_1_JCLive_sf2_file',
-                37: '_drum_37_1_JCLive_sf2_file',
-                38: '_drum_38_1_JCLive_sf2_file',
-                39: '_drum_39_1_JCLive_sf2_file',
-                40: '_drum_40_1_JCLive_sf2_file',
-                41: '_drum_41_0_FluidR3_GM_sf2_file',
-                42: '_drum_42_0_FluidR3_GM_sf2_file',
-                43: '_drum_43_0_FluidR3_GM_sf2_file',
-                44: '_drum_44_0_FluidR3_GM_sf2_file',
-                45: '_drum_45_0_FluidR3_GM_sf2_file',
-                46: '_drum_46_0_FluidR3_GM_sf2_file',
-                47: '_drum_47_0_FluidR3_GM_sf2_file',
-                48: '_drum_48_0_FluidR3_GM_sf2_file',
-                49: '_drum_49_0_FluidR3_GM_sf2_file',
-                50: '_drum_50_0_FluidR3_GM_sf2_file',
-                51: '_drum_51_0_FluidR3_GM_sf2_file',
-                52: '_drum_52_0_FluidR3_GM_sf2_file',
-                53: '_drum_53_0_FluidR3_GM_sf2_file',
-                54: '_drum_54_0_FluidR3_GM_sf2_file',
-                55: '_drum_55_0_FluidR3_GM_sf2_file',
-                56: '_drum_56_0_FluidR3_GM_sf2_file',
-                57: '_drum_57_0_FluidR3_GM_sf2_file',
-                58: '_drum_58_0_FluidR3_GM_sf2_file',
-                59: '_drum_59_0_FluidR3_GM_sf2_file',
-                60: '_drum_60_0_FluidR3_GM_sf2_file',
-                61: '_drum_61_0_FluidR3_GM_sf2_file',
-                63: '_drum_63_0_FluidR3_GM_sf2_file',
-                64: '_drum_64_0_FluidR3_GM_sf2_file',
-                65: '_drum_65_0_FluidR3_GM_sf2_file',
-                66: '_drum_66_0_FluidR3_GM_sf2_file',
-                80: '_drum_80_0_FluidR3_GM_sf2_file',
-                81: '_drum_81_0_FluidR3_GM_sf2_file'
-            };
-
-            var DRUM_DURATIONS = {
-                53: 4, 80: 0.12,
-                46: 20, 49: 20, 51: 20, 52: 20, 55: 20, 57: 20, 59: 20, 81: 20
-            };
-
-            var drumPlayer = null;
-            var lastOpenHiHat = null;
-            var lastOpenTriangle = null;
-            var drumSoundsLoaded = false;
-
-            /* URL map for lazy-loading drum soundfont scripts */
-            var DRUM_SCRIPT_URLS = {
-                '_drum_35_17_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12835_17_JCLive_sf2_file.js',
-                '_drum_36_1_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12836_1_JCLive_sf2_file.js',
-                '_drum_37_1_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12837_1_JCLive_sf2_file.js',
-                '_drum_38_1_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12838_1_JCLive_sf2_file.js',
-                '_drum_39_1_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12839_1_JCLive_sf2_file.js',
-                '_drum_40_1_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12840_1_JCLive_sf2_file.js',
-                '_drum_41_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12841_0_FluidR3_GM_sf2_file.js',
-                '_drum_42_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12842_0_FluidR3_GM_sf2_file.js',
-                '_drum_43_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12843_0_FluidR3_GM_sf2_file.js',
-                '_drum_44_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12844_0_FluidR3_GM_sf2_file.js',
-                '_drum_45_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12845_0_FluidR3_GM_sf2_file.js',
-                '_drum_46_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12846_0_FluidR3_GM_sf2_file.js',
-                '_drum_47_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12847_0_FluidR3_GM_sf2_file.js',
-                '_drum_48_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12848_0_FluidR3_GM_sf2_file.js',
-                '_drum_49_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12849_0_FluidR3_GM_sf2_file.js',
-                '_drum_50_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12850_0_FluidR3_GM_sf2_file.js',
-                '_drum_51_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12851_0_FluidR3_GM_sf2_file.js',
-                '_drum_52_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12852_0_FluidR3_GM_sf2_file.js',
-                '_drum_53_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12853_0_FluidR3_GM_sf2_file.js',
-                '_drum_54_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js',
-                '_drum_55_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12855_0_FluidR3_GM_sf2_file.js',
-                '_drum_56_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12856_0_FluidR3_GM_sf2_file.js',
-                '_drum_57_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12857_0_FluidR3_GM_sf2_file.js',
-                '_drum_58_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12858_0_FluidR3_GM_sf2_file.js',
-                '_drum_59_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12859_0_FluidR3_GM_sf2_file.js',
-                '_drum_60_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12860_0_FluidR3_GM_sf2_file.js',
-                '_drum_61_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12861_0_FluidR3_GM_sf2_file.js',
-                '_drum_63_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12863_0_FluidR3_GM_sf2_file.js',
-                '_drum_64_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12864_0_FluidR3_GM_sf2_file.js',
-                '_drum_65_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12865_0_FluidR3_GM_sf2_file.js',
-                '_drum_66_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12866_0_FluidR3_GM_sf2_file.js',
-                '_drum_80_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12880_0_FluidR3_GM_sf2_file.js',
-                '_drum_81_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12881_0_FluidR3_GM_sf2_file.js'
-            };
-
-            function loadDrumSounds() {
-                if (drumSoundsLoaded) return Promise.resolve();
-                var promises = Object.keys(DRUM_SCRIPT_URLS).map(function (varName) {
-                    if (window[varName]) return Promise.resolve();
-                    return new Promise(function (resolve) {
-                        var s = document.createElement('script');
-                        s.src = DRUM_SCRIPT_URLS[varName];
-                        s.onload = resolve;
-                        s.onerror = resolve; /* continue even if one fails */
-                        document.head.appendChild(s);
-                    });
-                });
-                return Promise.all(promises).then(function () {
-                    drumSoundsLoaded = true;
-                });
-            }
-
-            function initDrumEngine() {
-                if (!drumPlayer) {
-                    drumPlayer = new WebAudioFontPlayer();
-                }
-                Object.keys(DRUM_MIDI_MAP).forEach(function (pitch) {
-                    if (window[DRUM_MIDI_MAP[pitch]]) {
-                        drumPlayer.loader.decodeAfterLoading(ac, DRUM_MIDI_MAP[pitch]);
-                    }
-                });
-            }
-
-            function playDrumNote(midiNote, when, dest) {
-                if (!ac || !drumPlayer) return [];
-                var instrumentName = DRUM_MIDI_MAP[midiNote];
-                if (!instrumentName || !window[instrumentName]) return [];
-
-                if ((midiNote === 42 || midiNote === 44) && lastOpenHiHat) {
-                    try { lastOpenHiHat.cancel(); } catch (_) { }
-                    lastOpenHiHat = null;
-                }
-                if (midiNote === 80 && lastOpenTriangle) {
-                    try { lastOpenTriangle.cancel(); } catch (_) { }
-                    lastOpenTriangle = null;
-                }
-
-                var noteGain = ac.createGain();
-                noteGain.gain.value = 0.2;
-                noteGain.connect(dest);
-
-                var dur = DRUM_DURATIONS[midiNote] || 3;
-                var noteHandle = drumPlayer.queueWaveTable(
-                    ac, noteGain, window[instrumentName], when, midiNote, dur
-                );
-
-                /* disconnect gain node after playback to free memory;
-                   +0.5s buffer accounts for release envelope and reverb tail */
-                var disconnectTime = (when - ac.currentTime + dur + 0.5) * 1000;
-                if (disconnectTime > 0) {
-                    setTimeout(function () { try { noteGain.disconnect(); } catch (_) { } }, disconnectTime);
-                }
-
-                if (midiNote === 46) lastOpenHiHat = noteHandle;
-                if (midiNote === 81) lastOpenTriangle = noteHandle;
-
-                return noteHandle ? [{ stop: function () { try { noteHandle.cancel(); } catch (_) { } } }] : [];
-            }
-
-            /* ───────────────────────────────────────────────────────────────────── */
-
-            var GM_OPTS_HTML = '<optgroup label="🥁 Drum Kit"><option value="_drum_kit_gm">Drum Kit GM (CH10)</option></optgroup><optgroup label="🎹 Piano"><option value="acoustic_grand_piano">Piano de cauda</option><option value="bright_acoustic_piano">Piano brilhante</option><option value="electric_grand_piano">Piano elétrico de cauda</option><option value="honkytonk_piano">Piano honky-tonk</option><option value="electric_piano_1">Piano elétrico Rhodes</option><option value="electric_piano_2">Piano elétrico FM</option><option value="harpsichord">Cravo</option><option value="clavinet">Clavinet</option></optgroup><optgroup label="🔔 Percussão Cromática"><option value="celesta">Celesta</option><option value="glockenspiel">Glockenspiel</option><option value="music_box">Caixinha de música</option><option value="vibraphone">Vibrafone</option><option value="marimba">Marimba</option><option value="xylophone">Xilofone</option><option value="tubular_bells">Sinos tubulares</option><option value="dulcimer">Dulcimer</option></optgroup><optgroup label="🎹 Órgão"><option value="drawbar_organ">Órgão de registros</option><option value="percussive_organ">Órgão percussivo</option><option value="rock_organ">Órgão rock</option><option value="church_organ">Órgão de igreja</option><option value="reed_organ">Órgão de palheta</option><option value="accordion">Acordeom</option><option value="harmonica">Gaita</option><option value="tango_accordion">Acordeom de tango</option></optgroup><optgroup label="🎸 Violão / Guitarra"><option value="acoustic_guitar_nylon">Violão nylon</option><option value="acoustic_guitar_steel">Violão aço</option><option value="electric_guitar_jazz">Guitarra jazz</option><option value="electric_guitar_clean">Guitarra clean</option><option value="electric_guitar_muted">Guitarra abafada</option><option value="overdriven_guitar">Guitarra overdrive</option><option value="distortion_guitar">Guitarra distorção</option><option value="guitar_harmonics">Guitarra flageolets</option></optgroup><optgroup label="🎸 Baixo"><option value="acoustic_bass">Contrabaixo acústico</option><option value="electric_bass_finger">Contrabaixo elétrico</option><option value="electric_bass_pick">Contrabaixo c/ palheta</option><option value="fretless_bass">Contrabaixo fretless</option><option value="slap_bass_1">Slap bass 1</option><option value="slap_bass_2">Slap bass 2</option><option value="synth_bass_1">Synth bass 1</option><option value="synth_bass_2">Synth bass 2</option></optgroup><optgroup label="🎻 Cordas"><option value="violin">Violino</option><option value="viola">Viola</option><option value="cello">Violoncelo</option><option value="contrabass">Contrabaixo orquestral</option><option value="tremolo_strings">Cordas tremolo</option><option value="pizzicato_strings">Cordas pizzicato</option><option value="orchestral_harp">Harpa</option><option value="timpani">Tímpanos</option></optgroup><optgroup label="🎻 Ensemble"><option value="string_ensemble_1">Cordas ensemble 1</option><option value="string_ensemble_2">Cordas ensemble 2</option><option value="synthstrings_1">Synth cordas 1</option><option value="synthstrings_2">Synth cordas 2</option><option value="choir_aahs">Coro (Aahs)</option><option value="voice_oohs">Vozes (Oohs)</option><option value="synth_voice">Voz sintetizada</option><option value="orchestra_hit">Golpe orquestral</option></optgroup><optgroup label="🎺 Metais"><option value="trumpet">Trompete</option><option value="trombone">Trombone</option><option value="tuba">Tuba</option><option value="muted_trumpet">Trompete c/ surdina</option><option value="french_horn">Trompa</option><option value="brass_section">Naipe de metais</option><option value="synthbrass_1">Synth metais 1</option><option value="synthbrass_2">Synth metais 2</option></optgroup><optgroup label="🎷 Palheta"><option value="soprano_sax">Sax soprano</option><option value="alto_sax">Sax alto</option><option value="tenor_sax">Sax tenor</option><option value="baritone_sax">Sax barítono</option><option value="oboe">Oboé</option><option value="english_horn">Corno inglês</option><option value="bassoon">Fagote</option><option value="clarinet">Clarineta</option></optgroup><optgroup label="🪈 Sopros"><option value="piccolo">Flautim</option><option value="flute">Flauta transversal</option><option value="recorder">Flauta doce</option><option value="pan_flute">Flauta de Pã</option><option value="blown_bottle">Sopro em garrafa</option><option value="shakuhachi">Shakuhachi</option><option value="whistle">Apito</option><option value="ocarina">Ocarina</option></optgroup><optgroup label="🎛️ Synth Lead"><option value="lead_1_square">Lead quadrado</option><option value="lead_2_sawtooth">Lead dente-de-serra</option><option value="lead_3_calliope">Lead calíope</option><option value="lead_4_chiff">Lead chiff</option><option value="lead_5_charang">Lead charang</option><option value="lead_6_voice">Lead voz</option><option value="lead_7_fifths">Lead quintas</option><option value="lead_8_bass_lead">Lead bass+lead</option></optgroup><optgroup label="🎛️ Synth Pad"><option value="pad_1_new_age">Pad new age</option><option value="pad_2_warm">Pad warm</option><option value="pad_3_polysynth">Pad polysynth</option><option value="pad_4_choir">Pad choir</option><option value="pad_5_bowed">Pad bowed</option><option value="pad_6_metallic">Pad metálico</option><option value="pad_7_halo">Pad halo</option><option value="pad_8_sweep">Pad sweep</option></optgroup><optgroup label="🌍 Étnico"><option value="sitar">Sitar</option><option value="banjo">Banjo</option><option value="shamisen">Shamisen</option><option value="koto">Koto</option><option value="kalimba">Kalimba</option><option value="bagpipe">Gaita de fole</option><option value="fiddle">Fiddle</option><option value="shanai">Shanai</option></optgroup><optgroup label="🥁 Percussão"><option value="tinkle_bell">Sino tintilante</option><option value="agogo">Agogô</option><option value="steel_drums">Steel drums</option><option value="woodblock">Woodblock</option><option value="taiko_drum">Taiko</option><option value="melodic_tom">Tom melódico</option><option value="synth_drum">Bumbo sintetizado</option><option value="reverse_cymbal">Prato reverso</option></optgroup>';
+            var GM_OPTS_HTML = '<optgroup label="🎹 Piano"><option value="acoustic_grand_piano">Piano de cauda</option><option value="bright_acoustic_piano">Piano brilhante</option><option value="electric_grand_piano">Piano elétrico de cauda</option><option value="honkytonk_piano">Piano honky-tonk</option><option value="electric_piano_1">Piano elétrico Rhodes</option><option value="electric_piano_2">Piano elétrico FM</option><option value="harpsichord">Cravo</option><option value="clavinet">Clavinet</option></optgroup><optgroup label="🔔 Percussão Cromática"><option value="celesta">Celesta</option><option value="glockenspiel">Glockenspiel</option><option value="music_box">Caixinha de música</option><option value="vibraphone">Vibrafone</option><option value="marimba">Marimba</option><option value="xylophone">Xilofone</option><option value="tubular_bells">Sinos tubulares</option><option value="dulcimer">Dulcimer</option></optgroup><optgroup label="🎹 Órgão"><option value="drawbar_organ">Órgão de registros</option><option value="percussive_organ">Órgão percussivo</option><option value="rock_organ">Órgão rock</option><option value="church_organ">Órgão de igreja</option><option value="reed_organ">Órgão de palheta</option><option value="accordion">Acordeom</option><option value="harmonica">Gaita</option><option value="tango_accordion">Acordeom de tango</option></optgroup><optgroup label="🎸 Violão / Guitarra"><option value="acoustic_guitar_nylon">Violão nylon</option><option value="acoustic_guitar_steel">Violão aço</option><option value="electric_guitar_jazz">Guitarra jazz</option><option value="electric_guitar_clean">Guitarra clean</option><option value="electric_guitar_muted">Guitarra abafada</option><option value="overdriven_guitar">Guitarra overdrive</option><option value="distortion_guitar">Guitarra distorção</option><option value="guitar_harmonics">Guitarra flageolets</option></optgroup><optgroup label="🎸 Baixo"><option value="acoustic_bass">Contrabaixo acústico</option><option value="electric_bass_finger">Contrabaixo elétrico</option><option value="electric_bass_pick">Contrabaixo c/ palheta</option><option value="fretless_bass">Contrabaixo fretless</option><option value="slap_bass_1">Slap bass 1</option><option value="slap_bass_2">Slap bass 2</option><option value="synth_bass_1">Synth bass 1</option><option value="synth_bass_2">Synth bass 2</option></optgroup><optgroup label="🎻 Cordas"><option value="violin">Violino</option><option value="viola">Viola</option><option value="cello">Violoncelo</option><option value="contrabass">Contrabaixo orquestral</option><option value="tremolo_strings">Cordas tremolo</option><option value="pizzicato_strings">Cordas pizzicato</option><option value="orchestral_harp">Harpa</option><option value="timpani">Tímpanos</option></optgroup><optgroup label="🎻 Ensemble"><option value="string_ensemble_1">Cordas ensemble 1</option><option value="string_ensemble_2">Cordas ensemble 2</option><option value="synthstrings_1">Synth cordas 1</option><option value="synthstrings_2">Synth cordas 2</option><option value="choir_aahs">Coro (Aahs)</option><option value="voice_oohs">Vozes (Oohs)</option><option value="synth_voice">Voz sintetizada</option><option value="orchestra_hit">Golpe orquestral</option></optgroup><optgroup label="🎺 Metais"><option value="trumpet">Trompete</option><option value="trombone">Trombone</option><option value="tuba">Tuba</option><option value="muted_trumpet">Trompete c/ surdina</option><option value="french_horn">Trompa</option><option value="brass_section">Naipe de metais</option><option value="synthbrass_1">Synth metais 1</option><option value="synthbrass_2">Synth metais 2</option></optgroup><optgroup label="🎷 Palheta"><option value="soprano_sax">Sax soprano</option><option value="alto_sax">Sax alto</option><option value="tenor_sax">Sax tenor</option><option value="baritone_sax">Sax barítono</option><option value="oboe">Oboé</option><option value="english_horn">Corno inglês</option><option value="bassoon">Fagote</option><option value="clarinet">Clarineta</option></optgroup><optgroup label="🪈 Sopros"><option value="piccolo">Flautim</option><option value="flute">Flauta transversal</option><option value="recorder">Flauta doce</option><option value="pan_flute">Flauta de Pã</option><option value="blown_bottle">Sopro em garrafa</option><option value="shakuhachi">Shakuhachi</option><option value="whistle">Apito</option><option value="ocarina">Ocarina</option></optgroup><optgroup label="🎛️ Synth Lead"><option value="lead_1_square">Lead quadrado</option><option value="lead_2_sawtooth">Lead dente-de-serra</option><option value="lead_3_calliope">Lead calíope</option><option value="lead_4_chiff">Lead chiff</option><option value="lead_5_charang">Lead charang</option><option value="lead_6_voice">Lead voz</option><option value="lead_7_fifths">Lead quintas</option><option value="lead_8_bass_lead">Lead bass+lead</option></optgroup><optgroup label="🎛️ Synth Pad"><option value="pad_1_new_age">Pad new age</option><option value="pad_2_warm">Pad warm</option><option value="pad_3_polysynth">Pad polysynth</option><option value="pad_4_choir">Pad choir</option><option value="pad_5_bowed">Pad bowed</option><option value="pad_6_metallic">Pad metálico</option><option value="pad_7_halo">Pad halo</option><option value="pad_8_sweep">Pad sweep</option></optgroup><optgroup label="🌍 Étnico"><option value="sitar">Sitar</option><option value="banjo">Banjo</option><option value="shamisen">Shamisen</option><option value="koto">Koto</option><option value="kalimba">Kalimba</option><option value="bagpipe">Gaita de fole</option><option value="fiddle">Fiddle</option><option value="shanai">Shanai</option></optgroup><optgroup label="🥁 Percussão"><option value="tinkle_bell">Sino tintilante</option><option value="agogo">Agogô</option><option value="steel_drums">Steel drums</option><option value="woodblock">Woodblock</option><option value="taiko_drum">Taiko</option><option value="melodic_tom">Tom melódico</option><option value="synth_drum">Bumbo sintetizado</option><option value="reverse_cymbal">Prato reverso</option></optgroup>';
 
             function initParts() {
                 partConfigs = [];
-                percInfo = rawXml ? parsePercussionInfo(rawXml) : { drumFlags: {}, noteMap: {} };
                 var parts = osmd.Sheet.Instruments || [];
                 parts.forEach(function (inst, idx) {
                     var name = 'Part ' + (idx + 1);
                     if (inst.NameLabel && inst.NameLabel.text) name = inst.NameLabel.text;
                     else if (inst.name) name = inst.name;
-                    var isDrum = !!percInfo.drumFlags[idx];
                     var defProg = 'acoustic_grand_piano';
-                    if (isDrum) {
-                        defProg = '_drum_kit_gm';
-                    } else {
-                        var nl = name.toLowerCase();
-                        if (nl.includes('flut') || nl.includes('flau')) defProg = 'flute';
-                        if (nl.includes('viol') || nl.includes('strin')) defProg = 'violin';
-                        if (nl.includes('bass') || nl.includes('baix')) defProg = 'acoustic_bass';
-                        if (nl.includes('gui') || nl.includes('violã')) defProg = 'acoustic_guitar_nylon';
-                        if (nl.includes('drum') || nl.includes('percus') || nl.includes('bateria') || nl.includes('bater')) {
-                            defProg = '_drum_kit_gm';
-                            isDrum = true;
-                        }
-                    }
-                    partConfigs.push({ name: name, program: defProg, mute: false, solo: false, vol: 100, isDrum: isDrum });
+                    var nl = name.toLowerCase();
+                    if (nl.includes('flut') || nl.includes('flau')) defProg = 'flute';
+                    if (nl.includes('viol') || nl.includes('strin')) defProg = 'violin';
+                    if (nl.includes('bass') || nl.includes('baix')) defProg = 'acoustic_bass';
+                    if (nl.includes('gui') || nl.includes('violã')) defProg = 'acoustic_guitar_nylon';
+                    partConfigs.push({ name: name, program: defProg, mute: false, solo: false, vol: 100 });
                 });
                 renderPartsPanel();
                 loadAllInstruments();
@@ -1289,7 +1029,7 @@
 
                     var nameSp = document.createElement('span');
                     nameSp.className = 'part-name';
-                    nameSp.textContent = cfg.name;
+                    nameSp.innerHTML = cfg.name;
 
                     var ctrls = document.createElement('div');
                     ctrls.className = 'part-ctrls';
@@ -1308,7 +1048,7 @@
                     sel.className = 'part-sel';
                     sel.innerHTML = GM_OPTS_HTML;
                     sel.value = cfg.program;
-                    sel.onchange = function () { cfg.program = sel.value; cfg.isDrum = (sel.value === '_drum_kit_gm'); loadAllInstruments(); };
+                    sel.onchange = function () { cfg.program = sel.value; loadAllInstruments(); };
 
                     var volRange = document.createElement('input');
                     volRange.type = 'range';
@@ -1342,21 +1082,10 @@
                 partInsts = [];
                 partGains = [];
 
-                var hasDrumKit = partConfigs.some(function (cfg) { return cfg.program === '_drum_kit_gm'; });
-                if (hasDrumKit) {
-                    await loadDrumSounds();
-                    initDrumEngine();
-                }
-
                 var promises = partConfigs.map(async function (cfg, idx) {
                     var gain = ac.createGain();
                     gain.connect(inputGain);
                     partGains[idx] = gain;
-
-                    if (cfg.program === '_drum_kit_gm') {
-                        partInsts[idx] = { isDrumKit: true };
-                        return;
-                    }
 
                     var sf = await Soundfont.instrument(ac, cfg.program, {
                         soundfont: 'FluidR3_GM',
@@ -1389,7 +1118,7 @@
                     }
                     var finalGain = baseGain * ((cfg.vol || 100) / 100);
                     if (partGains[idx]) {
-                        partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.05);
+                        partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.01);
                     }
                 });
             }
@@ -1404,7 +1133,7 @@
 
             function clearCursorTimer() {
                 if (cursorTimer) {
-                    cancelAnimationFrame(cursorTimer);
+                    clearTimeout(cursorTimer);
                     cursorTimer = null;
                 }
             }
@@ -1428,10 +1157,9 @@
             }
 
             function extractCursorSteps() {
-                if (!osmd || !osmd.cursor) return;
-                var bpm = +document.getElementById('bpm').value || 100;
-                if (cursorStepsCache.bpm === bpm && cursorStepsCache.xml === rawXml && cursorSteps.length > 0) return;
                 cursorSteps = [];
+                var bpm = +document.getElementById('bpm').value || 100;
+                if (!osmd || !osmd.cursor) return;
                 try {
                     osmd.cursor.reset();
                     var iterator = osmd.cursor.Iterator;
@@ -1442,8 +1170,6 @@
                         iterator.moveToNext();
                     }
                     osmd.cursor.reset();
-                    cursorStepsCache.bpm = bpm;
-                    cursorStepsCache.xml = rawXml;
                 } catch (_) { }
             }
 
@@ -1479,7 +1205,7 @@
                         }
                     }
 
-                    cursorTimer = requestAnimationFrame(step);
+                    cursorTimer = setTimeout(step, 25);
                 }
 
                 step();
@@ -1583,15 +1309,6 @@
                 var bpm = +document.getElementById('bpm').value || 100;
                 var beatLen = 60 / bpm;
 
-                /* pre-build instrument ID → index map for O(1) lookups */
-                var instIdMap = {};
-                if (osmd.Sheet && osmd.Sheet.Instruments) {
-                    for (var m = 0; m < osmd.Sheet.Instruments.length; m++) {
-                        var inst = osmd.Sheet.Instruments[m];
-                        if (inst.Id !== undefined) instIdMap[inst.Id] = m;
-                    }
-                }
-
                 osmd.cursor.reset();
                 var iterator = osmd.cursor.Iterator;
 
@@ -1608,13 +1325,19 @@
                         var partIdx = 0;
                         try {
                             if (ve.ParentVoice && ve.ParentVoice.Parent) {
+                                // OSMD: ve.ParentVoice.Parent é geralmente o próprio objeto Instrument
                                 var instObj = ve.ParentVoice.Parent;
-                                if (!instObj.NameLabel && instObj.ParentInstrument) instObj = instObj.ParentInstrument;
+                                if (!instObj.NameLabel && instObj.ParentInstrument) instObj = instObj.ParentInstrument; // fallback caso seja Staff
 
                                 if (instObj && osmd.Sheet.Instruments) {
                                     var idx = osmd.Sheet.Instruments.indexOf(instObj);
-                                    if (idx < 0 && instObj.Id !== undefined && instIdMap[instObj.Id] !== undefined) {
-                                        idx = instIdMap[instObj.Id];
+                                    if (idx < 0) {
+                                        // busca alternativa por Id
+                                        for (var k = 0; k < osmd.Sheet.Instruments.length; k++) {
+                                            if (osmd.Sheet.Instruments[k].Id === instObj.Id || osmd.Sheet.Instruments[k] === instObj) {
+                                                idx = k; break;
+                                            }
+                                        }
                                     }
                                     if (idx >= 0) partIdx = idx;
                                 }
@@ -1629,13 +1352,8 @@
                             var midi = getMidiPitch(note);
                             if (midi === null) continue;
 
-                            var isDrumPart = partConfigs[partIdx] && partConfigs[partIdx].isDrum;
-                            if (isDrumPart && percInfo && percInfo.noteMap[partIdx] && percInfo.noteMap[partIdx][midi]) {
-                                midi = percInfo.noteMap[partIdx][midi];
-                            }
-
                             var dur = getTiedDuration(note, beatLen);
-                            evs.push({ t: tSec, midi: midi, dur: dur, part: partIdx, isDrum: isDrumPart });
+                            evs.push({ t: tSec, midi: midi, dur: dur, part: partIdx });
 
                             if (tSec + dur > pieceEnd) pieceEnd = tSec + dur;
                         }
@@ -1647,12 +1365,8 @@
                 evs.sort(function (a, b) { return a.t - b.t; });
             }
 
-            async function scheduleMetronome(offset) {
+            function scheduleMetronome(offset) {
                 if (!document.getElementById('metCheck').checked) return;
-                if (!drumPlayer) {
-                    await loadDrumSounds();
-                    initDrumEngine();
-                }
 
                 var beatLen = getMetronomeBeatLen();
                 var lastBeat = pieceEnd + beatLen;
@@ -1662,8 +1376,22 @@
                     var abs = sat + t;
                     if (abs < ac.currentTime) continue;
 
-                    var drumNodes = playDrumNote(37, abs, masterGain);
-                    for (var d = 0; d < drumNodes.length; d++) sc.push(drumNodes[d]);
+                    var osc = ac.createOscillator();
+                    var g = ac.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(1000, abs);
+
+                    g.gain.setValueAtTime(0, abs);
+                    g.gain.linearRampToValueAtTime(0.1, abs + 0.005);
+                    g.gain.linearRampToValueAtTime(0, abs + 0.05);
+
+                    osc.connect(g);
+                    g.connect(masterGain);
+
+                    osc.start(abs);
+                    osc.stop(abs + 0.1);
+                    sc.push(osc);
                 }
             }
 
@@ -1688,21 +1416,14 @@
                     if (ev.t < offset - 0.02) return;
                     var abs = sat + ev.t;
                     if (abs < ac.currentTime) return;
-
-                    if (ev.isDrum) {
-                        var drumDest = partGains[ev.part] || masterGain;
-                        var drumNodes = playDrumNote(ev.midi, abs, drumDest);
-                        for (var d = 0; d < drumNodes.length; d++) sc.push(drumNodes[d]);
-                    } else {
-                        var n = null;
-                        if (partInsts[ev.part] && typeof partInsts[ev.part].play === 'function') {
-                            n = partInsts[ev.part].play(ev.midi + octShift, abs, { duration: ev.dur });
-                        }
-                        if (n) sc.push(n);
+                    var n = null;
+                    if (partInsts[ev.part] && typeof partInsts[ev.part].play === 'function') {
+                        n = partInsts[ev.part].play(ev.midi + octShift, abs, { duration: ev.dur });
                     }
+                    if (n) sc.push(n);
                 });
 
-                await scheduleMetronome(offset);
+                scheduleMetronome(offset);
                 armPlaybackEnd(offset);
             }
 
@@ -1711,17 +1432,17 @@
                     var zip = await JSZip.loadAsync(file);
                     var containerFile = zip.file("META-INF/container.xml");
                     if (!containerFile) throw new Error("Arquivo container.xml não encontrado no MXL.");
-
+                    
                     var containerText = await containerFile.async("text");
                     var parser = new DOMParser();
                     var xmlDoc = parser.parseFromString(containerText, "text/xml");
                     var rootFileTag = xmlDoc.querySelector("rootfile");
                     if (!rootFileTag) throw new Error("Aponte para o arquivo principal não encontrado no container.xml.");
-
+                    
                     var fullPath = rootFileTag.getAttribute("full-path");
                     var mainXmlFile = zip.file(fullPath);
                     if (!mainXmlFile) throw new Error("Arquivo principal '" + fullPath + "' não encontrado no pacote MXL.");
-
+                    
                     return await mainXmlFile.async("text");
                 } catch (e) {
                     throw new Error("Erro ao descompactar MXL: " + e.message);
@@ -1737,7 +1458,7 @@
 
                 try {
                     var isMxl = f.name.toLowerCase().endsWith('.mxl');
-
+                    
                     if (isMxl) {
                         rawXml = await getXmlFromMxl(f);
                     } else {
@@ -1828,7 +1549,7 @@
                 }
             }
 
-            loadFromUrl('https://raw.githubusercontent.com/GlauberLASantiago/vitopamos/main/VitopamosEx2.musicxml');
+            loadFromUrl('https://raw.githubusercontent.com/GlauberLASantiago/vitopamos/main/VitopamosEx.musicxml');
 
             document.getElementById('bp').onclick = async function () {
                 if (run || !partInsts.length || !ac) return;
@@ -2045,7 +1766,6 @@
                 var xmlB64 = encodeBase64Unicode(xml);
                 var safeBpm = String(bpm);
                 var safePartConfigs = JSON.stringify(partConfigs);
-                var safePercInfo = JSON.stringify(percInfo || { drumFlags: {}, noteMap: {} });
                 var metAttr = metronomeChecked ? 'checked' : '';
                 var safeRev = String(reverbAmount);
                 var safeOct = String(octaveShift);
@@ -2066,7 +1786,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.9.7/build/opensheetmusicdisplay.min.js"><\/script>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"><\/script>
-<script src="https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js"><\/script>
 <style>
 body { background: #f3f4f6; color: #111827; }
 .icon-svg { display: inline-block; vertical-align: middle; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
@@ -2093,7 +1812,6 @@ body { background: #f3f4f6; color: #111827; }
 <script>
 (function(){
   var partConfigs = ${safePartConfigs};
-  var percInfo = ${safePercInfo};
   var raw = decodeURIComponent(escape(atob("${xmlB64}")));
   var GM_OPTS_HTML = '${GM_OPTS_HTML}';
   var ICONS = {
@@ -2128,98 +1846,10 @@ body { background: #f3f4f6; color: #111827; }
   var playbackEndTimer = null, pieceEnd = 0;
   var clickTimer = null;
   var inputGain = null, dryGain = null, wetGain = null, masterGain = null, convolver = null;
-  var cursorStepsCache = { bpm: null };
-  var eventsCache = { bpm: null, evs: [], pieceEnd: 0 };
-
-  var DRUM_MIDI_MAP = {
-    35:'_drum_35_17_JCLive_sf2_file',36:'_drum_36_1_JCLive_sf2_file',37:'_drum_37_1_JCLive_sf2_file',
-    38:'_drum_38_1_JCLive_sf2_file',39:'_drum_39_1_JCLive_sf2_file',40:'_drum_40_1_JCLive_sf2_file',
-    41:'_drum_41_0_FluidR3_GM_sf2_file',42:'_drum_42_0_FluidR3_GM_sf2_file',43:'_drum_43_0_FluidR3_GM_sf2_file',
-    44:'_drum_44_0_FluidR3_GM_sf2_file',45:'_drum_45_0_FluidR3_GM_sf2_file',46:'_drum_46_0_FluidR3_GM_sf2_file',
-    47:'_drum_47_0_FluidR3_GM_sf2_file',48:'_drum_48_0_FluidR3_GM_sf2_file',49:'_drum_49_0_FluidR3_GM_sf2_file',
-    50:'_drum_50_0_FluidR3_GM_sf2_file',51:'_drum_51_0_FluidR3_GM_sf2_file',52:'_drum_52_0_FluidR3_GM_sf2_file',
-    53:'_drum_53_0_FluidR3_GM_sf2_file',54:'_drum_54_0_FluidR3_GM_sf2_file',55:'_drum_55_0_FluidR3_GM_sf2_file',
-    56:'_drum_56_0_FluidR3_GM_sf2_file',57:'_drum_57_0_FluidR3_GM_sf2_file',58:'_drum_58_0_FluidR3_GM_sf2_file',
-    59:'_drum_59_0_FluidR3_GM_sf2_file',60:'_drum_60_0_FluidR3_GM_sf2_file',61:'_drum_61_0_FluidR3_GM_sf2_file',
-    63:'_drum_63_0_FluidR3_GM_sf2_file',64:'_drum_64_0_FluidR3_GM_sf2_file',65:'_drum_65_0_FluidR3_GM_sf2_file',
-    66:'_drum_66_0_FluidR3_GM_sf2_file',80:'_drum_80_0_FluidR3_GM_sf2_file',81:'_drum_81_0_FluidR3_GM_sf2_file'
-  };
-  var DRUM_SCRIPT_URLS = {
-    '_drum_35_17_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12835_17_JCLive_sf2_file.js',
-    '_drum_36_1_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12836_1_JCLive_sf2_file.js',
-    '_drum_37_1_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12837_1_JCLive_sf2_file.js',
-    '_drum_38_1_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12838_1_JCLive_sf2_file.js',
-    '_drum_39_1_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12839_1_JCLive_sf2_file.js',
-    '_drum_40_1_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12840_1_JCLive_sf2_file.js',
-    '_drum_41_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12841_0_FluidR3_GM_sf2_file.js',
-    '_drum_42_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12842_0_FluidR3_GM_sf2_file.js',
-    '_drum_43_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12843_0_FluidR3_GM_sf2_file.js',
-    '_drum_44_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12844_0_FluidR3_GM_sf2_file.js',
-    '_drum_45_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12845_0_FluidR3_GM_sf2_file.js',
-    '_drum_46_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12846_0_FluidR3_GM_sf2_file.js',
-    '_drum_47_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12847_0_FluidR3_GM_sf2_file.js',
-    '_drum_48_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12848_0_FluidR3_GM_sf2_file.js',
-    '_drum_49_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12849_0_FluidR3_GM_sf2_file.js',
-    '_drum_50_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12850_0_FluidR3_GM_sf2_file.js',
-    '_drum_51_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12851_0_FluidR3_GM_sf2_file.js',
-    '_drum_52_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12852_0_FluidR3_GM_sf2_file.js',
-    '_drum_53_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12853_0_FluidR3_GM_sf2_file.js',
-    '_drum_54_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js',
-    '_drum_55_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12855_0_FluidR3_GM_sf2_file.js',
-    '_drum_56_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12856_0_FluidR3_GM_sf2_file.js',
-    '_drum_57_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12857_0_FluidR3_GM_sf2_file.js',
-    '_drum_58_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12858_0_FluidR3_GM_sf2_file.js',
-    '_drum_59_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12859_0_FluidR3_GM_sf2_file.js',
-    '_drum_60_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12860_0_FluidR3_GM_sf2_file.js',
-    '_drum_61_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12861_0_FluidR3_GM_sf2_file.js',
-    '_drum_63_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12863_0_FluidR3_GM_sf2_file.js',
-    '_drum_64_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12864_0_FluidR3_GM_sf2_file.js',
-    '_drum_65_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12865_0_FluidR3_GM_sf2_file.js',
-    '_drum_66_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12866_0_FluidR3_GM_sf2_file.js',
-    '_drum_80_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12880_0_FluidR3_GM_sf2_file.js',
-    '_drum_81_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12881_0_FluidR3_GM_sf2_file.js'
-  };
-  var DRUM_DURATIONS = {53:4,80:0.12,46:20,49:20,51:20,52:20,55:20,57:20,59:20,81:20};
-  var drumPlayer = null, lastOpenHiHat = null, lastOpenTriangle = null;
-  var drumSoundsLoaded = false;
-
-  function loadDrumSounds(){
-    if(drumSoundsLoaded) return Promise.resolve();
-    var promises = Object.keys(DRUM_SCRIPT_URLS).map(function(v){
-      if(window[v]) return Promise.resolve();
-      return new Promise(function(resolve){
-        var s = document.createElement('script');
-        s.src = DRUM_SCRIPT_URLS[v];
-        s.onload = resolve;
-        s.onerror = function(){ console.warn('Drum sound failed to load: ' + DRUM_SCRIPT_URLS[v]); resolve(); };
-        document.head.appendChild(s);
-      });
-    });
-    return Promise.all(promises).then(function(){ drumSoundsLoaded = true; });
-  }
-
-  function initDrumEngine(){
-    if(!drumPlayer) drumPlayer = new WebAudioFontPlayer();
-    Object.keys(DRUM_MIDI_MAP).forEach(function(p){ if(window[DRUM_MIDI_MAP[p]]) drumPlayer.loader.decodeAfterLoading(ac, DRUM_MIDI_MAP[p]); });
-  }
-
-  function playDrumNote(midiNote, when, dest){
-    if(!ac || !drumPlayer) return [];
-    var instrumentName = DRUM_MIDI_MAP[midiNote];
-    if(!instrumentName || !window[instrumentName]) return [];
-    if((midiNote===42||midiNote===44)&&lastOpenHiHat){try{lastOpenHiHat.cancel();}catch(_){}lastOpenHiHat=null;}
-    if(midiNote===80&&lastOpenTriangle){try{lastOpenTriangle.cancel();}catch(_){}lastOpenTriangle=null;}
-    var noteGain=ac.createGain(); noteGain.gain.value=0.2; noteGain.connect(dest);
-    var dur=DRUM_DURATIONS[midiNote]||3;
-    var noteHandle=drumPlayer.queueWaveTable(ac,noteGain,window[instrumentName],when,midiNote,dur);
-    if(midiNote===46) lastOpenHiHat=noteHandle;
-    if(midiNote===81) lastOpenTriangle=noteHandle;
-    return noteHandle?[{stop:function(){try{noteHandle.cancel();}catch(_){}}}]:[];
-  }
 
   function clearCursorTimer(){
     if(cursorTimer){
-      cancelAnimationFrame(cursorTimer);
+      clearTimeout(cursorTimer);
       cursorTimer = null;
     }
   }
@@ -2242,9 +1872,8 @@ body { background: #f3f4f6; color: #111827; }
   }
 
   function extractCursorSteps(){
-    var bpm = +document.getElementById('bpm').value || 100;
-    if(cursorStepsCache.bpm === bpm) return;
     cursorSteps = [];
+    var bpm = +document.getElementById('bpm').value || 100;
     try{
       osmd.cursor.reset();
       var it = osmd.cursor.Iterator;
@@ -2255,7 +1884,6 @@ body { background: #f3f4f6; color: #111827; }
         it.moveToNext();
       }
       osmd.cursor.reset();
-      cursorStepsCache.bpm = bpm;
     }catch(_){}
   }
 
@@ -2290,7 +1918,7 @@ body { background: #f3f4f6; color: #111827; }
         }
       }
 
-      cursorTimer = requestAnimationFrame(step);
+      cursorTimer = setTimeout(step, 25);
     }
 
     step();
@@ -2406,7 +2034,7 @@ body { background: #f3f4f6; color: #111827; }
     wetGain.connect(masterGain);
     masterGain.connect(comp);
     comp.connect(ac.destination);
-    masterGain.gain.value = 2.0;
+    masterGain.gain.value = 3.5;
     updateReverb();
   }
 
@@ -2432,25 +2060,11 @@ body { background: #f3f4f6; color: #111827; }
   }
 
   function extract(){
-    var b = +document.getElementById('bpm').value || 100;
-    if(eventsCache.bpm === b && eventsCache.evs.length > 0){
-      evs = eventsCache.evs;
-      pieceEnd = eventsCache.pieceEnd;
-      return;
-    }
     evs = [];
     pieceEnd = 0;
 
+    var b = +document.getElementById('bpm').value || 100;
     var bl = 60 / b;
-
-    /* pre-build instrument ID → index map for O(1) lookups */
-    var instIdMap = {};
-    if(osmd.Sheet && osmd.Sheet.Instruments){
-      for(var ii = 0; ii < osmd.Sheet.Instruments.length; ii++){
-        var inst = osmd.Sheet.Instruments[ii];
-        if(inst.Id !== undefined) instIdMap[inst.Id] = ii;
-      }
-    }
 
     osmd.cursor.reset();
     var it = osmd.cursor.Iterator;
@@ -2472,8 +2086,10 @@ body { background: #f3f4f6; color: #111827; }
             if(!instObj.NameLabel && instObj.ParentInstrument) instObj = instObj.ParentInstrument;
             if(instObj && osmd.Sheet.Instruments){
               var idx = osmd.Sheet.Instruments.indexOf(instObj);
-              if(idx < 0 && instObj.Id !== undefined && instIdMap[instObj.Id] !== undefined){
-                idx = instIdMap[instObj.Id];
+              if(idx < 0){
+                for(var k = 0; k < osmd.Sheet.Instruments.length; k++){
+                  if(osmd.Sheet.Instruments[k].Id === instObj.Id || osmd.Sheet.Instruments[k] === instObj){ idx = k; break; }
+                }
               }
               if(idx >= 0) partIdx = idx;
             }
@@ -2486,11 +2102,8 @@ body { background: #f3f4f6; color: #111827; }
           var m = getMidi(n);
           if(m === null) continue;
 
-          var isDrumPart = partConfigs[partIdx] && partConfigs[partIdx].isDrum;
-          if(isDrumPart && percInfo && percInfo.noteMap[partIdx] && percInfo.noteMap[partIdx][m]) m = percInfo.noteMap[partIdx][m];
-
           var d = getTiedDur(n, bl);
-          evs.push({ t:t, m:m, d:d, part: partIdx, isDrum: isDrumPart });
+          evs.push({ t:t, m:m, d:d, part: partIdx });
 
           if(t + d > pieceEnd) pieceEnd = t + d;
         }
@@ -2500,9 +2113,6 @@ body { background: #f3f4f6; color: #111827; }
     }
 
     evs.sort(function(a,b){ return a.t - b.t; });
-    eventsCache.bpm = b;
-    eventsCache.evs = evs;
-    eventsCache.pieceEnd = pieceEnd;
   }
 
   function getOctShift(){
@@ -2520,33 +2130,31 @@ body { background: #f3f4f6; color: #111827; }
           if (isAnySolo) baseGain = cfg.solo ? 1 : 0;
           else if (cfg.mute) baseGain = 0;
           var finalGain = baseGain * ((cfg.vol || 100) / 100);
-          if (partGains[idx]) partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.05);
+          if (partGains[idx]) partGains[idx].gain.setTargetAtTime(finalGain, ac.currentTime, 0.01);
       });
   }
 
-  async function ensureInst(){
-    if(partInsts.length === partConfigs.length) return;
-    document.getElementById('st').textContent = 'A carregar timbres...';
-    document.getElementById('st').style.display = 'block';
-    var hasDrumKit = partConfigs.some(function(c){ return c.program === '_drum_kit_gm'; });
-    if(hasDrumKit){ await loadDrumSounds(); initDrumEngine(); }
-    var promises = partConfigs.map(function(cfg, idx){
-        var gain = ac.createGain();
-        gain.connect(inputGain);
-        partGains[idx] = gain;
-        if(cfg.program === '_drum_kit_gm'){
-            partInsts[idx] = { isDrumKit: true };
-            return Promise.resolve();
-        }
-        return Soundfont.instrument(ac, cfg.program, {
-            soundfont: 'FluidR3_GM',
-            destination: gain,
-            nameToUrl: function(n, f) { return 'https://gleitz.github.io/midi-js-soundfonts/' + f + '/' + n + '-mp3.js'; }
-        }).then(function(s){ partInsts[idx] = s; });
+  function ensureInst(){
+    return new Promise(function(resolve){
+      if(partInsts.length === partConfigs.length) return resolve();
+      document.getElementById('st').textContent = 'A carregar timbres...';
+      document.getElementById('st').style.display = 'block';
+      var promises = partConfigs.map(function(cfg, idx){
+          var gain = ac.createGain();
+          gain.connect(inputGain);
+          partGains[idx] = gain;
+          return Soundfont.instrument(ac, cfg.program, {
+              soundfont: 'FluidR3_GM',
+              destination: gain,
+              nameToUrl: function(n, f) { return 'https://gleitz.github.io/midi-js-soundfonts/' + f + '/' + n + '-mp3.js'; }
+          }).then(function(s){ partInsts[idx] = s; });
+      });
+      Promise.all(promises).then(function(){
+          updatePartMix();
+          document.getElementById('st').style.display = 'none';
+          resolve();
+      });
     });
-    await Promise.all(promises);
-    updatePartMix();
-    document.getElementById('st').style.display = 'none';
   }
 
   async function play(off){
@@ -2569,21 +2177,14 @@ body { background: #f3f4f6; color: #111827; }
       if(e.t < off - 0.02) return;
       var when = sat + e.t;
       if(when < ac.currentTime) return;
-      if(e.isDrum){
-        var drumDest = partGains[e.part] || masterGain;
-        var dn = playDrumNote(e.m, when, drumDest);
-        for(var di=0;di<dn.length;di++) sc.push(dn[di]);
-      } else {
-        var voice = null;
-        if (partInsts[e.part] && typeof partInsts[e.part].play === 'function') {
-            voice = partInsts[e.part].play(e.m + octShift, when, { duration: e.d });
-        }
-        if(voice) sc.push(voice);
+      var voice = null;
+      if (partInsts[e.part]) {
+          voice = partInsts[e.part].play(e.m + octShift, when, { duration: e.d });
       }
+      if(voice) sc.push(voice);
     });
 
     if(document.getElementById('met').checked){
-      if(!drumPlayer){ await loadDrumSounds(); initDrumEngine(); }
       var bl = getMetronomeBeatLen();
       var firstBeat = Math.ceil(off / bl) * bl;
       var lastBeat = pieceEnd + bl;
@@ -2591,8 +2192,17 @@ body { background: #f3f4f6; color: #111827; }
       for(var t = firstBeat; t < lastBeat; t += bl){
         var abs = sat + t;
         if(abs < ac.currentTime) continue;
-        var dn = playDrumNote(37, abs, masterGain);
-        for(var di=0;di<dn.length;di++) sc.push(dn[di]);
+
+        var o = ac.createOscillator(), g = ac.createGain();
+        o.frequency.setValueAtTime(1000, abs);
+        g.gain.setValueAtTime(0, abs);
+        g.gain.linearRampToValueAtTime(0.1, abs + 0.005);
+        g.gain.linearRampToValueAtTime(0, abs + 0.05);
+        o.connect(g);
+        g.connect(masterGain);
+        o.start(abs);
+        o.stop(abs + 0.1);
+        sc.push(o);
       }
     }
 
@@ -2686,7 +2296,7 @@ body { background: #f3f4f6; color: #111827; }
           nameSp.style.fontWeight = '600';
           nameSp.style.minWidth = '120px';
           nameSp.style.color = '#111827';
-          nameSp.textContent = cfg.name;
+          nameSp.innerHTML = cfg.name;
           
           var bMute = document.createElement('button');
           bMute.innerHTML = ICONS.mute + ' Mute';
@@ -2712,10 +2322,7 @@ body { background: #f3f4f6; color: #111827; }
           sel.value = cfg.program;
           sel.onchange = function() {
               cfg.program = sel.value;
-              cfg.isDrum = (sel.value === '_drum_kit_gm');
               partInsts = [];
-              eventsCache.bpm = null;
-              cursorStepsCache.bpm = null;
               ensureInst();
           };
           
