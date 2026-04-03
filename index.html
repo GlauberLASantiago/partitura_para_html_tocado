@@ -599,17 +599,34 @@
         <div class="hd">
             <div>
                 <div class="hd-title">ViToPaMoS</div>
-                <div class="hd-sub">Visualizador e Tocador de Partituras para Moodle e Sites (MusicXML &mdash; Moodle/Web)</div>
+                <div class="hd-sub">Visualizador e Tocador de Partituras para Moodle e Sites (MusicXML &mdash;
+                    Moodle/Web)</div>
             </div>
             <button class="theme-toggle" id="themeToggle" title="Alternar tema">
-                <svg id="themeIconSun" class="icon-svg" style="display:none;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                <svg id="themeIconMoon" class="icon-svg" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg id="themeIconSun" class="icon-svg" style="display:none;" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg id="themeIconMoon" class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
             </button>
         </div>
 
         <div class="body">
             <label class="load-btn">
-                <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24"><path d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2"></path></svg>
+                <svg class="icon-svg" style="width:16px;height:16px;margin-right:6px;" viewBox="0 0 24 24">
+                    <path
+                        d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.69.9H18a2 2 0 0 1 2 2v2">
+                    </path>
+                </svg>
                 <span>Carregar partitura</span>
                 <input type="file" id="fi" accept=".xml,.musicxml,.mxl">
             </label>
@@ -623,22 +640,31 @@
                     <input type="text" id="metaTitle" placeholder="Título da peça">
                 </div>
                 <button class="btn btn-apply" id="btnApplyMeta">
-                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
                     Aplicar
                 </button>
             </div>
 
             <div class="controls">
                 <button class="btn btn-play" id="bp" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
                     Play
                 </button>
                 <button class="btn btn-pause" id="bpa" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
+                        <rect x="6" y="4" width="4" height="16"></rect>
+                        <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
                     Pause
                 </button>
                 <button class="btn btn-stop" id="bs" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"></rect></svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24">
+                        <rect x="4" y="4" width="16" height="16"></rect>
+                    </svg>
                     Stop
                 </button>
 
@@ -656,7 +682,7 @@
 
                 <div class="rev-wrap">
                     <label for="reverbAmt">Reverber</label>
-                    <input type="number" id="reverbAmt" value="25" min="0" max="100">
+                    <input type="number" id="reverbAmt" value="15" min="0" max="100">
                 </div>
 
                 <div class="zoom-wrap">
@@ -703,11 +729,18 @@
                 </div>
 
                 <button class="btn btn-export" id="bx" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
                     Copiar HTML
                 </button>
                 <button class="btn btn-download" id="bdl" disabled>
-                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
                     Baixar HTML
                 </button>
                 <div id="partsPanel" class="parts-panel" style="display:none;"></div>
@@ -719,7 +752,10 @@
 
     <section class="inst-guide">
         <h3>
-            <svg class="icon-svg" style="width:18px;height:18px;color:#302b63;" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <svg class="icon-svg" style="width:18px;height:18px;color:#302b63;" viewBox="0 0 24 24">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
             Guia para Professores
         </h3>
         <div class="inst-steps">
@@ -750,7 +786,8 @@
     </section>
 
     <footer class="credits-footer">
-        <strong>ViToPaMoS</strong> &mdash; Desenvolvido pelo professor <strong>Glauber Santiago</strong> &mdash; DAC/UFSCar<br>
+        <strong>ViToPaMoS</strong> &mdash; Desenvolvido pelo professor <strong>Glauber Santiago</strong> &mdash;
+        DAC/UFSCar<br>
         <a href="https://servidores.ufscar.br/glauber/" target="_blank">servidores.ufscar.br/glauber/</a> &bull;
         <a href="https://sites.google.com/view/glauberia" target="_blank">sites.google.com/view/glauberia</a>
     </footer>
@@ -989,7 +1026,7 @@
                 masterGain.connect(compressor);
                 compressor.connect(ac.destination);
 
-                masterGain.gain.value = 3.5;
+                masterGain.gain.value = 2.0;
                 updateReverb();
             }
 
@@ -1110,39 +1147,39 @@
 
             /* URL map for lazy-loading drum soundfont scripts */
             var DRUM_SCRIPT_URLS = {
-                '_drum_35_17_JCLive_sf2_file':     'https://surikov.github.io/webaudiofontdata/sound/12835_17_JCLive_sf2_file.js',
-                '_drum_36_1_JCLive_sf2_file':      'https://surikov.github.io/webaudiofontdata/sound/12836_1_JCLive_sf2_file.js',
-                '_drum_37_1_JCLive_sf2_file':      'https://surikov.github.io/webaudiofontdata/sound/12837_1_JCLive_sf2_file.js',
-                '_drum_38_1_JCLive_sf2_file':      'https://surikov.github.io/webaudiofontdata/sound/12838_1_JCLive_sf2_file.js',
-                '_drum_39_1_JCLive_sf2_file':      'https://surikov.github.io/webaudiofontdata/sound/12839_1_JCLive_sf2_file.js',
-                '_drum_40_1_JCLive_sf2_file':      'https://surikov.github.io/webaudiofontdata/sound/12840_1_JCLive_sf2_file.js',
-                '_drum_41_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12841_0_FluidR3_GM_sf2_file.js',
-                '_drum_42_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12842_0_FluidR3_GM_sf2_file.js',
-                '_drum_43_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12843_0_FluidR3_GM_sf2_file.js',
-                '_drum_44_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12844_0_FluidR3_GM_sf2_file.js',
-                '_drum_45_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12845_0_FluidR3_GM_sf2_file.js',
-                '_drum_46_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12846_0_FluidR3_GM_sf2_file.js',
-                '_drum_47_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12847_0_FluidR3_GM_sf2_file.js',
-                '_drum_48_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12848_0_FluidR3_GM_sf2_file.js',
-                '_drum_49_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12849_0_FluidR3_GM_sf2_file.js',
-                '_drum_50_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12850_0_FluidR3_GM_sf2_file.js',
-                '_drum_51_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12851_0_FluidR3_GM_sf2_file.js',
-                '_drum_52_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12852_0_FluidR3_GM_sf2_file.js',
-                '_drum_53_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12853_0_FluidR3_GM_sf2_file.js',
-                '_drum_54_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js',
-                '_drum_55_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12855_0_FluidR3_GM_sf2_file.js',
-                '_drum_56_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12856_0_FluidR3_GM_sf2_file.js',
-                '_drum_57_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12857_0_FluidR3_GM_sf2_file.js',
-                '_drum_58_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12858_0_FluidR3_GM_sf2_file.js',
-                '_drum_59_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12859_0_FluidR3_GM_sf2_file.js',
-                '_drum_60_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12860_0_FluidR3_GM_sf2_file.js',
-                '_drum_61_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12861_0_FluidR3_GM_sf2_file.js',
-                '_drum_63_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12863_0_FluidR3_GM_sf2_file.js',
-                '_drum_64_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12864_0_FluidR3_GM_sf2_file.js',
-                '_drum_65_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12865_0_FluidR3_GM_sf2_file.js',
-                '_drum_66_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12866_0_FluidR3_GM_sf2_file.js',
-                '_drum_80_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12880_0_FluidR3_GM_sf2_file.js',
-                '_drum_81_0_FluidR3_GM_sf2_file':  'https://surikov.github.io/webaudiofontdata/sound/12881_0_FluidR3_GM_sf2_file.js'
+                '_drum_35_17_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12835_17_JCLive_sf2_file.js',
+                '_drum_36_1_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12836_1_JCLive_sf2_file.js',
+                '_drum_37_1_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12837_1_JCLive_sf2_file.js',
+                '_drum_38_1_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12838_1_JCLive_sf2_file.js',
+                '_drum_39_1_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12839_1_JCLive_sf2_file.js',
+                '_drum_40_1_JCLive_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12840_1_JCLive_sf2_file.js',
+                '_drum_41_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12841_0_FluidR3_GM_sf2_file.js',
+                '_drum_42_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12842_0_FluidR3_GM_sf2_file.js',
+                '_drum_43_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12843_0_FluidR3_GM_sf2_file.js',
+                '_drum_44_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12844_0_FluidR3_GM_sf2_file.js',
+                '_drum_45_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12845_0_FluidR3_GM_sf2_file.js',
+                '_drum_46_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12846_0_FluidR3_GM_sf2_file.js',
+                '_drum_47_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12847_0_FluidR3_GM_sf2_file.js',
+                '_drum_48_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12848_0_FluidR3_GM_sf2_file.js',
+                '_drum_49_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12849_0_FluidR3_GM_sf2_file.js',
+                '_drum_50_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12850_0_FluidR3_GM_sf2_file.js',
+                '_drum_51_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12851_0_FluidR3_GM_sf2_file.js',
+                '_drum_52_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12852_0_FluidR3_GM_sf2_file.js',
+                '_drum_53_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12853_0_FluidR3_GM_sf2_file.js',
+                '_drum_54_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js',
+                '_drum_55_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12855_0_FluidR3_GM_sf2_file.js',
+                '_drum_56_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12856_0_FluidR3_GM_sf2_file.js',
+                '_drum_57_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12857_0_FluidR3_GM_sf2_file.js',
+                '_drum_58_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12858_0_FluidR3_GM_sf2_file.js',
+                '_drum_59_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12859_0_FluidR3_GM_sf2_file.js',
+                '_drum_60_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12860_0_FluidR3_GM_sf2_file.js',
+                '_drum_61_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12861_0_FluidR3_GM_sf2_file.js',
+                '_drum_63_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12863_0_FluidR3_GM_sf2_file.js',
+                '_drum_64_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12864_0_FluidR3_GM_sf2_file.js',
+                '_drum_65_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12865_0_FluidR3_GM_sf2_file.js',
+                '_drum_66_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12866_0_FluidR3_GM_sf2_file.js',
+                '_drum_80_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12880_0_FluidR3_GM_sf2_file.js',
+                '_drum_81_0_FluidR3_GM_sf2_file': 'https://surikov.github.io/webaudiofontdata/sound/12881_0_FluidR3_GM_sf2_file.js'
             };
 
             function loadDrumSounds() {
@@ -1188,7 +1225,7 @@
                 }
 
                 var noteGain = ac.createGain();
-                noteGain.gain.value = 0.85;
+                noteGain.gain.value = 0.2;
                 noteGain.connect(dest);
 
                 var dur = DRUM_DURATIONS[midiNote] || 3;
@@ -1674,17 +1711,17 @@
                     var zip = await JSZip.loadAsync(file);
                     var containerFile = zip.file("META-INF/container.xml");
                     if (!containerFile) throw new Error("Arquivo container.xml não encontrado no MXL.");
-                    
+
                     var containerText = await containerFile.async("text");
                     var parser = new DOMParser();
                     var xmlDoc = parser.parseFromString(containerText, "text/xml");
                     var rootFileTag = xmlDoc.querySelector("rootfile");
                     if (!rootFileTag) throw new Error("Aponte para o arquivo principal não encontrado no container.xml.");
-                    
+
                     var fullPath = rootFileTag.getAttribute("full-path");
                     var mainXmlFile = zip.file(fullPath);
                     if (!mainXmlFile) throw new Error("Arquivo principal '" + fullPath + "' não encontrado no pacote MXL.");
-                    
+
                     return await mainXmlFile.async("text");
                 } catch (e) {
                     throw new Error("Erro ao descompactar MXL: " + e.message);
@@ -1700,7 +1737,7 @@
 
                 try {
                     var isMxl = f.name.toLowerCase().endsWith('.mxl');
-                    
+
                     if (isMxl) {
                         rawXml = await getXmlFromMxl(f);
                     } else {
@@ -2172,7 +2209,7 @@ body { background: #f3f4f6; color: #111827; }
     if(!instrumentName || !window[instrumentName]) return [];
     if((midiNote===42||midiNote===44)&&lastOpenHiHat){try{lastOpenHiHat.cancel();}catch(_){}lastOpenHiHat=null;}
     if(midiNote===80&&lastOpenTriangle){try{lastOpenTriangle.cancel();}catch(_){}lastOpenTriangle=null;}
-    var noteGain=ac.createGain(); noteGain.gain.value=0.85; noteGain.connect(dest);
+    var noteGain=ac.createGain(); noteGain.gain.value=0.2; noteGain.connect(dest);
     var dur=DRUM_DURATIONS[midiNote]||3;
     var noteHandle=drumPlayer.queueWaveTable(ac,noteGain,window[instrumentName],when,midiNote,dur);
     if(midiNote===46) lastOpenHiHat=noteHandle;
@@ -2369,7 +2406,7 @@ body { background: #f3f4f6; color: #111827; }
     wetGain.connect(masterGain);
     masterGain.connect(comp);
     comp.connect(ac.destination);
-    masterGain.gain.value = 3.5;
+    masterGain.gain.value = 2.0;
     updateReverb();
   }
 
