@@ -20,28 +20,28 @@
             --header-grad: linear-gradient(120deg, #0f0c29, #302b1a, #1a1a2e);
             --ctrl-bg: #e2e8f0;
             --border: #94a3b8;
-            --status-bg: #f1f5f9;
-            --status-info: #e0e7ff;
-            --status-ok: #dcfce7;
-            --status-err: #fee2e2;
+            --status-bg: #e2e8f0;
+            --status-info: #4f46e5;
+            --status-ok: #16a34a;
+            --status-err: #dc2626;
             --score-filter: invert(0);
             --body-text: #1e293b;
             --footer-text: #64748b;
-            --footer-link: #302b63;
+            --footer-link: #4338ca;
         }
 
         .dark {
             --bg: #0f172a;
-            --card-bg: #e2e8f0;
-            --text-main: #1e293b;
-            --text-sub: #475569;
+            --card-bg: #1e293b;
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
             --header-grad: linear-gradient(120deg, #1e1b4b, #312e81, #1e1b4b);
-            --ctrl-bg: #cbd5e1;
-            --border: #94a3b8;
-            --status-bg: #cbd5e1;
-            --status-info: #eef2ff;
-            --status-ok: #f0fdf4;
-            --status-err: #fef2f2;
+            --ctrl-bg: #334155;
+            --border: #475569;
+            --status-bg: #334155;
+            --status-info: #312e81;
+            --status-ok: #064e3b;
+            --status-err: #7f1d1d;
             --score-filter: invert(0);
             --body-text: #f1f5f9;
             --footer-text: #94a3b8;
@@ -122,7 +122,7 @@
             align-items: center;
             gap: 8px;
             padding: 10px 20px;
-            background: #302b63;
+            background: #6366f1;
             color: #fff;
             border-radius: 9px;
             font-size: 13px;
@@ -134,7 +134,7 @@
         }
 
         .load-btn:hover {
-            background: #1a1740;
+            background: #4f46e5;
         }
 
         .load-btn input {
@@ -143,7 +143,7 @@
 
         .fname {
             font-size: 12px;
-            color: #94a3b8;
+            color: var(--text-sub);
             margin-bottom: 12px;
             min-height: 16px;
         }
@@ -156,7 +156,7 @@
             margin-bottom: 14px;
             background: var(--status-bg);
             border-left: 3px solid var(--border);
-            color: var(--text-sub);
+            color: var(--text-main);
             min-height: 34px;
             line-height: 1.5;
             transition: all 0.3s;
@@ -165,19 +165,19 @@
         .status.info {
             background: var(--status-info);
             border-color: #6366f1;
-            color: #818cf8;
+            color: #fff;
         }
 
         .status.ok {
             background: var(--status-ok);
             border-color: #22c55e;
-            color: #4ade80;
+            color: #fff;
         }
 
         .status.err {
             background: var(--status-err);
             border-color: #ef4444;
-            color: #f87171;
+            color: #fff;
         }
 
         .controls {
@@ -254,6 +254,10 @@
             background: #0284c7;
         }
 
+        .bpm-wrap,
+        .met-wrap,
+        .rev-wrap,
+        .inst-wrap,
         .zoom-wrap,
         .mps-wrap,
         .cursor-wrap {
@@ -267,16 +271,19 @@
             transition: background 0.3s;
         }
 
-        .rev-wrap label,
+        .bpm-wrap label,
         .met-wrap label,
+        .rev-wrap label,
+        .inst-wrap label,
         .zoom-wrap label,
         .mps-wrap label,
         .cursor-wrap label {
             font-size: 11px;
             font-weight: 600;
-            color: #64748b;
+            color: var(--text-sub);
             text-transform: uppercase;
             letter-spacing: .6px;
+            white-space: nowrap;
         }
 
         .mps-wrap select,
@@ -286,7 +293,7 @@
             background: transparent;
             font-size: 13px;
             font-weight: 600;
-            color: #1e293b;
+            color: var(--text-main);
             font-family: inherit;
             cursor: pointer;
         }
@@ -302,7 +309,7 @@
             background: transparent;
             font-size: 15px;
             font-weight: 600;
-            color: #1e293b;
+            color: var(--text-main);
             text-align: center;
             font-family: inherit;
         }
@@ -343,6 +350,11 @@
             overflow-x: auto;
             filter: var(--score-filter);
             transition: filter 0.3s;
+            background: #fff;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 15px;
+            border: 1px solid #e5e7eb;
         }
 
         #score svg {
@@ -382,7 +394,7 @@
 
         .inst-guide h3 {
             font-size: 16px;
-            color: #1e293b;
+            color: var(--text-main);
             margin-bottom: 16px;
             display: flex;
             align-items: center;
@@ -397,7 +409,7 @@
 
         .step {
             font-size: 13px;
-            color: #475569;
+            color: var(--text-sub);
             line-height: 1.5;
         }
 
@@ -405,7 +417,7 @@
             display: inline-flex;
             width: 24px;
             height: 24px;
-            background: #302b63;
+            background: #6366f1;
             color: #fff;
             border-radius: 50%;
             align-items: center;
@@ -416,7 +428,7 @@
         }
 
         .step b {
-            color: #1e293b;
+            color: var(--text-main);
             display: block;
             margin-bottom: 4px;
         }
@@ -736,8 +748,9 @@
             <div class="step"><span class="step-num">1</span><b>Exportar XML</b>No MuseScore (ou similar), exporte sua
                 partitura em formato MusicXML (.musicxml ou .xml).</div>
             <div class="step"><span class="step-num">2</span><b>Carregar & Ajustar</b>Use o botão azul acima para
-                carregar o arquivo. Ajuste Título, Andamento (BPM), Timbre e Oitava conforme desejado.</div>
-            <div class="step"><span class="step-num">3</span><b>Baixo das Cifras ♩</b>Ative "Baixo das Cifras ♩" para
+                carregar o arquivo. Ajuste Título, Andamento (BPM), Timbre, Oitava e outras opções conforme desejado.
+            </div>
+            <div class="step"><span class="step-num">3</span><b>Baixo das Cifras</b>Ative "Baixo das Cifras" para
                 ouvir a fundamental de
                 cada acorde cifrado tocada em baixo grave, independentemente dos outros timbres.</div>
             <div class="step"><span class="step-num">4</span><b>Copiar HTML</b>Clique em "Copiar HTML". O código do
@@ -912,7 +925,7 @@
                 return chords;
             }
 
-            var chordConfig = { name: 'Baixo das Cifras ♩', program: 'acoustic_bass', vol: 75, mute: false, solo: false, oct: -24, enabled: true };
+            var chordConfig = { name: 'Baixo das Cifras', program: 'acoustic_bass', vol: 75, mute: false, solo: false, oct: -24, enabled: false };
             var chordInst = null;
             var chordGain = null;
 
@@ -1005,6 +1018,43 @@
             var scoreClickTimer = null;
             var percInfo = null;
             var cursorStepsCache = { bpm: null, xml: null, mode: 3 };
+
+            /* Dicionário de Nomes de Bateria */
+            var DRUM_NAMES = {
+                35: "Bumbo (Kick 2)",
+                36: "Bumbo (Kick 1)",
+                37: "Side Stick",
+                38: "Caixa (Snare 1)",
+                39: "Palma (Hand Clap)",
+                40: "Caixa (Snare 2)",
+                41: "Tom Grave 2",
+                42: "Chimbal Fechado",
+                43: "Tom Grave 1",
+                44: "Chimbal Pedal",
+                45: "Tom Médio 2",
+                46: "Chimbal Aberto",
+                47: "Tom Médio 1",
+                48: "Tom Agudo 2",
+                49: "Prato Ataque 1",
+                50: "Tom Agudo 1",
+                51: "Prato Condução 1",
+                52: "Prato China",
+                53: "Cúpula Prato",
+                54: "Pandeireta",
+                55: "Prato Splash",
+                56: "Cowbell",
+                57: "Prato Ataque 2",
+                58: "Vibraslap",
+                59: "Prato Condução 2",
+                60: "Bongo Agudo",
+                61: "Bongo Grave",
+                63: "Conga Aguda",
+                64: "Conga Grave",
+                65: "Timbale Agudo",
+                66: "Timbale Grave",
+                80: "Triângulo Mudo",
+                81: "Triângulo Aberto"
+            };
 
             /* Variáveis do Scheduler */
             var nextEventIdx = 0, nextChordIdx = 0, nextMetTime = 0, schedulerTimer = null;
@@ -1280,6 +1330,80 @@
                 return s;
             }
 
+            function scanPercussionNotes(partIdx) {
+                var notes = new Set();
+                if (!osmd || !osmd.Sheet) return [];
+                var instIdMap = {};
+                for (var m = 0; m < osmd.Sheet.Instruments.length; m++) {
+                    if (osmd.Sheet.Instruments[m].Id !== undefined) instIdMap[osmd.Sheet.Instruments[m].Id] = m;
+                }
+                osmd.cursor.reset();
+                var it = osmd.cursor.Iterator;
+                while (!it.EndReached) {
+                    var vEntries = it.CurrentVoiceEntries || [];
+                    for (var i = 0; i < vEntries.length; i++) {
+                        var ve = vEntries[i]; if (!ve || !ve.Notes) continue;
+                        var pIdx = 0;
+                        try {
+                            if (ve.ParentVoice && ve.ParentVoice.Parent) {
+                                var instObj = ve.ParentVoice.Parent;
+                                if (!instObj.NameLabel && instObj.ParentInstrument) instObj = instObj.ParentInstrument;
+                                var idx = osmd.Sheet.Instruments.indexOf(instObj);
+                                if (idx < 0 && instObj.Id !== undefined && instIdMap[instObj.Id] !== undefined) idx = instIdMap[instObj.Id];
+                                if (idx >= 0) pIdx = idx;
+                            }
+                        } catch (e) { }
+                        if (pIdx === partIdx) {
+                            for (var j = 0; j < ve.Notes.length; j++) {
+                                var n = ve.Notes[j]; if (n && !n.isRest()) {
+                                    var mCode = getMidiPitch(n); if (mCode !== null) notes.add(mCode);
+                                }
+                            }
+                        }
+                    }
+                    it.moveToNext();
+                }
+                osmd.cursor.reset();
+                return Array.from(notes).sort((a, b) => a - b);
+            }
+
+            function midiToNoteName(midi) {
+                var nt = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+                var oct = Math.floor(midi / 12) - 1;
+                return nt[midi % 12] + oct;
+            }
+
+            function buildPercMapUI(container, partIdx) {
+                container.innerHTML = '';
+                var uniqueNotes = scanPercussionNotes(partIdx);
+                if (!uniqueNotes.length) {
+                    container.innerHTML = '<span style="font-size:11px;color:#6b7280;">Nenhuma nota encontrada nesta parte.</span>';
+                    return;
+                }
+                uniqueNotes.forEach(function (midi) {
+                    var item = document.createElement('div');
+                    item.style.cssText = 'display:flex;align-items:center;gap:5px;background:#fff;padding:4px 8px;border-radius:4px;border:1px solid #e5e7eb;';
+                    var label = document.createElement('span');
+                    label.style.cssText = 'font-size:11px;font-weight:700;color:#374151;';
+                    label.textContent = midiToNoteName(midi) + ':';
+                    var s = document.createElement('select');
+                    s.style.cssText = 'font-size:11px;border:none;background:transparent;cursor:pointer;color:#2563eb;font-weight:600;';
+                    Object.keys(DRUM_NAMES).forEach(function (dM) {
+                        var opt = document.createElement('option'); opt.value = dM; opt.textContent = DRUM_NAMES[dM];
+                        if (percInfo.noteMap[partIdx] && percInfo.noteMap[partIdx][midi]) {
+                            if (String(percInfo.noteMap[partIdx][midi]) === String(dM)) opt.selected = true;
+                        } else if (String(midi) === String(dM)) opt.selected = true;
+                        s.appendChild(opt);
+                    });
+                    s.onchange = function () {
+                        if (!percInfo.noteMap[partIdx]) percInfo.noteMap[partIdx] = {};
+                        percInfo.noteMap[partIdx][midi] = parseInt(s.value, 10);
+                        eventsCache = { bpm: null, evs: [], pieceEnd: 0 };
+                    };
+                    item.appendChild(label); item.appendChild(s); container.appendChild(item);
+                });
+            }
+
             function renderPartsPanel() {
                 var p = document.getElementById('partsPanel');
                 p.style.display = 'flex'; p.innerHTML = '';
@@ -1298,18 +1422,39 @@
                     var volRange = document.createElement('input'); volRange.type = 'range'; volRange.min = 0; volRange.max = 100; volRange.value = cfg.vol || 100; volRange.style.width = '70px';
                     volRange.oninput = function () { cfg.vol = +volRange.value; updateFullMix(); };
                     var octSel = makeOctSelect(cfg.oct || 0, function () { cfg.oct = parseInt(octSel.value, 10); });
-                    var instSel = document.createElement('select'); instSel.className = 'part-sel'; instSel.innerHTML = GM_OPTS_HTML; instSel.value = cfg.program;
-                    instSel.onchange = function () { cfg.program = instSel.value; cfg.isDrum = (instSel.value === '_drum_kit_gm'); loadAllInstruments(); };
+                    var instSel = document.createElement('select'); instSel.className = 'part-sel';
+                    instSel.innerHTML = GM_OPTS_HTML; instSel.value = cfg.program;
+                    instSel.onchange = function () {
+                        cfg.program = instSel.value;
+                        cfg.isDrum = (instSel.value === '_drum_kit_gm');
+                        loadAllInstruments(); renderPartsPanel();
+                    };
                     ctrls.appendChild(volRange); ctrls.appendChild(bMute); ctrls.appendChild(bSolo); ctrls.appendChild(octSel); ctrls.appendChild(instSel);
-                    row.appendChild(nameSp); row.appendChild(ctrls); p.appendChild(row);
+
+                    if (cfg.isDrum) {
+                        var bPerc = document.createElement('button');
+                        bPerc.style.cssText = 'border:1px solid #d1d5db;border-radius:4px;padding:3px 6px;font-size:11px;font-weight:600;cursor:pointer;background:#f8fafc;color:#475569;margin-left:5px;';
+                        bPerc.innerHTML = '🛠️ Percussão';
+                        ctrls.appendChild(bPerc);
+                        var percPanel = document.createElement('div');
+                        percPanel.style.cssText = 'display:none;width:100%;margin-top:8px;padding:10px;background:#f9fafb;border:1px dashed #d1d5db;border-radius:6px;gap:8px;flex-wrap:wrap;';
+                        bPerc.onclick = function () {
+                            percPanel.style.display = (percPanel.style.display === 'none' ? 'flex' : 'none');
+                            if (percPanel.style.display === 'flex') buildPercMapUI(percPanel, idx);
+                        };
+                        row.appendChild(nameSp); row.appendChild(ctrls); row.appendChild(percPanel);
+                    } else {
+                        row.appendChild(nameSp); row.appendChild(ctrls);
+                    }
+                    p.appendChild(row);
                 });
 
                 /* ── Linha especial: Cifras ♩ ── */
                 var chRow = document.createElement('div'); chRow.className = 'part-row';
                 chRow.style.borderTop = '1px dashed #cbd5e1'; chRow.style.paddingTop = '6px'; chRow.style.marginTop = '2px';
                 var chName = document.createElement('span'); chName.className = 'part-name';
-                chName.style.color = '#6366f1'; chName.style.fontStyle = 'italic';
-                chName.textContent = 'Baixo das Cifras ♩';
+                chName.style.color = '#6366f1'; chName.style.fontStyle = 'plain';
+                chName.textContent = 'Baixo das Cifras';
                 var chCtrls = document.createElement('div'); chCtrls.className = 'part-ctrls';
                 var bEnabled = document.createElement('button');
                 function refreshChordEnabledButton() {
@@ -1514,6 +1659,15 @@
                 playbackEndTimer = setTimeout(function () { finishPlayback(); }, Math.ceil((remaining + 0.12) * 1000));
             }
 
+            document.getElementById('metCheck').addEventListener('change', async function () {
+                if (this.checked && !drumPlayer) {
+                    setStatus('A carregar sons do metrônomo...', 'info');
+                    await loadDrumSounds();
+                    initDrumEngine();
+                    setStatus('Metrônomo pronto.');
+                }
+            });
+
             /* ─── Tie helpers ────────────────────────────────────────────────── */
             function isTieContinuation(note) {
                 var tie = note.NoteTie || note.Tie; if (!tie) return false;
@@ -1627,6 +1781,7 @@
                 /* Agendar Metrônomo */
                 if (document.getElementById('metCheck').checked) {
                     var beatLen = getMetronomeBeatLen();
+                    if (nextMetTime < now - sat) nextMetTime = Math.ceil((now - sat) / beatLen) * beatLen;
                     while (nextMetTime < lookAheadLimit && nextMetTime < pieceEnd + 0.05) {
                         var whenM = sat + nextMetTime;
                         if (whenM >= now) {
@@ -1644,7 +1799,7 @@
                         var cev = chordEvents[nextChordIdx];
                         var whenC = sat + cev.t;
                         if (whenC >= now) {
-                            var midiC = Math.max(21, Math.min(108, cev.midi + chordConfig.oct));
+                            var midiC = Math.max(21, Math.min(108, cev.midi + chordConfig.oct + globalTransp));
                             if (chordInst) {
                                 var cn = chordInst.play(midiC, whenC, { duration: noteDur });
                                 if (cn) sc.push(cn);
@@ -2208,6 +2363,7 @@ body{background:#f3f4f6;color:#111827;}
     /* Metrônomo */
     if(document.getElementById('met').checked){
       var bl=getMetronomeBeatLen();
+      if(nextMetTime<now-sat)nextMetTime=Math.ceil((now-sat)/bl)*bl;
       while(nextMetTime<lookAheadLimit && nextMetTime<pieceEnd+0.05){
         var whenM=sat+nextMetTime;
         if(whenM>=now){
@@ -2220,11 +2376,11 @@ body{background:#f3f4f6;color:#111827;}
 
     /* Chords */
     if(chordConfig.enabled && !chordConfig.mute){
-      var noteDur=(60/bpm)*1.8;
+      var noteDur=(60/bpm)*1.8; var globalTransp=getTransShift();
       while(nextChordIdx<chordEvents.length && chordEvents[nextChordIdx].t<lookAheadLimit){
         var cev=chordEvents[nextChordIdx]; var whenC=sat+cev.t;
         if(whenC>=now){
-          var midiC=Math.max(21,Math.min(108,cev.midi+chordConfig.oct));
+          var midiC=Math.max(21,Math.min(108,cev.midi+chordConfig.oct+globalTransp));
           if(chordInst){var cn=chordInst.play(midiC,whenC,{duration:noteDur});if(cn)sc.push(cn);}
         }
         nextChordIdx++;
@@ -2282,7 +2438,7 @@ body{background:#f3f4f6;color:#111827;}
     if(partInsts.length===partConfigs.length&&chordInst)return;
     document.getElementById('st').textContent='A carregar timbres...';
     document.getElementById('st').style.display='block';
-    var hasDrum=partConfigs.some(function(c){return c.program==='_drum_kit_gm';});
+    var hasDrum=partConfigs.some(function(c){return c.program==='_drum_kit_gm';}) || document.getElementById('met').checked;
     if(hasDrum){await loadDrumSounds();initDrumEngine();}
     var promises=partConfigs.map(function(cfg,idx){
       var gain=ac.createGain();gain.connect(inputGain);partGains[idx]=gain;
@@ -2378,7 +2534,7 @@ body{background:#f3f4f6;color:#111827;}
     });
 
     var chRow=document.createElement('div');chRow.style.cssText='display:flex;align-items:center;gap:8px;border-top:1px dashed #d1d5db;padding-top:6px;margin-top:2px;';
-    var chName=document.createElement('span');chName.style.cssText='font-size:12px;font-weight:600;min-width:120px;color:#6366f1;font-style:italic;';chName.textContent='Baixo das Cifras ♩';
+    var chName=document.createElement('span');chName.style.cssText='font-size:12px;font-weight:600;min-width:120px;color:#6366f1;font-style:plain;';chName.textContent='Baixo das Cifras';
     var bEn=document.createElement('button');
     function refreshChordEnableBtn(){
       bEn.textContent=chordConfig.enabled?'ON':'OFF';
@@ -2405,6 +2561,13 @@ body{background:#f3f4f6;color:#111827;}
     applyLayout();
     osmd.Zoom=(+document.getElementById('zoomEx').value||100)/100;
     renderExPartsPanel();
+    document.getElementById('met').addEventListener('change', async function(){
+      if(this.checked && !drumPlayer){
+        document.getElementById('st').textContent='A carregar sons do metrônomo...';document.getElementById('st').style.display='block';
+        await loadDrumSounds();initDrumEngine();
+        document.getElementById('st').style.display='none';
+      }
+    });
     osmd.render();
     resetCursorToStart();
     extractCursorSteps();
