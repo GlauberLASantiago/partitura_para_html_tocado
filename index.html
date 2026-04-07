@@ -265,7 +265,9 @@
         .inst-wrap,
         .zoom-wrap,
         .mps-wrap,
-        .cursor-wrap {
+        .cursor-wrap,
+        .range-wrap,
+        .loop-wrap {
             display: flex;
             align-items: center;
             gap: 7px;
@@ -282,7 +284,9 @@
         .inst-wrap label,
         .zoom-wrap label,
         .mps-wrap label,
-        .cursor-wrap label {
+        .cursor-wrap label,
+        .range-wrap label,
+        .loop-wrap label {
             font-size: 11px;
             font-weight: 600;
             color: var(--text-sub);
@@ -339,7 +343,8 @@
             font-family: inherit;
         }
 
-        .met-wrap input[type="checkbox"] {
+        .met-wrap input[type="checkbox"],
+        .loop-wrap input[type="checkbox"] {
             width: 16px;
             height: 16px;
             cursor: pointer;
@@ -347,8 +352,111 @@
 
         .bpm-wrap input:focus,
         .rev-wrap input:focus,
-        .zoom-wrap input:focus {
+        .zoom-wrap input:focus,
+        .range-num:focus {
             outline: none;
+        }
+
+        /* ── Range controls ── */
+        .range-wrap {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--ctrl-bg);
+            border-radius: 9px;
+            padding: 0 14px;
+            height: 38px;
+            transition: background 0.3s;
+        }
+
+        .range-num {
+            width: 44px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .range-num:disabled {
+            opacity: .35;
+        }
+
+        .range-sep {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-sub);
+            user-select: none;
+        }
+
+        /* Loop button style */
+        .btn-loop {
+            background: var(--ctrl-bg);
+            color: var(--text-sub);
+            border: 1.5px solid var(--border);
+            transition: all .15s;
+        }
+
+        .btn-loop:not(:disabled):hover {
+            background: #7c3aed;
+            color: #fff;
+            border-color: #7c3aed;
+        }
+
+        .btn-loop.active {
+            background: #7c3aed;
+            color: #fff;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
+        }
+
+        .range-num {
+            width: 44px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .range-num:focus {
+            outline: none;
+        }
+
+        .range-num:disabled {
+            opacity: .35;
+        }
+
+        .range-sep {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-sub);
+            user-select: none;
+        }
+
+        /* Loop button with active state */
+        .btn-loop {
+            background: var(--ctrl-bg);
+            color: var(--text-sub);
+            border: 1.5px solid var(--border);
+            transition: all .15s;
+        }
+
+        .btn-loop:not(:disabled):hover {
+            background: #7c3aed;
+            color: #fff;
+            border-color: #7c3aed;
+        }
+
+        .btn-loop.active {
+            background: #7c3aed;
+            color: #fff;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
         }
 
         #score {
@@ -719,6 +827,25 @@
                     </select>
                 </div>
 
+                <div class="range-wrap" title="Definir trecho para execução">
+                    <label>Trecho</label>
+                    <input type="number" id="rangeFrom" class="range-num" value="1" min="1" title="Compasso inicial"
+                        disabled>
+                    <span class="range-sep">–</span>
+                    <input type="number" id="rangeTo" class="range-num" value="1" min="1" title="Compasso final"
+                        disabled>
+                </div>
+
+                <button class="btn btn-loop" id="btnLoop" disabled title="Ativar/desativar loop do trecho">
+                    <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
+                        <polyline points="17 1 21 5 17 9"></polyline>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                        <polyline points="7 23 3 19 7 15"></polyline>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                    </svg>
+                    Loop
+                </button>
+
                 <button class="btn btn-export" id="bx" disabled>
                     <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -755,17 +882,26 @@
             <div class="step"><span class="step-num">2</span><b>Carregar & Ajustar</b>Use o botão azul acima para
                 carregar o arquivo. Ajuste Título, Andamento (BPM), Timbre, Oitava e outras opções conforme desejado.
             </div>
-            <div class="step"><span class="step-num">3</span><b>Baixo das Cifras</b>Ative "Baixo das Cifras" para
-                ouvir a fundamental de
-                cada acorde cifrado tocada em baixo grave, independentemente dos outros timbres.</div>
-            <div class="step"><span class="step-num">4</span><b>Copiar HTML</b>Clique em "Copiar HTML". O código do
+            <div class="step"><span class="step-num">3</span><b>Trecho & Loop</b>Defina o compasso inicial e final em
+                <b>Trecho</b> para executar apenas uma parte da música. Ative o botão <b>Loop</b> para repetir o
+                trecho indefinidamente.
+            </div>
+            <div class="step"><span class="step-num">4</span><b>Baixo das Cifras</b>Ative "Baixo das Cifras" para
+                ouvir a fundamental de cada acorde cifrado tocada em baixo grave.</div>
+            <div class="step"><span class="step-num">5</span><b>Copiar HTML</b>Clique em "Copiar HTML". O código do
                 player interativo será salvo na sua área de transferência.</div>
-            <div class="step"><span class="step-num">5</span><b>Colar no Moodle</b>No editor do Moodle, clique no botão
+            <div class="step"><span class="step-num">6</span><b>Colar no Moodle</b>No editor do Moodle, clique no botão
                 HTML (ícone &lt;/&gt;). Cole o código e salve.</div>
         </div>
-        <div class="inst-obs" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);font-size:13.5px;line-height:1.6;color:var(--text-sub);">
-            <p style="margin-bottom:12px;"><b>💡 Dica:</b> Você também pode clicar em <b>"Baixar HTML"</b> e enviar o arquivo gerado para seus alunos. Eles poderão abrir esse arquivo diretamente no navegador de qualquer dispositivo, inclusive celulares, para estudar a partitura de forma interativa.</p>
-            <p><b>⚠️ Nota:</b> O ViToPaMoS é uma ferramenta focada em operações básicas e acessibilidade. Para edições ou execuções musicais mais complexas, recomendamos o uso do <b>MuseScore</b>. O objetivo é que o professor utilize os recursos disponíveis aqui sem precisar "brigar" com o aplicativo por causa de suas limitações naturais.</p>
+        <div class="inst-obs"
+            style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);font-size:13.5px;line-height:1.6;color:var(--text-sub);">
+            <p style="margin-bottom:12px;"><b>💡 Dica:</b> Você também pode clicar em <b>"Baixar HTML"</b> e enviar o
+                arquivo gerado para seus alunos. Eles poderão abrir esse arquivo diretamente no navegador de qualquer
+                dispositivo, inclusive celulares, para estudar a partitura de forma interativa.</p>
+            <p><b>⚠️ Nota:</b> O ViToPaMoS é uma ferramenta focada em operações básicas e acessibilidade. Para edições
+                ou execuções musicais mais complexas, recomendamos o uso do <b>MuseScore</b>. O objetivo é que o
+                professor utilize os recursos disponíveis aqui sem precisar "brigar" com o aplicativo por causa de suas
+                limitações naturais.</p>
         </div>
     </section>
 
@@ -972,25 +1108,6 @@
                 }
             }
 
-            async function scheduleChords(offset) {
-                if (!chordConfig.enabled || chordConfig.mute) return;
-                var anySolo = partConfigs.some(function (p) { return p.solo; });
-                if (anySolo && !chordConfig.solo) return;
-                if (!rawXml || !chordInst) return;
-                var bpm = +document.getElementById('bpm').value || 100;
-                var chordEvents = parseChordEvents(rawXml, bpm);
-                if (!chordEvents.length) return;
-                var noteDuration = (60 / bpm) * 1.8;
-                chordEvents.forEach(function (ev) {
-                    if (ev.t < offset - 0.02) return;
-                    var when = sat + ev.t;
-                    if (when < ac.currentTime) return;
-                    var midi = Math.max(21, Math.min(108, ev.midi + chordConfig.oct));
-                    var n = chordInst.play(midi, when, { duration: noteDuration });
-                    if (n) sc.push(n);
-                });
-            }
-
             /* ─── layout ─────────────────────────────────────────────────────── */
             function applyLayoutMode() {
                 var mode = document.getElementById('layoutMode').value;
@@ -1027,42 +1144,124 @@
             var scoreClickTimer = null;
             var percInfo = null;
             var cursorStepsCache = { bpm: null, xml: null, mode: 3 };
+            var totalMeasures = 0;
 
-            /* Dicionário de Nomes de Bateria */
+            /* ─── Range & Loop state ─────────────────────────────────────────── */
+            var loopActive = false;
+            var rangeFrom = 1, rangeTo = 1;
+            /* measureTimeMap: object mapping MusicXML measure number → start time in seconds */
+            var measureTimeMap = {};
+            var minMeasureNumber = 1; // menor número de compasso (pode ser 0 se houver anacruze)
+            var maxMeasureNumber = 1; // maior número de compasso
+
+            /* Build measureTimeMap from cursor steps (measure-mode) */
+            function buildMeasureTimeMap() {
+                measureTimeMap = {};
+                minMeasureNumber = 1;
+                maxMeasureNumber = 1;
+                if (!osmd || !osmd.cursor) return;
+                var bpm = +document.getElementById('bpm').value || 100;
+                var beatLen = 60 / bpm;
+                try {
+                    osmd.cursor.reset();
+                    var it = osmd.cursor.Iterator;
+                    var lastM = -1;
+                    while (!it.EndReached) {
+                        var mIdx = it.CurrentMeasureIndex; // 0-based index
+                        if (mIdx !== lastM) {
+                            var timeObj = it.currentTimeStamp || it.CurrentTimeStamp;
+                            var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
+                            // Get the actual MusicXML measure number
+                            var measureNumber = mIdx + 1; // default fallback
+                            // Try to get the real measure number from OSMD
+                            if (osmd.Sheet && osmd.Sheet.SourceMeasures && osmd.Sheet.SourceMeasures.length > mIdx) {
+                                var srcMeasure = osmd.Sheet.SourceMeasures[mIdx];
+                                if (srcMeasure && srcMeasure.MeasureNumber !== undefined) {
+                                    measureNumber = srcMeasure.MeasureNumber;
+                                }
+                            }
+                            measureTimeMap[measureNumber] = real * 4 * beatLen;
+                            if (lastM === -1) minMeasureNumber = measureNumber;
+                            maxMeasureNumber = measureNumber;
+                            lastM = mIdx;
+                        }
+                        it.moveToNext();
+                    }
+                    osmd.cursor.reset();
+                    totalMeasures = maxMeasureNumber;
+                } catch (e) {
+                    console.warn('buildMeasureTimeMap error:', e);
+                }
+            }
+
+            function updateRangeInputs() {
+                var fromEl = document.getElementById('rangeFrom');
+                var toEl = document.getElementById('rangeTo');
+                fromEl.min = minMeasureNumber;
+                fromEl.max = maxMeasureNumber;
+                toEl.min = minMeasureNumber;
+                toEl.max = maxMeasureNumber;
+                // Only set default if not yet set properly or empty
+                if (!toEl.value || parseInt(toEl.value, 10) < minMeasureNumber || parseInt(toEl.value, 10) > maxMeasureNumber) {
+                    toEl.value = maxMeasureNumber;
+                }
+                if (parseInt(fromEl.value, 10) < minMeasureNumber) fromEl.value = minMeasureNumber;
+                if (parseInt(fromEl.value, 10) > maxMeasureNumber) fromEl.value = maxMeasureNumber;
+                rangeFrom = parseInt(fromEl.value, 10) || minMeasureNumber;
+                rangeTo = parseInt(toEl.value, 10) || maxMeasureNumber;
+            }
+
+            function getRangeStartTime() {
+                var from = Math.max(minMeasureNumber, Math.min(rangeFrom, maxMeasureNumber));
+                return measureTimeMap[from] || 0;
+            }
+
+            function getRangeEndTime() {
+                var to = Math.max(rangeFrom, Math.min(rangeTo, maxMeasureNumber));
+                // End time = start of next measure after 'to', or pieceEnd
+                var next = measureTimeMap[to + 1];
+                return (next !== undefined) ? next : pieceEnd;
+            }
+
+            document.getElementById('rangeFrom').addEventListener('change', function () {
+                var v = parseInt(this.value, 10) || minMeasureNumber;
+                if (v < minMeasureNumber) v = minMeasureNumber;
+                if (v > maxMeasureNumber) v = maxMeasureNumber;
+                this.value = v;
+                rangeFrom = v;
+                if (rangeTo < rangeFrom) {
+                    rangeTo = rangeFrom;
+                    document.getElementById('rangeTo').value = rangeTo;
+                }
+            });
+            document.getElementById('rangeTo').addEventListener('change', function () {
+                var v = parseInt(this.value, 10) || maxMeasureNumber;
+                if (v < minMeasureNumber) v = minMeasureNumber;
+                if (v > maxMeasureNumber) v = maxMeasureNumber;
+                this.value = v;
+                rangeTo = v;
+                if (rangeFrom > rangeTo) {
+                    rangeFrom = rangeTo;
+                    document.getElementById('rangeFrom').value = rangeFrom;
+                }
+            });
+
+            document.getElementById('btnLoop').addEventListener('click', function () {
+                loopActive = !loopActive;
+                this.classList.toggle('active', loopActive);
+            });
+
+            /* ─── Dicionário de Bateria ──────────────────────────────────────── */
             var DRUM_NAMES = {
-                35: "Bumbo (Kick 2)",
-                36: "Bumbo (Kick 1)",
-                37: "Side Stick",
-                38: "Caixa (Snare 1)",
-                39: "Palma (Hand Clap)",
-                40: "Caixa (Snare 2)",
-                41: "Tom Grave 2",
-                42: "Chimbal Fechado",
-                43: "Tom Grave 1",
-                44: "Chimbal Pedal",
-                45: "Tom Médio 2",
-                46: "Chimbal Aberto",
-                47: "Tom Médio 1",
-                48: "Tom Agudo 2",
-                49: "Prato Ataque 1",
-                50: "Tom Agudo 1",
-                51: "Prato Condução 1",
-                52: "Prato China",
-                53: "Cúpula Prato",
-                54: "Pandeireta",
-                55: "Prato Splash",
-                56: "Cowbell",
-                57: "Prato Ataque 2",
-                58: "Vibraslap",
-                59: "Prato Condução 2",
-                60: "Bongo Agudo",
-                61: "Bongo Grave",
-                63: "Conga Aguda",
-                64: "Conga Grave",
-                65: "Timbale Agudo",
-                66: "Timbale Grave",
-                80: "Triângulo Mudo",
-                81: "Triângulo Aberto"
+                35: "Bumbo (Kick 2)", 36: "Bumbo (Kick 1)", 37: "Side Stick", 38: "Caixa (Snare 1)",
+                39: "Palma (Hand Clap)", 40: "Caixa (Snare 2)", 41: "Tom Grave 2", 42: "Chimbal Fechado",
+                43: "Tom Grave 1", 44: "Chimbal Pedal", 45: "Tom Médio 2", 46: "Chimbal Aberto",
+                47: "Tom Médio 1", 48: "Tom Agudo 2", 49: "Prato Ataque 1", 50: "Tom Agudo 1",
+                51: "Prato Condução 1", 52: "Prato China", 53: "Cúpula Prato", 54: "Pandeireta",
+                55: "Prato Splash", 56: "Cowbell", 57: "Prato Ataque 2", 58: "Vibraslap",
+                59: "Prato Condução 2", 60: "Bongo Agudo", 61: "Bongo Grave", 63: "Conga Aguda",
+                64: "Conga Grave", 65: "Timbale Agudo", 66: "Timbale Grave",
+                80: "Triângulo Mudo", 81: "Triângulo Aberto"
             };
 
             /* Variáveis do Scheduler */
@@ -1322,6 +1521,14 @@
                     partConfigs.push({ name: name, program: defProg, mute: false, solo: false, vol: 100, oct: 0, isDrum: isDrum });
                 });
                 chordInst = null; chordGain = null;
+
+                /* Build measure map and update range inputs */
+                buildMeasureTimeMap();
+                updateRangeInputs();
+                document.getElementById('rangeFrom').disabled = false;
+                document.getElementById('rangeTo').disabled = false;
+                document.getElementById('btnLoop').disabled = false;
+
                 renderPartsPanel();
                 loadAllInstruments();
             }
@@ -1540,26 +1747,38 @@
                 if (playbackEndTimer) { clearTimeout(playbackEndTimer); playbackEndTimer = null; }
             }
 
-            /* ── FIX 1: resetCursorToStart — sai imediatamente no modo -1 ── */
             function resetCursorToStart() {
                 clearCursorTimer();
                 if (!osmd || !osmd.cursor) return;
                 try {
                     var mode = +document.getElementById('cursorMode').value;
-                    /* OTIMIZAÇÃO: sem cursor = apenas esconde e retorna, sem iterar */
                     if (mode === -1) { osmd.cursor.hide(); cursorIndex = 0; return; }
                     osmd.cursor.cursorOptions.type = mode;
                     osmd.cursor.reset(); osmd.cursor.show();
                     cursorIndex = 0;
+                    /* Advance cursor to rangeFrom measure using MusicXML measure number */
+                    if (rangeFrom > minMeasureNumber && mode === 3) {
+                        while (!osmd.cursor.Iterator.EndReached) {
+                            var mIdx = osmd.cursor.Iterator.CurrentMeasureIndex;
+                            // Get the actual MusicXML measure number
+                            var currentMeasureNumber = mIdx + 1; // default fallback
+                            if (osmd.Sheet && osmd.Sheet.SourceMeasures && osmd.Sheet.SourceMeasures.length > mIdx) {
+                                var srcMeasure = osmd.Sheet.SourceMeasures[mIdx];
+                                if (srcMeasure && srcMeasure.MeasureNumber !== undefined) {
+                                    currentMeasureNumber = srcMeasure.MeasureNumber;
+                                }
+                            }
+                            if (currentMeasureNumber >= rangeFrom) break;
+                            osmd.cursor.next();
+                        }
+                    }
                 } catch (_) { }
             }
 
-            /* ── FIX 2: extractCursorSteps — retorna imediatamente no modo -1 ── */
             function extractCursorSteps() {
                 if (!osmd || !osmd.cursor) return;
                 var bpm = +document.getElementById('bpm').value || 100;
                 var mode = +document.getElementById('cursorMode').value;
-                /* OTIMIZAÇÃO: sem cursor = limpa array e retorna sem percorrer iterador */
                 if (mode === -1) { cursorSteps = []; return; }
                 if (cursorStepsCache.bpm === bpm && cursorStepsCache.xml === rawXml && cursorStepsCache.mode === mode && cursorSteps.length > 0) return;
                 cursorSteps = [];
@@ -1573,7 +1792,15 @@
                         if (mode === 0 || mIdx !== lastM) {
                             var timeObj = iterator.currentTimeStamp || iterator.CurrentTimeStamp;
                             var real = timeObj ? (typeof timeObj.realValue !== 'undefined' ? timeObj.realValue : (timeObj.RealValue || 0)) : 0;
-                            cursorSteps.push({ t: real * 4 * (60 / bpm), m: mIdx });
+                            // Get the actual MusicXML measure number
+                            var measureNumber = mIdx + 1; // default fallback
+                            if (osmd.Sheet && osmd.Sheet.SourceMeasures && osmd.Sheet.SourceMeasures.length > mIdx) {
+                                var srcMeasure = osmd.Sheet.SourceMeasures[mIdx];
+                                if (srcMeasure && srcMeasure.MeasureNumber !== undefined) {
+                                    measureNumber = srcMeasure.MeasureNumber;
+                                }
+                            }
+                            cursorSteps.push({ t: real * 4 * (60 / bpm), m: mIdx, measureNumber: measureNumber });
                             lastM = mIdx;
                         }
                         iterator.moveToNext();
@@ -1586,7 +1813,6 @@
             function moveCursorToTime(offset) {
                 if (!osmd || !osmd.cursor) return;
                 var mode = +document.getElementById('cursorMode').value;
-                /* OTIMIZAÇÃO: sem cursor = não faz nada */
                 if (mode === -1) return;
                 extractCursorSteps();
                 try {
@@ -1607,21 +1833,17 @@
                 } catch (_) { }
             }
 
-            /* ── FIX 3: startCursorFollow — não inicia RAF no modo -1; throttle 80ms (~12fps) ── */
             function startCursorFollow(offset) {
                 var mode = +document.getElementById('cursorMode').value;
-                /* OTIMIZAÇÃO: sem cursor = zero RAF, zero trabalho no main thread */
                 if (mode === -1) return;
                 clearCursorTimer(); moveCursorToTime(offset);
                 var lastTime = 0;
                 function step(now) {
                     if (!run || !ac || !osmd || !osmd.cursor || !cursorSteps.length) return;
-                    /* OTIMIZAÇÃO: throttle de 60fps → ~12fps (80ms), suficiente para cursor musical */
                     if (now - lastTime >= 80) {
                         lastTime = now;
                         var current = ac.currentTime - sat;
                         var curMode = +document.getElementById('cursorMode').value;
-                        /* Se o utilizador mudou para "sem cursor" durante a reprodução, para o RAF */
                         if (curMode === -1) return;
                         while (cursorIndex + 1 < cursorSteps.length && current >= cursorSteps[cursorIndex + 1].t - 0.01) {
                             try {
@@ -1643,6 +1865,14 @@
             }
 
             function finishPlayback() {
+                if (loopActive) {
+                    /* Loop: restart from rangeFrom */
+                    var startT = getRangeStartTime();
+                    stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer();
+                    scheduleFrom(startT).then(function () { startCursorFollow(startT); });
+                    setStatus('Loop: compasso ' + rangeFrom + ' → ' + rangeTo, 'ok');
+                    return;
+                }
                 run = false; pat = 0; stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer(); resetCursorToStart();
                 setStatus('Fim da música. Voltou ao início.', 'ok');
             }
@@ -1659,12 +1889,14 @@
             async function restartFromBeginningAndPlay() {
                 stopPlayback(false);
                 if (!partInsts.length || !ac) return;
-                run = true; await scheduleFrom(0); startCursorFollow(0); pat = 0;
+                var startT = getRangeStartTime();
+                run = true; await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
                 setStatus('A tocar...', 'ok');
             }
             function armPlaybackEnd(offset) {
                 clearPlaybackEndTimer();
-                var remaining = Math.max(0, pieceEnd - offset);
+                var endT = getRangeEndTime();
+                var remaining = Math.max(0, endT - offset);
                 playbackEndTimer = setTimeout(function () { finishPlayback(); }, Math.ceil((remaining + 0.12) * 1000));
             }
 
@@ -1705,6 +1937,8 @@
             }
 
             /* ─── Event extraction ───────────────────────────────────────────── */
+            var eventsCache = { bpm: null, evs: [], pieceEnd: 0 };
+
             function extractEvents() {
                 evs = []; pieceEnd = 0;
                 var bpm = +document.getElementById('bpm').value || 100, beatLen = 60 / bpm;
@@ -1766,21 +2000,25 @@
                 var bpm = +document.getElementById('bpm').value || 100;
                 var globalTransp = getTransposeShift();
                 var lookAheadLimit = now - sat + scheduleAheadTime;
+                var rangeEndT = getRangeEndTime();
 
-                /* Agendar Notas */
+                /* Agendar Notas (only within range) */
                 while (nextEventIdx < evs.length && evs[nextEventIdx].t < lookAheadLimit) {
                     var ev = evs[nextEventIdx];
-                    var when = sat + ev.t;
-                    if (when >= now) {
-                        if (ev.isDrum) {
-                            var drumDest = partGains[ev.part] || masterGain;
-                            var drumNodes = playDrumNote(ev.midi, when, drumDest);
-                            for (var d = 0; d < drumNodes.length; d++) sc.push(drumNodes[d]);
-                        } else {
-                            var partOct = (partConfigs[ev.part] && partConfigs[ev.part].oct) || 0;
-                            if (partInsts[ev.part] && typeof partInsts[ev.part].play === 'function') {
-                                var n = partInsts[ev.part].play(ev.midi + partOct + globalTransp, when, { duration: ev.dur });
-                                if (n) sc.push(n);
+                    /* Skip events beyond range end */
+                    if (ev.t < rangeEndT) {
+                        var when = sat + ev.t;
+                        if (when >= now) {
+                            if (ev.isDrum) {
+                                var drumDest = partGains[ev.part] || masterGain;
+                                var drumNodes = playDrumNote(ev.midi, when, drumDest);
+                                for (var d = 0; d < drumNodes.length; d++) sc.push(drumNodes[d]);
+                            } else {
+                                var partOct = (partConfigs[ev.part] && partConfigs[ev.part].oct) || 0;
+                                if (partInsts[ev.part] && typeof partInsts[ev.part].play === 'function') {
+                                    var n = partInsts[ev.part].play(ev.midi + partOct + globalTransp, when, { duration: ev.dur });
+                                    if (n) sc.push(n);
+                                }
                             }
                         }
                     }
@@ -1791,7 +2029,7 @@
                 if (document.getElementById('metCheck').checked) {
                     var beatLen = getMetronomeBeatLen();
                     if (nextMetTime < now - sat) nextMetTime = Math.ceil((now - sat) / beatLen) * beatLen;
-                    while (nextMetTime < lookAheadLimit && nextMetTime < pieceEnd + 0.05) {
+                    while (nextMetTime < lookAheadLimit && nextMetTime < rangeEndT + 0.05) {
                         var whenM = sat + nextMetTime;
                         if (whenM >= now) {
                             var mNodes = playDrumNote(37, whenM, masterGain);
@@ -1801,17 +2039,19 @@
                     }
                 }
 
-                /* Agendar Chords (Baixo das Cifras) */
+                /* Agendar Chords */
                 if (chordConfig.enabled && !chordConfig.mute) {
                     var noteDur = (60 / bpm) * 1.8;
                     while (nextChordIdx < chordEvents.length && chordEvents[nextChordIdx].t < lookAheadLimit) {
                         var cev = chordEvents[nextChordIdx];
-                        var whenC = sat + cev.t;
-                        if (whenC >= now) {
-                            var midiC = Math.max(21, Math.min(108, cev.midi + chordConfig.oct + globalTransp));
-                            if (chordInst) {
-                                var cn = chordInst.play(midiC, whenC, { duration: noteDur });
-                                if (cn) sc.push(cn);
+                        if (cev.t < rangeEndT) {
+                            var whenC = sat + cev.t;
+                            if (whenC >= now) {
+                                var midiC = Math.max(21, Math.min(108, cev.midi + chordConfig.oct + globalTransp));
+                                if (chordInst) {
+                                    var cn = chordInst.play(midiC, whenC, { duration: noteDur });
+                                    if (cn) sc.push(cn);
+                                }
                             }
                         }
                         nextChordIdx++;
@@ -1831,7 +2071,6 @@
                 chordEvents = parseChordEvents(rawXml, currentBpm);
                 sat = ac.currentTime + 0.1 - offset;
 
-                /* Inicializar Índices para o Scheduler */
                 nextEventIdx = 0;
                 while (nextEventIdx < evs.length && evs[nextEventIdx].t < offset - 0.02) nextEventIdx++;
 
@@ -1873,10 +2112,12 @@
                 if (ac && ac.state !== 'closed') { try { await ac.close(); } catch (_) { } }
                 ac = new (window.AudioContext || window.webkitAudioContext)();
                 setupFx(); initParts();
+                buildMeasureTimeMap();
+                updateRangeInputs();
                 sat = 0; pat = 0; run = false; evs = []; sc = []; pieceEnd = 0;
                 clearPlaybackEndTimer();
                 setStatus('Pronto!', 'ok');
-                ['bp', 'bpa', 'bs', 'bx', 'bdl', 'reverbAmt', 'btnApplyMeta'].forEach(function (id) {
+                ['bp', 'bpa', 'bs', 'bx', 'bdl', 'reverbAmt', 'btnApplyMeta', 'rangeFrom', 'rangeTo', 'btnLoop'].forEach(function (id) {
                     document.getElementById(id).disabled = false;
                 });
             }
@@ -1906,8 +2147,11 @@
 
             document.getElementById('bp').onclick = async function () {
                 if (run || !partInsts.length || !ac) return;
-                run = true; await scheduleFrom(pat); startCursorFollow(pat); pat = 0;
-                setStatus('A tocar...', 'ok');
+                run = true;
+                var startT = getRangeStartTime();
+                await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
+                var loopMsg = loopActive ? ' [Loop: ' + rangeFrom + '→' + rangeTo + ']' : '';
+                setStatus('A tocar...' + loopMsg, 'ok');
             };
 
             document.getElementById('btnApplyMeta').onclick = async function () {
@@ -1935,6 +2179,7 @@
 
             document.getElementById('bpm').onchange = function () {
                 if (!rawXml) return;
+                buildMeasureTimeMap(); // rebuild with new BPM
                 if (run && ac) {
                     var currentOffset = Math.max(0, ac.currentTime - sat);
                     stopScheduled(); clearCursorTimer(); clearPlaybackEndTimer();
@@ -1949,7 +2194,6 @@
                     if (mode === -1) osmd.cursor.hide();
                     else { osmd.cursor.cursorOptions.type = mode; osmd.cursor.show(); }
                 }
-                /* OTIMIZAÇÃO: invalida cache ao mudar modo */
                 cursorStepsCache.mode = null;
                 moveCursorToTime(run ? Math.max(0, ac.currentTime - sat) : (pat || 0));
             };
@@ -1964,7 +2208,9 @@
                     if (detail === 2) { stopPlayback(true); return; }
                     if (run) { pausePlayback(); }
                     else if (partInsts.length && ac) {
-                        run = true; await scheduleFrom(pat); startCursorFollow(pat); pat = 0;
+                        run = true;
+                        var startT = pat || getRangeStartTime();
+                        await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
                         setStatus('A tocar...', 'ok');
                     }
                 }, 250);
@@ -2019,7 +2265,7 @@
             };
 
             /* ═══════════════════════════════════════════════════════════════════
-               BUILD EXPORT HTML — inclui toda a lógica de cifras + otimizações cursor
+               BUILD EXPORT HTML
                ═══════════════════════════════════════════════════════════════════ */
             function buildExportHtml() {
                 var xml = rawXml;
@@ -2036,6 +2282,12 @@
                 var metAttr = metOn ? 'checked' : '';
                 var mps = getMpsState();
                 var curMode = document.getElementById('cursorMode').value;
+                var exportRangeFrom = rangeFrom;
+                var exportRangeTo = rangeTo;
+                var exportLoopActive = loopActive;
+                var exportTotalMeasures = totalMeasures;
+                var exportMinMeasureNumber = minMeasureNumber;
+                var exportMaxMeasureNumber = maxMeasureNumber;
 
                 var C = 'display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #d1d5db;border-radius:5px;padding:3px 10px;white-space:nowrap;';
                 var L = 'font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;font-family:system-ui,sans-serif;';
@@ -2051,6 +2303,10 @@
                 var cursorOptions = [['0', 'Nota'], ['3', 'Compasso'], ['-1', 'Sem cursor']].map(function (o) {
                     return '<option value="' + o[0] + '"' + (String(curMode) === String(o[0]) ? ' selected' : '') + '>' + o[1] + '<\/option>';
                 }).join('');
+
+                var loopBtnStyle = exportLoopActive
+                    ? 'background:#7c3aed;color:#fff;border:1.5px solid #7c3aed;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:system-ui,sans-serif;box-shadow:0 0 0 3px rgba(124,58,237,0.25);'
+                    : 'background:#f3f4f6;color:#6b7280;border:1.5px solid #d1d5db;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:system-ui,sans-serif;';
 
                 return `<!DOCTYPE html>
 <html>
@@ -2075,6 +2331,15 @@ body{background:#f3f4f6;color:#111827;}
   <span style="${C}background:#eee;"><span style="${L}">Zoom<\/span><input type="number" id="zoomEx" value="${zoomValue}" style="${I}width:40px;text-align:center;"><\/span>
   <span style="${C}background:#eee;"><span style="${L}">Layout<\/span><select id="layoutEx" style="${S}">${layoutOptions}<\/select><input type="number" id="mpsCountEx" value="${mps.count}" min="1" max="32" style="${I}width:36px;text-align:center;"${mps.mode !== 'fixed' ? ' disabled' : ''}><\/span>
   <span style="${C}background:#eee;"><span style="${L}">Cursor<\/span><select id="curEx" style="${S}">${cursorOptions}<\/select><\/span>
+  <span style="${C}background:#eee;gap:4px;">
+    <span style="${L}">Trecho<\/span>
+    <input type="number" id="rangeFromEx" value="${exportRangeFrom}" min="${exportMinMeasure}" max="${exportMaxMeasure}" style="${I}width:38px;text-align:center;" title="Compasso inicial">
+    <span style="font-size:11px;font-weight:700;color:#6b7280;">–<\/span>
+    <input type="number" id="rangeToEx" value="${exportRangeTo}" min="${exportMinMeasure}" max="${exportMaxMeasure}" style="${I}width:38px;text-align:center;" title="Compasso final">
+  <\/span>
+  <button id="btnLoopEx" style="${loopBtnStyle}" title="Ativar/desativar loop">
+    <svg style="width:11px;height:11px;display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-right:3px;" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"><\/polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"><\/path><polyline points="7 23 3 19 7 15"><\/polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"><\/path><\/svg>Loop
+  <\/button>
   <span style="font-size:12px;color:#6b7280;padding:0 4px;">
     <svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"><\/polygon><\/svg>/<svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"><\/rect><rect x="14" y="4" width="4" height="16"><\/rect><\/svg>&nbsp;clique &nbsp;&bull;&nbsp; <svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"><\/rect><\/svg>&nbsp;duplo &nbsp;&bull;&nbsp; &#9198;&nbsp;triplo &nbsp;&bull;&nbsp; <a href="https://glauberlasantiago.github.io/vitopamos/" target="_blank" style="text-decoration:none;color:#94a3b8;font-size:10px;">Powered by ViToPaMos<\/a>
   <\/span>
@@ -2093,6 +2358,15 @@ body{background:#f3f4f6;color:#111827;}
     mute: '<svg class="icon-svg" style="width:11px;height:11px;margin-right:3px;" viewBox="0 0 24 24"><path d="M11 4.708V20M4.141 15.414A2 2 0 0 1 3 13.586V10.414A2 2 0 0 1 4.141 8.586L8.859 4.871A1 1 0 0 1 10.5 5.657v12.686a1 1 0 0 1-1.641.786l-4.718-3.715Z"><\/path><line x1="22" y1="9" x2="16" y2="15"><\/line><line x1="16" y1="9" x2="22" y2="15"><\/line><\/svg>',
     solo: '<svg class="icon-svg" style="width:11px;height:11px;margin-right:3px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"><\/circle><circle cx="12" cy="12" r="1"><\/circle><\/svg>'
   };
+
+  /* ── Range & Loop state ── */
+  var loopActive = ${exportLoopActive ? 'true' : 'false'};
+  var rangeFrom = ${exportRangeFrom};
+  var rangeTo = ${exportRangeTo};
+  var totalMeasures = ${exportTotalMeasures};
+  var measureTimeMap = {};
+  var minMeasureNumber = ${exportMinMeasureNumber};
+  var maxMeasureNumber = ${exportMaxMeasureNumber};
 
   var STEP_SEMITONES = {C:0,D:2,E:4,F:5,G:7,A:9,B:11};
   function rootToMidi(step,alter){
@@ -2142,6 +2416,74 @@ body{background:#f3f4f6;color:#111827;}
     return chords;
   }
 
+  function buildMeasureTimeMap(){
+    measureTimeMap={};
+    minMeasureNumber=1;
+    maxMeasureNumber=1;
+    if(!osmd||!osmd.cursor||!osmd.Sheet||!osmd.Sheet.SourceMeasures)return;
+    var bpm=+document.getElementById('bpm').value||100;
+    var beatLen=60/bpm;
+    try{
+      osmd.cursor.reset();
+      var it=osmd.cursor.Iterator,lastM=-1;
+      while(!it.EndReached){
+        var mIdx=it.CurrentMeasureIndex;
+        if(mIdx!==lastM){
+          var measureNumber=osmd.Sheet.SourceMeasures[mIdx].MeasureNumber;
+          var ts=it.currentTimeStamp||it.CurrentTimeStamp;
+          var rv=ts?(typeof ts.realValue!=='undefined'?ts.realValue:(ts.RealValue||0)):0;
+          measureTimeMap[measureNumber]=rv*4*beatLen;
+          if(mIdx===0)minMeasureNumber=measureNumber;
+          maxMeasureNumber=measureNumber;
+          lastM=mIdx;
+        }
+        it.moveToNext();
+      }
+      osmd.cursor.reset();
+      totalMeasures=maxMeasureNumber;
+    }catch(e){console.warn('buildMeasureTimeMap',e);}
+  }
+
+  function getRangeStartTime(){
+    var from=Math.max(minMeasureNumber,Math.min(rangeFrom,maxMeasureNumber));
+    return measureTimeMap[from]||0;
+  }
+  function getRangeEndTime(){
+    var to=Math.max(rangeFrom,Math.min(rangeTo,maxMeasureNumber));
+    var next=measureTimeMap[to+1];
+    return(next!==undefined)?next:pieceEnd;
+  }
+
+  function updateRangeInputs(){
+    var fromEl=document.getElementById('rangeFromEx');
+    var toEl=document.getElementById('rangeToEx');
+    if(fromEl){fromEl.min=minMeasureNumber;fromEl.max=maxMeasureNumber;}
+    if(toEl){
+      toEl.min=minMeasureNumber;toEl.max=maxMeasureNumber;
+      if(!toEl.value||parseInt(toEl.value,10)<minMeasureNumber||parseInt(toEl.value,10)>maxMeasureNumber)toEl.value=maxMeasureNumber;
+    }
+  }
+
+  document.getElementById('rangeFromEx').addEventListener('change',function(){
+    var v=parseInt(this.value,10)||minMeasureNumber;
+    if(v<minMeasureNumber)v=minMeasureNumber;if(v>maxMeasureNumber)v=maxMeasureNumber;
+    this.value=v;rangeFrom=v;
+    if(rangeTo<rangeFrom){rangeTo=rangeFrom;document.getElementById('rangeToEx').value=rangeTo;}
+  });
+  document.getElementById('rangeToEx').addEventListener('change',function(){
+    var v=parseInt(this.value,10)||maxMeasureNumber;
+    if(v<minMeasureNumber)v=minMeasureNumber;if(v>maxMeasureNumber)v=maxMeasureNumber;
+    this.value=v;rangeTo=v;
+    if(rangeFrom>rangeTo){rangeFrom=rangeTo;document.getElementById('rangeFromEx').value=rangeFrom;}
+  });
+
+  var LOOP_ACTIVE_STYLE='background:#7c3aed;color:#fff;border:1.5px solid #7c3aed;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:system-ui,sans-serif;box-shadow:0 0 0 3px rgba(124,58,237,0.25);';
+  var LOOP_INACTIVE_STYLE='background:#f3f4f6;color:#6b7280;border:1.5px solid #d1d5db;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:system-ui,sans-serif;';
+  document.getElementById('btnLoopEx').addEventListener('click',function(){
+    loopActive=!loopActive;
+    this.style.cssText=loopActive?LOOP_ACTIVE_STYLE:LOOP_INACTIVE_STYLE;
+  });
+
   function applyLayout(){
     var mode=document.getElementById('layoutEx').value;
     var count=parseInt(document.getElementById('mpsCountEx').value,10)||4;
@@ -2166,8 +2508,8 @@ body{background:#f3f4f6;color:#111827;}
   var chordInst=null,chordGain=null;
 
   /* Variáveis do Scheduler */
-  var nextEventIdx = 0, nextChordIdx = 0, nextMetTime = 0, schedulerTimer = null;
-  var lookahead = 0.1, scheduleAheadTime = 0.5, chordEvents = [];
+  var nextEventIdx=0,nextChordIdx=0,nextMetTime=0,schedulerTimer=null;
+  var lookahead=0.1,scheduleAheadTime=0.5,chordEvents=[];
 
   var DRUM_MIDI_MAP={35:'_drum_35_17_JCLive_sf2_file',36:'_drum_36_1_JCLive_sf2_file',37:'_drum_37_1_JCLive_sf2_file',38:'_drum_38_1_JCLive_sf2_file',39:'_drum_39_1_JCLive_sf2_file',40:'_drum_40_1_JCLive_sf2_file',41:'_drum_41_0_FluidR3_GM_sf2_file',42:'_drum_42_0_FluidR3_GM_sf2_file',43:'_drum_43_0_FluidR3_GM_sf2_file',44:'_drum_44_0_FluidR3_GM_sf2_file',45:'_drum_45_0_FluidR3_GM_sf2_file',46:'_drum_46_0_FluidR3_GM_sf2_file',47:'_drum_47_0_FluidR3_GM_sf2_file',48:'_drum_48_0_FluidR3_GM_sf2_file',49:'_drum_49_0_FluidR3_GM_sf2_file',50:'_drum_50_0_FluidR3_GM_sf2_file',51:'_drum_51_0_FluidR3_GM_sf2_file',52:'_drum_52_0_FluidR3_GM_sf2_file',53:'_drum_53_0_FluidR3_GM_sf2_file',54:'_drum_54_0_FluidR3_GM_sf2_file',55:'_drum_55_0_FluidR3_GM_sf2_file',56:'_drum_56_0_FluidR3_GM_sf2_file',57:'_drum_57_0_FluidR3_GM_sf2_file',58:'_drum_58_0_FluidR3_GM_sf2_file',59:'_drum_59_0_FluidR3_GM_sf2_file',60:'_drum_60_0_FluidR3_GM_sf2_file',61:'_drum_61_0_FluidR3_GM_sf2_file',63:'_drum_63_0_FluidR3_GM_sf2_file',64:'_drum_64_0_FluidR3_GM_sf2_file',65:'_drum_65_0_FluidR3_GM_sf2_file',66:'_drum_66_0_FluidR3_GM_sf2_file',80:'_drum_80_0_FluidR3_GM_sf2_file',81:'_drum_81_0_FluidR3_GM_sf2_file'};
   var DRUM_SCRIPT_URLS={'_drum_35_17_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12835_17_JCLive_sf2_file.js','_drum_36_1_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12836_1_JCLive_sf2_file.js','_drum_37_1_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12837_1_JCLive_sf2_file.js','_drum_38_1_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12838_1_JCLive_sf2_file.js','_drum_39_1_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12839_1_JCLive_sf2_file.js','_drum_40_1_JCLive_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12840_1_JCLive_sf2_file.js','_drum_41_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12841_0_FluidR3_GM_sf2_file.js','_drum_42_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12842_0_FluidR3_GM_sf2_file.js','_drum_43_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12843_0_FluidR3_GM_sf2_file.js','_drum_44_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12844_0_FluidR3_GM_sf2_file.js','_drum_45_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12845_0_FluidR3_GM_sf2_file.js','_drum_46_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12846_0_FluidR3_GM_sf2_file.js','_drum_47_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12847_0_FluidR3_GM_sf2_file.js','_drum_48_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12848_0_FluidR3_GM_sf2_file.js','_drum_49_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12849_0_FluidR3_GM_sf2_file.js','_drum_50_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12850_0_FluidR3_GM_sf2_file.js','_drum_51_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12851_0_FluidR3_GM_sf2_file.js','_drum_52_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12852_0_FluidR3_GM_sf2_file.js','_drum_53_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12853_0_FluidR3_GM_sf2_file.js','_drum_54_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js','_drum_55_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12855_0_FluidR3_GM_sf2_file.js','_drum_56_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12856_0_FluidR3_GM_sf2_file.js','_drum_57_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12857_0_FluidR3_GM_sf2_file.js','_drum_58_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12858_0_FluidR3_GM_sf2_file.js','_drum_59_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12859_0_FluidR3_GM_sf2_file.js','_drum_60_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12860_0_FluidR3_GM_sf2_file.js','_drum_61_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12861_0_FluidR3_GM_sf2_file.js','_drum_63_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12863_0_FluidR3_GM_sf2_file.js','_drum_64_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12864_0_FluidR3_GM_sf2_file.js','_drum_65_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12865_0_FluidR3_GM_sf2_file.js','_drum_66_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12866_0_FluidR3_GM_sf2_file.js','_drum_80_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12880_0_FluidR3_GM_sf2_file.js','_drum_81_0_FluidR3_GM_sf2_file':'https://surikov.github.io/webaudiofontdata/sound/12881_0_FluidR3_GM_sf2_file.js'};
@@ -2206,7 +2548,6 @@ body{background:#f3f4f6;color:#111827;}
   function clearCursorTimer(){if(cursorTimer){cancelAnimationFrame(cursorTimer);cursorTimer=null;}}
   function clearPlaybackEndTimer(){if(playbackEndTimer){clearTimeout(playbackEndTimer);playbackEndTimer=null;}}
 
-  /* FIX 1 — resetCursorToStart: sai imediatamente no modo -1 */
   function resetCursorToStart(){
     clearCursorTimer();
     try{
@@ -2214,10 +2555,18 @@ body{background:#f3f4f6;color:#111827;}
       if(mode===-1){osmd.cursor.hide();cursorIndex=0;return;}
       osmd.cursor.cursorOptions.type=mode;osmd.cursor.reset();osmd.cursor.show();
       cursorIndex=0;
+      if(rangeFrom>minMeasureNumber&&mode===3&&osmd.Sheet&&osmd.Sheet.SourceMeasures){
+        var targetIdx=-1;
+        for(var i=0;i<osmd.Sheet.SourceMeasures.length;i++){
+          if(osmd.Sheet.SourceMeasures[i].MeasureNumber===rangeFrom){targetIdx=i;break;}
+        }
+        if(targetIdx>0){
+          while(!osmd.cursor.Iterator.EndReached&&osmd.cursor.Iterator.CurrentMeasureIndex<targetIdx){osmd.cursor.next();}
+        }
+      }
     }catch(_){}
   }
 
-  /* FIX 2 — extractCursorSteps: retorna sem iterar no modo -1 */
   function extractCursorSteps(){
     var bpm=+document.getElementById('bpm').value||100;
     var mode=+document.getElementById('curEx').value;
@@ -2233,7 +2582,8 @@ body{background:#f3f4f6;color:#111827;}
         if(mode===0||mIdx!==lastM){
           var ts=it.currentTimeStamp||it.CurrentTimeStamp;
           var rv=ts?(typeof ts.realValue!=='undefined'?ts.realValue:(ts.RealValue||0)):0;
-          cursorSteps.push({t:rv*4*(60/bpm),m:mIdx});
+          var measureNumber=osmd.Sheet&&osmd.Sheet.SourceMeasures[mIdx]?osmd.Sheet.SourceMeasures[mIdx].MeasureNumber:mIdx+1;
+          cursorSteps.push({t:rv*4*(60/bpm),m:mIdx,measureNumber:measureNumber});
           lastM=mIdx;
         }
         it.moveToNext();
@@ -2259,7 +2609,6 @@ body{background:#f3f4f6;color:#111827;}
     }catch(_){}
   }
 
-  /* FIX 3 — startCursorFollow: não inicia RAF no modo -1; throttle 80ms (~12fps) */
   function startCursorFollow(offset){
     var mode=+document.getElementById('curEx').value;
     if(mode===-1)return;
@@ -2297,11 +2646,24 @@ body{background:#f3f4f6;color:#111827;}
     if(schedulerTimer){clearTimeout(schedulerTimer);schedulerTimer=null;}
   }
 
-  function finishPlayback(){run=false;pat=0;stopAll();clearCursorTimer();clearPlaybackEndTimer();resetCursorToStart();}
+  function finishPlayback(){
+    if(loopActive){
+      var startT=getRangeStartTime();
+      stopAll();clearCursorTimer();clearPlaybackEndTimer();
+      play(startT).then(function(){startCursorFollow(startT);});
+      return;
+    }
+    run=false;pat=0;stopAll();clearCursorTimer();clearPlaybackEndTimer();resetCursorToStart();
+  }
   function pausePlayback(){if(!run||!ac)return;run=false;pat=Math.max(0,ac.currentTime-sat);stopAll();clearCursorTimer();clearPlaybackEndTimer();}
   function stopPlayback(){run=false;pat=0;stopAll();clearCursorTimer();clearPlaybackEndTimer();resetCursorToStart();}
-  async function restartFromBeginningAndPlay(){stopPlayback();run=true;await play(0);startCursorFollow(0);pat=0;}
-  function armPlaybackEnd(offset){clearPlaybackEndTimer();var rem=Math.max(0,pieceEnd-offset);playbackEndTimer=setTimeout(function(){finishPlayback();},Math.ceil((rem+0.12)*1000));}
+  async function restartFromBeginningAndPlay(){stopPlayback();run=true;var st=getRangeStartTime();await play(st);startCursorFollow(st);pat=0;}
+  function armPlaybackEnd(offset){
+    clearPlaybackEndTimer();
+    var endT=getRangeEndTime();
+    var rem=Math.max(0,endT-offset);
+    playbackEndTimer=setTimeout(function(){finishPlayback();},Math.ceil((rem+0.12)*1000));
+  }
 
   function createImpulse(seconds,decay){
     var rate=ac.sampleRate,len=rate*seconds,buf=ac.createBuffer(2,len,rate);
@@ -2350,47 +2712,49 @@ body{background:#f3f4f6;color:#111827;}
     var bpm=+document.getElementById('bpm').value||100;
     var globalTransp=getTransShift();
     var lookAheadLimit=now-sat+scheduleAheadTime;
+    var rangeEndT=getRangeEndTime();
 
-    /* Notas */
-    while(nextEventIdx<evs.length && evs[nextEventIdx].t<lookAheadLimit){
-      var e=evs[nextEventIdx]; var when=sat+e.t;
-      if(when>=now){
-        if(e.isDrum){
-          var dd=partGains[e.part]||masterGain;
-          var dn=playDrumNote(e.m,when,dd);
-          for(var di=0;di<dn.length;di++)sc.push(dn[di]);
-        }else{
-          var voice=null; var partOct=(partConfigs[e.part]&&partConfigs[e.part].oct)||0;
-          if(partInsts[e.part]&&typeof partInsts[e.part].play==='function')
-            voice=partInsts[e.part].play(e.m+partOct+globalTransp,when,{duration:e.d});
-          if(voice)sc.push(voice);
+    while(nextEventIdx<evs.length&&evs[nextEventIdx].t<lookAheadLimit){
+      var e=evs[nextEventIdx];
+      if(e.t<rangeEndT){
+        var when=sat+e.t;
+        if(when>=now){
+          if(e.isDrum){
+            var dd=partGains[e.part]||masterGain;
+            var dn=playDrumNote(e.m,when,dd);
+            for(var di=0;di<dn.length;di++)sc.push(dn[di]);
+          }else{
+            var partOct=(partConfigs[e.part]&&partConfigs[e.part].oct)||0;
+            if(partInsts[e.part]&&typeof partInsts[e.part].play==='function'){
+              var voice=partInsts[e.part].play(e.m+partOct+globalTransp,when,{duration:e.d});
+              if(voice)sc.push(voice);
+            }
+          }
         }
       }
       nextEventIdx++;
     }
 
-    /* Metrônomo */
     if(document.getElementById('met').checked){
       var bl=getMetronomeBeatLen();
       if(nextMetTime<now-sat)nextMetTime=Math.ceil((now-sat)/bl)*bl;
-      while(nextMetTime<lookAheadLimit && nextMetTime<pieceEnd+0.05){
+      while(nextMetTime<lookAheadLimit&&nextMetTime<rangeEndT+0.05){
         var whenM=sat+nextMetTime;
-        if(whenM>=now){
-          var dn=playDrumNote(37,whenM,masterGain);
-          for(var di=0;di<dn.length;di++)sc.push(dn[di]);
-        }
+        if(whenM>=now){var dn=playDrumNote(37,whenM,masterGain);for(var di=0;di<dn.length;di++)sc.push(dn[di]);}
         nextMetTime+=bl;
       }
     }
 
-    /* Chords */
-    if(chordConfig.enabled && !chordConfig.mute){
-      var noteDur=(60/bpm)*1.8; var globalTransp=getTransShift();
-      while(nextChordIdx<chordEvents.length && chordEvents[nextChordIdx].t<lookAheadLimit){
-        var cev=chordEvents[nextChordIdx]; var whenC=sat+cev.t;
-        if(whenC>=now){
-          var midiC=Math.max(21,Math.min(108,cev.midi+chordConfig.oct+globalTransp));
-          if(chordInst){var cn=chordInst.play(midiC,whenC,{duration:noteDur});if(cn)sc.push(cn);}
+    if(chordConfig.enabled&&!chordConfig.mute){
+      var noteDur=(60/bpm)*1.8;
+      while(nextChordIdx<chordEvents.length&&chordEvents[nextChordIdx].t<lookAheadLimit){
+        var cev=chordEvents[nextChordIdx];
+        if(cev.t<rangeEndT){
+          var whenC=sat+cev.t;
+          if(whenC>=now){
+            var midiC=Math.max(21,Math.min(108,cev.midi+chordConfig.oct+globalTransp));
+            if(chordInst){var cn=chordInst.play(midiC,whenC,{duration:noteDur});if(cn)sc.push(cn);}
+          }
         }
         nextChordIdx++;
       }
@@ -2447,7 +2811,7 @@ body{background:#f3f4f6;color:#111827;}
     if(partInsts.length===partConfigs.length&&chordInst)return;
     document.getElementById('st').textContent='A carregar timbres...';
     document.getElementById('st').style.display='block';
-    var hasDrum=partConfigs.some(function(c){return c.program==='_drum_kit_gm';}) || document.getElementById('met').checked;
+    var hasDrum=partConfigs.some(function(c){return c.program==='_drum_kit_gm';})||document.getElementById('met').checked;
     if(hasDrum){await loadDrumSounds();initDrumEngine();}
     var promises=partConfigs.map(function(cfg,idx){
       var gain=ac.createGain();gain.connect(inputGain);partGains[idx]=gain;
@@ -2464,16 +2828,17 @@ body{background:#f3f4f6;color:#111827;}
     if(!ac||ac.state==='closed'){ac=new(window.AudioContext||window.webkitAudioContext)();setupFx();}
     if(ac.state==='suspended')await ac.resume();
     await ensureInst();
-    extract();updateReverb();stopAll();clearPlaybackEndTimer();
+    extract();
+    updateReverb();stopAll();clearPlaybackEndTimer();
 
     var currentBpm=+document.getElementById('bpm').value||100;
     chordEvents=parseChordEvents(raw,currentBpm);
     sat=ac.currentTime+0.1-off;
 
     nextEventIdx=0;
-    while(nextEventIdx<evs.length && evs[nextEventIdx].t<off-0.02)nextEventIdx++;
+    while(nextEventIdx<evs.length&&evs[nextEventIdx].t<off-0.02)nextEventIdx++;
     nextChordIdx=0;
-    while(nextChordIdx<chordEvents.length && chordEvents[nextChordIdx].t<off-0.02)nextChordIdx++;
+    while(nextChordIdx<chordEvents.length&&chordEvents[nextChordIdx].t<off-0.02)nextChordIdx++;
 
     if(document.getElementById('met').checked){
       var bl=getMetronomeBeatLen();
@@ -2486,7 +2851,8 @@ body{background:#f3f4f6;color:#111827;}
 
   document.getElementById('rev').addEventListener('input',function(){updateReverb();});
   document.getElementById('bpm').addEventListener('change',function(){
-    eventsCache.bpm=null;
+    eventsCache.bpm=null;cursorStepsCache.mode=null;
+    buildMeasureTimeMap();
     if(run&&ac){var off=Math.max(0,ac.currentTime-sat);stopAll();clearCursorTimer();clearPlaybackEndTimer();play(off).then(function(){startCursorFollow(off);});}
     else moveCursorToTime(pat||0);
   });
@@ -2507,7 +2873,11 @@ body{background:#f3f4f6;color:#111827;}
       clickTimer=null;
       if(detail>=3){await restartFromBeginningAndPlay();return;}
       if(detail===2){stopPlayback();return;}
-      if(run){pausePlayback();}else{run=true;await play(pat);startCursorFollow(pat);pat=0;}
+      if(run){pausePlayback();}else{
+        run=true;
+        var st=pat||getRangeStartTime();
+        await play(st);startCursorFollow(st);pat=0;
+      }
     },250);
   });
 
@@ -2543,7 +2913,7 @@ body{background:#f3f4f6;color:#111827;}
     });
 
     var chRow=document.createElement('div');chRow.style.cssText='display:flex;align-items:center;gap:8px;border-top:1px dashed #d1d5db;padding-top:6px;margin-top:2px;';
-    var chName=document.createElement('span');chName.style.cssText='font-size:12px;font-weight:600;min-width:120px;color:#6366f1;font-style:plain;';chName.textContent='Baixo das Cifras';
+    var chName=document.createElement('span');chName.style.cssText='font-size:12px;font-weight:600;min-width:120px;color:#6366f1;';chName.textContent='Baixo das Cifras';
     var bEn=document.createElement('button');
     function refreshChordEnableBtn(){
       bEn.textContent=chordConfig.enabled?'ON':'OFF';
@@ -2570,14 +2940,18 @@ body{background:#f3f4f6;color:#111827;}
     applyLayout();
     osmd.Zoom=(+document.getElementById('zoomEx').value||100)/100;
     renderExPartsPanel();
-    document.getElementById('met').addEventListener('change', async function(){
-      if(this.checked && !drumPlayer){
+    buildMeasureTimeMap();
+    updateRangeInputs();
+    document.getElementById('met').addEventListener('change',async function(){
+      if(this.checked&&!drumPlayer){
         document.getElementById('st').textContent='A carregar sons do metrônomo...';document.getElementById('st').style.display='block';
         await loadDrumSounds();initDrumEngine();
         document.getElementById('st').style.display='none';
       }
     });
     osmd.render();
+    buildMeasureTimeMap();
+    updateRangeInputs();
     resetCursorToStart();
     extractCursorSteps();
   });
