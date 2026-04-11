@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -270,7 +271,8 @@
         .zoom-wrap,
         .mps-wrap,
         .cursor-wrap,
-        .range-wrap {
+        .range-wrap,
+        .export-opt-wrap {
             display: flex;
             align-items: center;
             gap: 7px;
@@ -288,7 +290,8 @@
         .zoom-wrap label,
         .mps-wrap label,
         .cursor-wrap label,
-        .range-wrap label {
+        .range-wrap label,
+        .export-opt-wrap label {
             font-size: 11px;
             font-weight: 600;
             color: var(--text-sub);
@@ -795,6 +798,12 @@
                         disabled>
                 </div>
 
+                <div class="export-opt-wrap"
+                    title="Ocultar o painel de controles (Play, BPM, etc) no HTML gerado para que apareça apenas a partitura">
+                    <label for="hideControlsInExport">Ocultar Painel no Exportado</label>
+                    <input type="checkbox" id="hideControlsInExport" style="width:16px;height:16px;cursor:pointer;">
+                </div>
+
                 <button class="btn btn-export" id="bx" disabled>
                     <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -926,6 +935,7 @@
             var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay('score', {
                 backend: 'svg', autoResize: true, drawTitle: true, followCursor: false
             });
+            if (osmd.cursor) osmd.cursor.cursorOptions.color = '#86efac44';
 
             var STEP_SEMITONES = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 
@@ -1018,7 +1028,7 @@
                 return chords;
             }
 
-            var chordConfig = { name: 'Baixo das Cifras', program: 'acoustic_bass', vol: 75, mute: false, solo: false, oct: -24, enabled: false };
+            var chordConfig = { name: 'Baixo das Cifras', program: 'acoustic_bass', vol: 75, mute: false, solo: false, oct: -24, enabled: true };
             var chordInst = null;
             var chordGain = null;
 
@@ -1661,7 +1671,7 @@
             async function loadAllInstruments() {
                 if (!ac || ac.state === 'closed') { ac = new (window.AudioContext || window.webkitAudioContext)(); setupFx(); }
                 stopScheduled(); clearPlaybackEndTimer();
-                setStatus('A carregar timbres...', 'info');
+                setStatus('Carregando timbres...', 'info');
                 partInsts = []; partGains = [];
                 chordInst = null; chordGain = null;
                 var hasDrumKit = partConfigs.some(function (cfg) { return cfg.program === '_drum_kit_gm'; });
@@ -1685,7 +1695,7 @@
             }
 
             function updatePartMix() {
-                isAnySolo = partConfigs.some(function (p) { return p.solo; });
+                isAnySolo = partConfigs.some(function (p) { return p.solo; }) || chordConfig.solo;
                 partConfigs.forEach(function (cfg, idx) {
                     var baseGain = 1;
                     if (isAnySolo) baseGain = cfg.solo ? 1 : 0;
@@ -1843,7 +1853,7 @@
                 if (!partInsts.length || !ac) return;
                 var startT = getRangeStartTime();
                 run = true; await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
-                setStatus('A tocar...', 'ok');
+                setStatus('Tocando...', 'ok');
             }
             function armPlaybackEnd(offset) {
                 clearPlaybackEndTimer();
@@ -1854,7 +1864,7 @@
 
             document.getElementById('metCheck').addEventListener('change', async function () {
                 if (this.checked && !drumPlayer) {
-                    setStatus('A carregar sons do metrônomo...', 'info');
+                    setStatus('Carregando sons do metrônomo...', 'info');
                     await loadDrumSounds();
                     initDrumEngine();
                     setStatus('Metrônomo pronto.');
@@ -2077,7 +2087,7 @@
             document.getElementById('fi').onchange = async function (e) {
                 var f = e.target.files[0]; if (!f) return;
                 document.getElementById('fname').textContent = f.name;
-                setStatus('A carregar partitura...', 'info');
+                setStatus('Carregando partitura...', 'info');
                 try {
                     rawXml = f.name.toLowerCase().endsWith('.mxl') ? await getXmlFromMxl(f) : await f.text();
                     await afterXmlLoaded();
@@ -2085,7 +2095,7 @@
             };
 
             async function loadFromUrl(url) {
-                setStatus('A carregar partitura de exemplo...', 'info');
+                setStatus('Carregando partitura de exemplo...', 'info');
                 try {
                     var resp = await fetch(url); if (!resp.ok) throw new Error('HTTP ' + resp.status);
                     rawXml = await resp.text();
@@ -2102,7 +2112,7 @@
                 run = true;
                 var startT = getRangeStartTime();
                 await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
-                setStatus('A tocar...', 'ok');
+                setStatus('Tocando...', 'ok');
             };
 
             document.getElementById('btnApplyMeta').onclick = async function () {
@@ -2112,7 +2122,9 @@
                 var wasRunning = run, savedOffset = wasRunning ? Math.max(0, ac.currentTime - sat) : pat;
                 stopPlayback(false);
                 setStatus('Aplicando metadados...', 'info');
-                await osmd.load(rawXml); applyLayoutMode(); osmd.render();
+                await osmd.load(rawXml);
+                if (osmd.cursor) osmd.cursor.cursorOptions.color = '#86efac44';
+                applyLayoutMode(); osmd.render();
                 resetCursorToStart(); extractCursorSteps();
                 if (wasRunning) { run = true; await scheduleFrom(savedOffset); startCursorFollow(savedOffset); }
                 else pat = savedOffset;
@@ -2162,7 +2174,7 @@
                         run = true;
                         var startT = pat || getRangeStartTime();
                         await scheduleFrom(startT); startCursorFollow(startT); pat = 0;
-                        setStatus('A tocar...', 'ok');
+                        setStatus('Tocando...', 'ok');
                     }
                 }, 250);
             });
@@ -2225,6 +2237,7 @@
                 var metOn = document.getElementById('metCheck').checked;
                 var transpShift = document.getElementById('transSel').value;
                 var zoomValue = document.getElementById('zoomInp').value || 100;
+                var hideCtrls = document.getElementById('hideControlsInExport').checked;
 
                 var xmlB64 = encodeBase64Unicode(xml);
                 var safePartConfigs = JSON.stringify(partConfigs);
@@ -2265,11 +2278,12 @@
 <style>
 body{background:#f3f4f6;color:#111827;}
 .icon-svg{display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
-#score{background:#fff;padding:10px;border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+#score{background:#fff;padding:10px;border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,0.1);transition:margin-top 0.3s;}
+${hideCtrls ? '#ctrlsEx { display: none !important; } #score { border-top: none; box-shadow: none; margin-top: 0; padding-top: 5px; } #helpEx { margin-top: 10px; }' : ''}
 <\/style>
 <\/head>
 <body style="font-family:system-ui,sans-serif;margin:10px;">
-<div id="ctrlsEx" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;padding:10px 14px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;align-items:center;">
+<div id="ctrlsEx" style="display:${hideCtrls ? 'none' : 'flex'};flex-wrap:wrap;gap:8px;margin-bottom:12px;padding:10px 14px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;align-items:center;">
   <span style="${C}background:#eee;"><span style="${L}">BPM<\/span><input type="number" id="bpm" value="${bpm}" style="${I}width:44px;text-align:center;"><\/span>
   <span style="${C}background:#eee;"><span style="${L}">Metrôn.<\/span><input type="checkbox" id="met" ${metAttr} style="width:15px;height:15px;cursor:pointer;"><\/span>
   <span style="${C}background:#eee;"><span style="${L}">Reverb<\/span><input type="number" id="rev" value="${revAmt}" style="${I}width:40px;text-align:center;"><\/span>
@@ -2283,10 +2297,18 @@ body{background:#f3f4f6;color:#111827;}
     <span style="font-size:11px;font-weight:700;color:#6b7280;">–<\/span>
     <input type="number" id="rangeToEx" value="${exportRangeTo}" min="${exportMinMeasureNumber}" max="${exportMaxMeasureNumber}" style="${I}width:38px;text-align:center;" title="Compasso final">
   <\/span>
-  <span style="font-size:12px;color:#6b7280;padding:0 4px;">
-    <svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"><\/polygon><\/svg>/<svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"><\/rect><rect x="14" y="4" width="4" height="16"><\/rect><\/svg>&nbsp;clique &nbsp;&bull;&nbsp; <svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"><\/rect><\/svg>&nbsp;duplo &nbsp;&bull;&nbsp; &#9198;&nbsp;triplo &nbsp;&bull;&nbsp; <a href="https://glauberlasantiago.github.io/vitopamos/" target="_blank" style="text-decoration:none;color:#94a3b8;font-size:10px;">Powered by ViToPaMos<\/a>
-  <\/span>
-<\/div>
+  <span style="font-size:12px;color:#6b7280;padding:0 4px;margin-left:auto;">
+    <a href="https://glauberlasantiago.github.io/vitopamos/" target="_blank" style="text-decoration:none;color:#94a3b8;font-size:10px;">Powered by ViToPaMos</a>
+  </span>
+</div>
+<div id="helpEx" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:10px;padding:0 10px;font-size:11px;color:#6b7280;">
+  <span><svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>/<svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>&nbsp;clique</span>
+  <span>&bull;</span>
+  <span><svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"></rect></svg>&nbsp;duplo</span>
+  <span>&#9198;&nbsp;triplo</span>
+  <span>&bull;</span>
+  <a href="https://glauberlasantiago.github.io/vitopamos/" target="_blank" style="text-decoration:none;color:#94a3b8;font-size:10px;">Powered by ViToPaMos</a>
+</div>
 <p id="st" style="display:none;text-align:center;font-size:13px;color:#6b7280;"><\/p>
 <div id="score" style="overflow-x:auto;cursor:pointer;"><\/div>
 
@@ -2431,6 +2453,7 @@ body{background:#f3f4f6;color:#111827;}
   }
 
   var osmd=new opensheetmusicdisplay.OpenSheetMusicDisplay('score',{backend:'svg',autoResize:true,followCursor:false});
+  if(osmd.cursor) osmd.cursor.cursorOptions.color = '#86efac44';
   var ac=null,partInsts=[],partGains=[],isAnySolo=false,evs=[],sc=[],sat=0,pat=0,run=false;
   var cursorTimer=null,cursorSteps=[],cursorIndex=0;
   var playbackEndTimer=null,pieceEnd=0;
@@ -2789,7 +2812,7 @@ body{background:#f3f4f6;color:#111827;}
   function getTransShift(){return parseInt(document.getElementById('trans').value,10)||0;}
 
   function updatePartMix(){
-    isAnySolo=partConfigs.some(function(p){return p.solo;});
+    isAnySolo=partConfigs.some(function(p){return p.solo;})||chordConfig.solo;
     partConfigs.forEach(function(cfg,idx){
       var baseGain=1;
       if(isAnySolo)baseGain=cfg.solo?1:0;
@@ -2801,7 +2824,7 @@ body{background:#f3f4f6;color:#111827;}
 
   async function ensureInst(){
     if(partInsts.length===partConfigs.length&&chordInst)return;
-    document.getElementById('st').textContent='A carregar timbres...';
+    document.getElementById('st').textContent='Carregando timbres...';
     document.getElementById('st').style.display='block';
     var hasDrum=partConfigs.some(function(c){return c.program==='_drum_kit_gm';})||document.getElementById('met').checked;
     if(hasDrum){await loadDrumSounds();initDrumEngine();}
@@ -2936,7 +2959,7 @@ body{background:#f3f4f6;color:#111827;}
     updateRangeInputs();
     document.getElementById('met').addEventListener('change',async function(){
       if(this.checked&&!drumPlayer){
-        document.getElementById('st').textContent='A carregar sons do metrônomo...';document.getElementById('st').style.display='block';
+        document.getElementById('st').textContent='Carregando sons do metrônomo...';document.getElementById('st').style.display='block';
         await loadDrumSounds();initDrumEngine();
         document.getElementById('st').style.display='none';
       }
