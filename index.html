@@ -247,7 +247,6 @@
         .btn-export {
             background: #6366f1;
             color: #fff;
-            margin-left: auto;
         }
 
         .btn-export:not(:disabled):hover {
@@ -280,6 +279,10 @@
             padding: 0 14px;
             height: 38px;
             transition: background 0.3s;
+        }
+
+        .export-opt-wrap {
+            margin-left: auto;
         }
 
         .bpm-wrap label,
@@ -1033,7 +1036,7 @@
                 return chords;
             }
 
-            var chordConfig = { name: 'Baixo das Cifras', program: 'acoustic_bass', vol: 75, mute: false, solo: false, oct: -24, enabled: true };
+            var chordConfig = { name: 'Baixo das Cifras', program: 'acoustic_bass', vol: 75, mute: false, solo: false, oct: -24, enabled: true, durVal: 2 };
             var chordInst = null;
             var chordGain = null;
 
@@ -1525,6 +1528,15 @@
                 return s;
             }
 
+            function makeDurSelect(val, onchange) {
+                var s = document.createElement('select'); s.className = 'part-sel';
+                [[1, '1 tempo'], [2, '2 tempos'], [3, '3 tempos'], [4, '4 tempos']].forEach(function (o) {
+                    var opt = document.createElement('option'); opt.value = o[0]; opt.textContent = o[1];
+                    if (Number(val) === o[0]) opt.selected = true; s.appendChild(opt);
+                });
+                s.onchange = onchange; return s;
+            }
+
             function scanPercussionNotes(partIdx) {
                 var notes = new Set();
                 if (!osmd || !osmd.Sheet) return [];
@@ -1617,11 +1629,18 @@
                     var volRange = document.createElement('input'); volRange.type = 'range'; volRange.min = 0; volRange.max = 100; volRange.value = cfg.vol || 100; volRange.style.width = '70px';
                     volRange.oninput = function () { cfg.vol = +volRange.value; updateFullMix(); };
                     var octSel = makeOctSelect(cfg.oct || 0, function () { cfg.oct = parseInt(octSel.value, 10); });
+                    if (cfg.isDrum) {
+                        octSel.disabled = true;
+                        octSel.title = "Percussão (Drum Set) não permite transposição.";
+                        octSel.style.opacity = "0.5";
+                        cfg.oct = 0; // Garantir que está em 0
+                    }
                     var instSel = document.createElement('select'); instSel.className = 'part-sel';
                     instSel.innerHTML = GM_OPTS_HTML; instSel.value = cfg.program;
                     instSel.onchange = function () {
                         cfg.program = instSel.value;
                         cfg.isDrum = (instSel.value === '_drum_kit_gm');
+                        if (cfg.isDrum) cfg.oct = 0;
                         loadAllInstruments(); renderPartsPanel();
                     };
                     ctrls.appendChild(volRange); ctrls.appendChild(bMute); ctrls.appendChild(bSolo); ctrls.appendChild(octSel); ctrls.appendChild(instSel);
@@ -1671,9 +1690,10 @@
                 var volC = document.createElement('input'); volC.type = 'range'; volC.min = 0; volC.max = 100; volC.value = chordConfig.vol; volC.style.width = '70px';
                 volC.oninput = function () { chordConfig.vol = +volC.value; updateFullMix(); };
                 var octSelC = makeOctSelect(chordConfig.oct, function () { chordConfig.oct = parseInt(octSelC.value, 10); });
+                var durSelC = makeDurSelect(chordConfig.durVal, function () { chordConfig.durVal = Number(durSelC.value); });
                 var instSelC = document.createElement('select'); instSelC.className = 'part-sel'; instSelC.innerHTML = GM_OPTS_HTML; instSelC.value = chordConfig.program;
                 instSelC.onchange = function () { chordConfig.program = instSelC.value; reloadChordInstrument(); };
-                chCtrls.appendChild(volC); chCtrls.appendChild(bEnabled); chCtrls.appendChild(bMuteC); chCtrls.appendChild(bSoloC); chCtrls.appendChild(octSelC); chCtrls.appendChild(instSelC);
+                chCtrls.appendChild(volC); chCtrls.appendChild(bEnabled); chCtrls.appendChild(bMuteC); chCtrls.appendChild(bSoloC); chCtrls.appendChild(octSelC); chCtrls.appendChild(durSelC); chCtrls.appendChild(instSelC);
                 chRow.appendChild(chName); chRow.appendChild(chCtrls); p.appendChild(chRow);
             }
 
@@ -2012,7 +2032,7 @@
 
                 /* Agendar Chords */
                 if (chordConfig.enabled && !chordConfig.mute) {
-                    var noteDur = (60 / bpm) * 1.8;
+                    var noteDur = (60 / bpm) * (chordConfig.durVal || 1.0);
                     while (nextChordIdx < chordEvents.length && chordEvents[nextChordIdx].t < lookAheadLimit) {
                         var cev = chordEvents[nextChordIdx];
                         if (cev.t < rangeEndT) {
@@ -2114,7 +2134,7 @@
                 } catch (err) { setStatus('Não foi possível carregar a partitura de exemplo.', 'err'); }
             }
 
-            loadFromUrl('https://raw.githubusercontent.com/GlauberLASantiago/vitopamos/main/VitopamosEx2.musicxml');
+            loadFromUrl('https://raw.githubusercontent.com/GlauberLASantiago/vitopamos/main/Vitopamos.musicxml');
 
             document.getElementById('bp').onclick = async function () {
                 if (run || !partInsts.length || !ac) return;
@@ -2288,6 +2308,11 @@
 body{background:#f3f4f6;color:#111827;}
 .icon-svg{display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
 #score{background:#fff;padding:10px;border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,0.1);transition:margin-top 0.3s;}
+.mix-toggle{display:inline-flex;align-items:center;gap:6px;background:#eee;border:1px solid #d1d5db;border-radius:5px;padding:3px 10px;white-space:nowrap;font-size:12px;font-weight:600;color:#111827;cursor:pointer;font-family:system-ui,sans-serif;user-select:none;transition:all 0.2s;margin-left:auto;}
+.mix-toggle:hover{background:#e5e7eb;}
+.mix-toggle svg{transition:transform 0.2s;color:#6b7280;}
+.mix-toggle.active{background:#e2e8f0;}
+.mix-toggle.active svg{transform:rotate(90deg);color:#111827;}
 ${hideCtrls ? '#ctrlsEx { display: none !important; } #score { border-top: none; box-shadow: none; margin-top: 0; padding-top: 5px; } #helpEx { margin-top: 10px; }' : ''}
 <\/style>
 <\/head>
@@ -2306,10 +2331,7 @@ ${hideCtrls ? '#ctrlsEx { display: none !important; } #score { border-top: none;
     <span style="font-size:11px;font-weight:700;color:#6b7280;">–<\/span>
     <input type="number" id="rangeToEx" value="${exportRangeTo}" min="${exportMinMeasureNumber}" max="${exportMaxMeasureNumber}" style="${I}width:38px;text-align:center;" title="Compasso final">
   <\/span>
-  <span style="font-size:12px;color:#6b7280;padding:0 4px;margin-left:auto;">
-    <a href="https://glauberlasantiago.github.io/vitopamos/" target="_blank" style="text-decoration:none;color:#94a3b8;font-size:10px;">Powered by ViToPaMos</a>
-  </span>
-</div>
+<\/div>
 <div id="helpEx" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:10px;padding:0 10px;font-size:11px;color:#6b7280;">
   <span><svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>/<svg class="icon-svg" style="width:12px;height:12px;fill:currentColor;" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>&nbsp;clique</span>
   <span>&bull;</span>
@@ -2770,7 +2792,7 @@ ${hideCtrls ? '#ctrlsEx { display: none !important; } #score { border-top: none;
     }
 
     if(chordConfig.enabled&&!chordConfig.mute){
-      var noteDur=(60/bpm)*1.8;
+      var noteDur=(60/bpm)*(chordConfig.durVal||1);
       while(nextChordIdx<chordEvents.length&&chordEvents[nextChordIdx].t<lookAheadLimit){
         var cev=chordEvents[nextChordIdx];
         if(cev.t<rangeEndT){
@@ -2916,11 +2938,27 @@ ${hideCtrls ? '#ctrlsEx { display: none !important; } #score { border-top: none;
     OCT_OPTIONS_EX.forEach(function(o){var opt=document.createElement('option');opt.value=o[0];opt.textContent=o[1];if(String(val)===o[0])opt.selected=true;s.appendChild(opt);});
     s.onchange=onchange;return s;
   }
+  function makeDurSelEx(val,onchange){
+    var s=document.createElement('select');s.style.cssText='border:1px solid #d1d5db;border-radius:4px;padding:2px 4px;font-size:11px;background:#fff;color:#111827;cursor:pointer;';
+    [[1,'1 tempo'],[2,'2 tempos'],[3,'3 tempos'],[4,'4 tempos']].forEach(function(o){var opt=document.createElement('option');opt.value=o[0];opt.textContent=o[1];if(Number(val)===o[0])opt.selected=true;s.appendChild(opt);});
+    s.onchange=onchange;return s;
+  }
 
   function renderExPartsPanel(){
     var ctrls=document.getElementById('ctrlsEx');
+    var btnMix=document.createElement('button');
+    btnMix.className='mix-toggle';
+    btnMix.innerHTML='<span style="${L}">MIXER</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+    ctrls.appendChild(btnMix);
+
     var pPanel=document.createElement('div');
-    pPanel.style.cssText='width:100%;display:flex;flex-direction:column;gap:6px;margin-top:6px;';
+    pPanel.style.cssText='width:100%;display:none;flex-direction:column;gap:6px;margin-top:10px;padding-top:10px;border-top:1px dashed #cbd5e1;';
+    
+    btnMix.onclick=function(){
+      var isCol=(pPanel.style.display==='none');
+      pPanel.style.display=isCol?'flex':'none';
+      btnMix.classList.toggle('active', isCol);
+    };
     var S_BTN='border:1px solid #d1d5db;border-radius:4px;padding:3px 6px;font-size:11px;font-weight:600;cursor:pointer;font-family:system-ui,sans-serif;color:#475569;background:#f8fafc;';
 
     partConfigs.forEach(function(cfg,idx){
@@ -2933,9 +2971,10 @@ ${hideCtrls ? '#ctrlsEx { display: none !important; } #score { border-top: none;
       var volRange=document.createElement('input');volRange.type='range';volRange.min=0;volRange.max=100;volRange.value=cfg.vol||100;volRange.style.width='55px';
       volRange.oninput=function(){cfg.vol=+volRange.value;updateFullMix();};
       var octS=makeOctSelEx(cfg.oct||0,function(){cfg.oct=parseInt(octS.value,10);});
+      if(cfg.isDrum){octS.disabled=true;octS.title="Percussão não permite transposição.";octS.style.opacity="0.5";cfg.oct=0;}
       var sel=document.createElement('select');sel.style.cssText='border:1px solid #d1d5db;border-radius:4px;padding:2px;font-size:11px;max-width:140px;background:#fff;color:#111827;';
       sel.innerHTML=GM_OPTS_HTML;sel.value=cfg.program;
-      sel.onchange=function(){cfg.program=sel.value;cfg.isDrum=(sel.value==='_drum_kit_gm');partInsts=[];chordInst=null;eventsCache.bpm=null;cursorStepsCache.mode=null;ensureInst();};
+      sel.onchange=function(){cfg.program=sel.value;cfg.isDrum=(sel.value==='_drum_kit_gm');if(cfg.isDrum)cfg.oct=0;partInsts=[];chordInst=null;eventsCache.bpm=null;cursorStepsCache.mode=null;ensureInst();};
       row.appendChild(nameSp);row.appendChild(volRange);row.appendChild(bMute);row.appendChild(bSolo);row.appendChild(octS);row.appendChild(sel);
       pPanel.appendChild(row);
     });
@@ -2956,10 +2995,11 @@ ${hideCtrls ? '#ctrlsEx { display: none !important; } #score { border-top: none;
     var volC=document.createElement('input');volC.type='range';volC.min=0;volC.max=100;volC.value=chordConfig.vol;volC.style.width='55px';
     volC.oninput=function(){chordConfig.vol=+volC.value;updateFullMix();};
     var octC=makeOctSelEx(chordConfig.oct,function(){chordConfig.oct=parseInt(octC.value,10);});
+    var durC=makeDurSelEx(chordConfig.durVal,function(){chordConfig.durVal=Number(durC.value);});
     var selC=document.createElement('select');selC.style.cssText='border:1px solid #d1d5db;border-radius:4px;padding:2px;font-size:11px;max-width:140px;background:#fff;color:#111827;';
     selC.innerHTML=GM_OPTS_HTML;selC.value=chordConfig.program;
     selC.onchange=function(){chordConfig.program=selC.value;chordInst=null;chordGain=null;eventsCache.bpm=null;ensureInst();};
-    chRow.appendChild(chName);chRow.appendChild(volC);chRow.appendChild(bEn);chRow.appendChild(bMuteC);chRow.appendChild(bSoloC);chRow.appendChild(octC);chRow.appendChild(selC);
+    chRow.appendChild(chName);chRow.appendChild(volC);chRow.appendChild(bEn);chRow.appendChild(bMuteC);chRow.appendChild(bSoloC);chRow.appendChild(octC);chRow.appendChild(durC);chRow.appendChild(selC);
     pPanel.appendChild(chRow);
     ctrls.appendChild(pPanel);
   }
